@@ -666,24 +666,27 @@ const ChatbotDiagnostico: React.FC = () => {
   }, [idx]);
 
   function handleUserSend(text: string) {
-    const s = steps[idx];
-    if (!s) return;
+  const s = steps[idx];
+  if (!s) return;
 
-    if (s.kind === "text") {
-      setMessages((m) => [...m, { from: "user", text }]);
-      setData((d) => ({ ...d, [s.field]: text } as any));
-      setIdx(idx + 1);
-      setInput("");
-      return;
-    }
-
-    if (s.kind !== "text" && text.trim()) {
-      setMessages((m) => [...m, { from: "user", text }]);
-      if ("field" in s) setData((d) => ({ ...d, [s.field]: text } as any));
-      setIdx(idx + 1);
-      setInput("");
-    }
+  if (s.kind === "text") {
+    setMessages((m) => [...m, { from: "user", text }]);
+    setData((d) => ({ ...d, [s.field]: text } as any));
+    setIdx(idx + 1);
+    setInput("");
+    return;
   }
+
+  // 👇 Antes: if (s.kind !== "text" && text.trim()) { ... }
+  // Ahora: solo validamos que haya texto; el narrowing previo ya excluyó "text".
+  if (text.trim()) {
+    setMessages((m) => [...m, { from: "user", text }]);
+    if ("field" in s) setData((d) => ({ ...d, [s.field]: text } as any));
+    setIdx(idx + 1);
+    setInput("");
+  }
+}
+
 
   function handleLikertAnswer(field: keyof DiagnosticoProfundoData, v: Likert) {
     setMessages((m) => [...m, { from: "user", text: `Respuesta: ${v}` }]);
