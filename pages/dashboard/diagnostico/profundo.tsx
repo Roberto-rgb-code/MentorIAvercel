@@ -470,7 +470,8 @@ const ChatbotDiagnostico: React.FC = () => {
   const { user } = useAuth();
   const router = useRouter();
 
-  const [data, setData] = useState<DiagnosticoProfundoData>(emptyData(user?.uid || ""));
+  // FIX: usar user?.id en lugar de user?.uid
+  const [data, setData] = useState<DiagnosticoProfundoData>(emptyData(user?.id || ""));
   const [idx, setIdx] = useState(0);
   const [messages, setMessages] = useState<{ from: "bot" | "user"; text: React.ReactNode }[]>([]);
   const [input, setInput] = useState("");
@@ -520,9 +521,10 @@ const ChatbotDiagnostico: React.FC = () => {
     viewportRef.current?.scrollTo({ top: viewportRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, loading]);
 
+  // FIX: asegurar userId con user?.id
   useEffect(() => {
-    if (user?.uid && !data.userId) setData((d) => ({ ...d, userId: user.uid })); // asegura userId
-  }, [user, data.userId]);
+    if (user?.id && !data.userId) setData((d) => ({ ...d, userId: user.id! }));
+  }, [user?.id, data.userId]);
 
   const progressPct = useMemo(() => Math.round(((idx + 1) / steps.length) * 100), [idx]);
 
@@ -730,7 +732,8 @@ const ChatbotDiagnostico: React.FC = () => {
   }
 
   function resetAll() {
-    setData(emptyData(user?.uid || ""));
+    // FIX: usar user?.id
+    setData(emptyData(user?.id || ""));
     setIdx(0);
     setMessages([]);
     setAnalysis(null);
