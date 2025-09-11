@@ -1,7 +1,7 @@
 // pages/perfil.tsx
 import { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth"; // Asume que useAuth está en ../hooks/useAuth
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, setDoc } from "firebase/firestore";
 import { db } from "../lib/firebase"; // Asume que db está inicializado en ../lib/firebase
 import PrivateLayout from "../components/layout/PrivateLayout"; // Asume que PrivateLayout está en ../components/layout/PrivateLayout
 import {
@@ -31,29 +31,54 @@ import {
   FaEdit,
   FaSave,
   FaTimes,
-  FaSpinner, // Añadir FaSpinner para el estado de carga
-} from 'react-icons/fa';
+  FaSpinner,
+} from "react-icons/fa";
 import { motion } from "framer-motion";
-import { toast } from 'react-toastify'; // Importa toast para notificaciones
+import { toast } from "react-toastify";
+
+/** Helpers de tipado seguros para user **/
+type MaybeUser =
+  | {
+      uid?: string;
+      id?: string;
+      _id?: string;
+      email?: string | null;
+      displayName?: string | null;
+    }
+  | null
+  | undefined;
+
+const getUserId = (u: MaybeUser): string | null => {
+  if (!u) return null;
+  return (u.uid as string) ?? (u.id as string) ?? (u._id as string) ?? null;
+};
+
+const getUserEmail = (u: MaybeUser): string | undefined => {
+  if (!u) return undefined;
+  return (u.email as string) ?? undefined;
+};
+
+const getUserDisplayName = (u: MaybeUser): string | undefined => {
+  if (!u) return undefined;
+  return (u.displayName as string) ?? undefined;
+};
 
 const Perfil = () => {
-  const { user, loading: authLoading } = useAuth(); // Obtén el estado de carga de autenticación
+  const { user, loading: authLoading } = useAuth();
   const [profile, setProfile] = useState<any>(null);
-  const [loadingProfile, setLoadingProfile] = useState(true); // Estado de carga del perfil desde Firestore
-  const [isSaving, setIsSaving] = useState(false); // Estado para guardar los cambios
+  const [loadingProfile, setLoadingProfile] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<any>({});
 
   useEffect(() => {
     const fetchProfileData = async () => {
-      console.log("Perfil useEffect: authLoading =", authLoading, "user =", user);
+      const userId = getUserId(user);
 
-      // Si la autenticación aún está cargando o si user es null/undefined, espera.
-      // Esto previene la llamada a Firestore con un user.uid indefinido.
-      if (authLoading || !user?.uid) {
-        // Si authLoading es false y user es null/undefined, significa que no hay usuario logueado.
-        if (!authLoading && !user?.uid) {
+      // Evita llamadas mientras carga auth o si no hay usuario
+      if (authLoading || !userId) {
+        if (!authLoading && !userId) {
           setLoadingProfile(false);
           setProfile(null);
           setError("Debes iniciar sesión para ver tu perfil.");
@@ -61,41 +86,39 @@ const Perfil = () => {
         return;
       }
 
-      // Si hay un usuario (y authLoading es false), intenta cargar su perfil de Firestore
       try {
-        setLoadingProfile(true); // Asegura que el spinner de carga esté activo mientras se carga el perfil
-        const ref = doc(db, "users", user.uid); // user.uid ahora está garantizado que existe
+        setLoadingProfile(true);
+        const ref = doc(db, "users", userId);
         const snap = await getDoc(ref);
+
         if (snap.exists()) {
           const data = snap.data();
           setProfile(data);
-          setFormData(data); // Inicializa formData con los datos del perfil actual
-          console.log("Perfil: Datos del perfil cargados:", data);
+          setFormData(data);
         } else {
           setError("No se encontraron datos de perfil adicionales. Creando perfil básico...");
-          // Si no hay perfil extendido, crea uno básico con los datos del usuario de autenticación
           const initialProfile = {
-            fullName: user.displayName || "No especificado",
-            email: user.email,
-            role: "N/A", // O un rol por defecto si lo tienes
-            // Añade otros campos básicos que quieras inicializar
+            fullName: getUserDisplayName(user) || "No especificado",
+            email: getUserEmail(user),
+            role: "N/A",
           };
-          await updateDoc(doc(db, "users", user.uid), initialProfile); // Crea el documento
+          // Crea/mezcla el documento si no existe
+          await setDoc(ref, initialProfile, { merge: true });
           setProfile(initialProfile);
           setFormData(initialProfile);
-          toast.info('Perfil básico creado. Por favor, completa tu información.');
-          console.log("Perfil: Documento de perfil no encontrado, creando uno nuevo.");
+          toast.info("Perfil básico creado. Por favor, completa tu información.");
         }
       } catch (err) {
         console.error("Error al cargar el perfil:", err);
         setError("Error al cargar tu perfil. Intenta de nuevo más tarde.");
-        toast.error('Error al cargar tu perfil.');
+        toast.error("Error al cargar tu perfil.");
       } finally {
         setLoadingProfile(false);
       }
     };
+
     fetchProfileData();
-  }, [user, authLoading]); // Dependencias: user y authLoading para re-ejecutar cuando cambien
+  }, [user, authLoading]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -115,10 +138,11 @@ const Perfil = () => {
   };
 
   const handleSave = async () => {
-    setIsSaving(true); // Activa el estado de guardado
+    setIsSaving(true);
     setError("");
     try {
-      if (!user || !user.uid) {
+      const userId = getUserId(user);
+      if (!userId) {
         setError("Usuario no autenticado o ID de usuario no disponible.");
         toast.error("Usuario no autenticado. Por favor, inicia sesión de nuevo.");
         return;
@@ -128,54 +152,82 @@ const Perfil = () => {
         Object.entries(formData).filter(([_, value]) => value !== undefined && value !== null)
       );
 
-      // Manejo específico para campos "Otro" si se usan en el formulario de registro
-      // Para campos de selección (select)
+      // Normaliza campos "Otro"
       if (dataToSave.hasOwnProperty("ultimoGrado") && dataToSave.ultimoGrado === "Otro") {
-          dataToSave.ultimoGrado = formData.otroGrado;
+        dataToSave.ultimoGrado = formData.otroGrado;
       }
       if (dataToSave.hasOwnProperty("intervencionPreferida") && dataToSave.intervencionPreferida === "Otro") {
-          dataToSave.intervencionPreferida = formData.otraIntervencion;
+        dataToSave.intervencionPreferida = formData.otraIntervencion;
       }
       if (dataToSave.hasOwnProperty("motivacionConsultor") && dataToSave.motivacionConsultor === "Otro") {
-          dataToSave.motivacionConsultor = formData.otraMotivacion;
+        dataToSave.motivacionConsultor = formData.otraMotivacion;
       }
-      // Para campos de checkbox que incluyen "Otro"
       if (dataToSave.hasOwnProperty("goals") && Array.isArray(dataToSave.goals) && dataToSave.goals.includes("Otro")) {
-          dataToSave.goals = [...dataToSave.goals.filter((g: string) => g !== "Otro"), formData.otherGoal].filter(Boolean);
+        dataToSave.goals = [
+          ...dataToSave.goals.filter((g: string) => g !== "Otro"),
+          formData.otherGoal,
+        ].filter(Boolean);
       }
-      if (dataToSave.hasOwnProperty("areasExperiencia") && Array.isArray(dataToSave.areasExperiencia) && dataToSave.areasExperiencia.includes("Otro")) {
-          dataToSave.areasExperiencia = [...dataToSave.areasExperiencia.filter((g: string) => g !== "Otro"), formData.otherAreaExperiencia].filter(Boolean);
+      if (
+        dataToSave.hasOwnProperty("areasExperiencia") &&
+        Array.isArray(dataToSave.areasExperiencia) &&
+        dataToSave.areasExperiencia.includes("Otro")
+      ) {
+        dataToSave.areasExperiencia = [
+          ...dataToSave.areasExperiencia.filter((g: string) => g !== "Otro"),
+          formData.otherAreaExperiencia,
+        ].filter(Boolean);
       }
-      if (dataToSave.hasOwnProperty("industrias") && Array.isArray(dataToSave.industrias) && dataToSave.industrias.includes("Otro")) {
-          dataToSave.industrias = [...dataToSave.industrias.filter((g: string) => g !== "Otro"), formData.otherIndustry].filter(Boolean);
+      if (
+        dataToSave.hasOwnProperty("industrias") &&
+        Array.isArray(dataToSave.industrias) &&
+        dataToSave.industrias.includes("Otro")
+      ) {
+        dataToSave.industrias = [
+          ...dataToSave.industrias.filter((g: string) => g !== "Otro"),
+          formData.otherIndustry,
+        ].filter(Boolean);
       }
-      if (dataToSave.hasOwnProperty("supportAreas") && Array.isArray(dataToSave.supportAreas) && dataToSave.supportAreas.includes("Otro")) {
-          dataToSave.supportAreas = [...dataToSave.supportAreas.filter((g: string) => g !== "Otro"), formData.otherSupportArea].filter(Boolean);
+      if (
+        dataToSave.hasOwnProperty("supportAreas") &&
+        Array.isArray(dataToSave.supportAreas) &&
+        dataToSave.supportAreas.includes("Otro")
+      ) {
+        dataToSave.supportAreas = [
+          ...dataToSave.supportAreas.filter((g: string) => g !== "Otro"),
+          formData.otherSupportArea,
+        ].filter(Boolean);
       }
-      if (dataToSave.hasOwnProperty("herramientasDigitales") && Array.isArray(dataToSave.herramientasDigitales) && dataToSave.herramientasDigitales.includes("Otra")) {
-          dataToSave.herramientasDigitales = [...dataToSave.herramientasDigitales.filter((g: string) => g !== "Otra"), formData.otherDigitalTool].filter(Boolean);
+      if (
+        dataToSave.hasOwnProperty("herramientasDigitales") &&
+        Array.isArray(dataToSave.herramientasDigitales) &&
+        dataToSave.herramientasDigitales.includes("Otra")
+      ) {
+        dataToSave.herramientasDigitales = [
+          ...dataToSave.herramientasDigitales.filter((g: string) => g !== "Otra"),
+          formData.otherDigitalTool,
+        ].filter(Boolean);
       }
 
-
-      await updateDoc(doc(db, "users", user.uid), dataToSave);
-      setProfile(formData); // Actualiza el estado local del perfil con los datos guardados
-      setIsEditing(false); // Sale del modo de edición
-      toast.success('Perfil actualizado exitosamente.');
+      await updateDoc(doc(db, "users", userId), dataToSave);
+      setProfile(formData);
+      setIsEditing(false);
+      toast.success("Perfil actualizado exitosamente.");
       console.log("Perfil: Perfil guardado:", dataToSave);
     } catch (err) {
       console.error("Error al guardar el perfil:", err);
       setError("Error al guardar los cambios. Intenta de nuevo.");
-      toast.error('Error al guardar el perfil.');
+      toast.error("Error al guardar el perfil.");
     } finally {
-      setIsSaving(false); // Desactiva el estado de guardado
+      setIsSaving(false);
     }
   };
 
   const handleCancel = () => {
-    setFormData(profile); // Revierte los datos del formulario a los originales del perfil
-    setIsEditing(false); // Sale del modo de edición
-    setError(""); // Limpia cualquier error previo
-    toast.info('Edición cancelada. Los cambios no se guardaron.');
+    setFormData(profile);
+    setIsEditing(false);
+    setError("");
+    toast.info("Edición cancelada. Los cambios no se guardaron.");
   };
 
   // Helper para renderizar un campo de input/select/textarea o un párrafo
@@ -222,63 +274,61 @@ const Perfil = () => {
                 <span className="ml-2 text-gray-800">{option}</span>
               </label>
             ))}
-            {/* Campos 'Otro' condicionales para checkboxes */}
             {name === "goals" && formData.goals?.includes("Otro") && (
-                <input
-                  type="text"
-                  name="otherGoal"
-                  value={formData.otherGoal || ''}
-                  onChange={handleChange}
-                  className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 mt-2 col-span-full"
-                  placeholder="Especifica otra meta"
-                />
+              <input
+                type="text"
+                name="otherGoal"
+                value={formData.otherGoal || ""}
+                onChange={handleChange}
+                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 mt-2 col-span-full"
+                placeholder="Especifica otra meta"
+              />
             )}
             {name === "areasExperiencia" && formData.areasExperiencia?.includes("Otro") && (
-                <input
-                  type="text"
-                  name="otherAreaExperiencia"
-                  value={formData.otherAreaExperiencia || ''}
-                  onChange={handleChange}
-                  className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 mt-2 col-span-full"
-                  placeholder="Especifica otra área de experiencia"
-                />
+              <input
+                type="text"
+                name="otherAreaExperiencia"
+                value={formData.otherAreaExperiencia || ""}
+                onChange={handleChange}
+                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 mt-2 col-span-full"
+                placeholder="Especifica otra área de experiencia"
+              />
             )}
             {name === "industrias" && formData.industrias?.includes("Otro") && (
-                <input
-                  type="text"
-                  name="otherIndustry"
-                  value={formData.otherIndustry || ''}
-                  onChange={handleChange}
-                  className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 mt-2 col-span-full"
-                  placeholder="Especifica otra industria"
-                />
+              <input
+                type="text"
+                name="otherIndustry"
+                value={formData.otherIndustry || ""}
+                onChange={handleChange}
+                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duración-200 mt-2 col-span-full"
+                placeholder="Especifica otra industria"
+              />
             )}
             {name === "supportAreas" && formData.supportAreas?.includes("Otro") && (
-                <input
-                  type="text"
-                  name="otherSupportArea"
-                  value={formData.otherSupportArea || ''}
-                  onChange={handleChange}
-                  className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 mt-2 col-span-full"
-                  placeholder="Especifica otra área de apoyo"
-                />
+              <input
+                type="text"
+                name="otherSupportArea"
+                value={formData.otherSupportArea || ""}
+                onChange={handleChange}
+                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 mt-2 col-span-full"
+                placeholder="Especifica otra área de apoyo"
+              />
             )}
             {name === "herramientasDigitales" && formData.herramientasDigitales?.includes("Otra") && (
-                <input
-                  type="text"
-                  name="otherDigitalTool"
-                  value={formData.otherDigitalTool || ''}
-                  onChange={handleChange}
-                  className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 mt-2 col-span-full"
-                  placeholder="Especifica otra herramienta digital"
-                />
+              <input
+                type="text"
+                name="otherDigitalTool"
+                value={formData.otherDigitalTool || ""}
+                onChange={handleChange}
+                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 mt-2 col-span-full"
+                placeholder="Especifica otra herramienta digital"
+              />
             )}
           </div>
         </motion.div>
       );
     }
 
-    // Campos 'Otro' condicionales para select/text fields (no checkboxes)
     return (
       <motion.div
         className="p-3 bg-white rounded-lg shadow-sm border border-gray-200"
@@ -313,36 +363,35 @@ const Perfil = () => {
                 </option>
               ))}
             </select>
-            {/* Campos 'Otro' condicionales para selects */}
             {name === "ultimoGrado" && formData.ultimoGrado === "Otro" && (
-                <input
-                  type="text"
-                  name="otroGrado"
-                  value={formData.otroGrado || ''}
-                  onChange={handleChange}
-                  className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 mt-2"
-                  placeholder="Especifica otro grado académico"
-                />
+              <input
+                type="text"
+                name="otroGrado"
+                value={formData.otroGrado || ""}
+                onChange={handleChange}
+                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 mt-2"
+                placeholder="Especifica otro grado académico"
+              />
             )}
             {name === "intervencionPreferida" && formData.intervencionPreferida === "Otro" && (
-                <input
-                  type="text"
-                  name="otraIntervencion"
-                  value={formData.otraIntervencion || ''}
-                  onChange={handleChange}
-                  className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 mt-2"
-                  placeholder="Especifica otra intervención"
-                />
+              <input
+                type="text"
+                name="otraIntervencion"
+                value={formData.otraIntervencion || ""}
+                onChange={handleChange}
+                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 mt-2"
+                placeholder="Especifica otra intervención"
+              />
             )}
             {name === "motivacionConsultor" && formData.motivacionConsultor === "Otro" && (
-                <input
-                  type="text"
-                  name="otraMotivacion"
-                  value={formData.otraMotivacion || ''}
-                  onChange={handleChange}
-                  className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 mt-2"
-                  placeholder="Especifica otra motivación"
-                />
+              <input
+                type="text"
+                name="otraMotivacion"
+                value={formData.otraMotivacion || ""}
+                onChange={handleChange}
+                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 mt-2"
+                placeholder="Especifica otra motivación"
+              />
             )}
           </>
         ) : (
@@ -358,8 +407,11 @@ const Perfil = () => {
     );
   };
 
-  // Helper para renderizar detalles del perfil en modo de visualización
-  const renderProfileDetail = (icon: React.ReactNode, label: string, value: string | number | string[] | React.ReactNode | undefined) => {
+  const renderProfileDetail = (
+    icon: React.ReactNode,
+    label: string,
+    value: string | number | string[] | React.ReactNode | undefined
+  ) => {
     if (value === undefined || value === null || (Array.isArray(value) && value.length === 0)) return null;
 
     let displayValue: React.ReactNode = value;
@@ -383,7 +435,7 @@ const Perfil = () => {
     );
   };
 
-  // Opciones para campos de selección y checkboxes
+  // Opciones
   const languageOptions = [
     { value: "Español", label: "Español" },
     { value: "Inglés", label: "Inglés" },
@@ -497,60 +549,97 @@ const Perfil = () => {
 
   // Opciones para checkboxes
   const goalsOptions = [
-    "Crecimiento de ventas", "Optimización de procesos", "Acceso a financiamiento",
-    "Desarrollo de nuevos productos/servicios", "Expansión a nuevos mercados",
-    "Mejora de la estrategia de marketing", "Digitalización",
-    "Desarrollo de liderazgo", "Gestión de equipos", "Innovación", "Otro"
+    "Crecimiento de ventas",
+    "Optimización de procesos",
+    "Acceso a financiamiento",
+    "Desarrollo de nuevos productos/servicios",
+    "Expansión a nuevos mercados",
+    "Mejora de la estrategia de marketing",
+    "Digitalización",
+    "Desarrollo de liderazgo",
+    "Gestión de equipos",
+    "Innovación",
+    "Otro",
   ];
 
   const supportAreasOptions = [
-    "Estrategia de Negocio", "Finanzas y Contabilidad", "Marketing Digital",
-    "Ventas y Comercialización", "Operaciones y Logística",
-    "Recursos Humanos y Talento", "Tecnología e Innovación",
-    "Desarrollo de Producto/Servicio", "Internacionalización",
-    "Aspectos Legales y Fiscales", "Sustentabilidad", "Otro"
+    "Estrategia de Negocio",
+    "Finanzas y Contabilidad",
+    "Marketing Digital",
+    "Ventas y Comercialización",
+    "Operaciones y Logística",
+    "Recursos Humanos y Talento",
+    "Tecnología e Innovación",
+    "Desarrollo de Producto/Servicio",
+    "Internacionalización",
+    "Aspectos Legales y Fiscales",
+    "Sustentabilidad",
+    "Otro",
   ];
 
   const areasExperienciaOptions = [
-    "Estrategia y Planificación", "Finanzas y Contabilidad", "Marketing y Ventas",
-    "Operaciones y Logística", "Recursos Humanos", "Tecnología y Digitalización",
-    "Innovación y Desarrollo de Producto", "Legal y Regulatorio",
-    "Comercio Exterior", "Sustentabilidad y Responsabilidad Social", "Otro"
+    "Estrategia y Planificación",
+    "Finanzas y Contabilidad",
+    "Marketing y Ventas",
+    "Operaciones y Logística",
+    "Recursos Humanos",
+    "Tecnología y Digitalización",
+    "Innovación y Desarrollo de Producto",
+    "Legal y Regulatorio",
+    "Comercio Exterior",
+    "Sustentabilidad y Responsabilidad Social",
+    "Otro",
   ];
 
   const industriasOptions = [
-    "Tecnología", "Servicios", "Manufactura", "Comercio minorista",
-    "Alimentos y Bebidas", "Educación", "Salud", "Financiera",
-    "Turismo", "Agroindustria", "Consultoría", "Energía", "Otro"
+    "Tecnología",
+    "Servicios",
+    "Manufactura",
+    "Comercio minorista",
+    "Alimentos y Bebidas",
+    "Educación",
+    "Salud",
+    "Financiera",
+    "Turismo",
+    "Agroindustria",
+    "Consultoría",
+    "Energía",
+    "Otro",
   ];
 
   const herramientasDigitalesOptions = [
-    "Google Workspace", "Microsoft Office 365", "Zoom/Google Meet",
-    "Trello/Asana", "Miro/FigJam", "CRM (Salesforce, HubSpot)",
-    "ERP (SAP, Oracle)", "Software de contabilidad (QuickBooks)",
-    "Herramientas de marketing (Mailchimp)", "Ninguna en particular", "Otra"
+    "Google Workspace",
+    "Microsoft Office 365",
+    "Zoom/Google Meet",
+    "Trello/Asana",
+    "Miro/FigJam",
+    "CRM (Salesforce, HubSpot)",
+    "ERP (SAP, Oracle)",
+    "Software de contabilidad (QuickBooks)",
+    "Herramientas de marketing (Mailchimp)",
+    "Ninguna en particular",
+    "Otra",
   ];
 
   return (
     <PrivateLayout>
-      {/* Siempre renderiza PrivateLayout como el contenedor raíz */}
-      {(authLoading || loadingProfile) ? (
+      {authLoading || loadingProfile ? (
         <div className="flex flex-col items-center justify-center min-h-[calc(100vh-64px)]">
           <FaSpinner className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500" />
           <p className="mt-4 text-gray-700 text-lg">Cargando tu información...</p>
         </div>
-      ) : error && !user ? ( // Si hay un error y no hay usuario (después de la carga)
+      ) : error && !getUserId(user) ? (
         <div className="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] bg-gradient-to-br from-blue-500 to-purple-700 text-white p-4 rounded-lg shadow-xl">
           <p className="text-xl font-semibold mb-4">{error}</p>
           <p className="text-lg mb-6 text-center">Por favor, inicia sesión para acceder a tu perfil.</p>
           <button
-            onClick={() => window.location.href = '/login'}
+            onClick={() => (window.location.href = "/login")}
             className="px-6 py-3 bg-white text-blue-700 rounded-full shadow-lg hover:bg-blue-100 transition duration-300 transform hover:scale-105"
           >
             Ir a Iniciar Sesión
           </button>
         </div>
-      ) : ( // Contenido principal del perfil
+      ) : (
         <div className="container mx-auto p-4 md:p-8 bg-gray-50 rounded-xl shadow-lg animate-fade-in-up">
           <header className="flex items-center justify-between border-b pb-4 mb-6 md:mb-8">
             <motion.h1
@@ -574,10 +663,10 @@ const Perfil = () => {
                   <button
                     onClick={handleSave}
                     className="px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition duration-300 flex items-center"
-                    disabled={isSaving} // Deshabilita durante el guardado
+                    disabled={isSaving}
                   >
                     {isSaving ? <FaSpinner className="animate-spin mr-2" /> : <FaSave className="mr-2" />}
-                    {isSaving ? 'Guardando...' : 'Guardar'}
+                    {isSaving ? "Guardando..." : "Guardar"}
                   </button>
                   <button
                     onClick={handleCancel}
@@ -600,17 +689,20 @@ const Perfil = () => {
               </h2>
               <div className="space-y-4">
                 {renderField(<FaUserCircle />, "Nombre Completo", "fullName")}
-                {renderProfileDetail(<FaEnvelope />, "Correo Electrónico", user?.email)} {/* Email no editable aquí */}
+                {renderProfileDetail(<FaEnvelope />, "Correo Electrónico", getUserEmail(user))}
                 {renderField(<FaPhone />, "Teléfono", "phone")}
                 {renderField(<FaCalendarAlt />, "Año de Nacimiento", "birthYear", "number")}
                 {renderField(<FaGlobe />, "Idioma Preferido", "language", "select", languageOptions)}
                 {renderField(<FaVenusMars />, "Género", "gender", "select", genderOptions)}
-                {/* El rol se asigna durante el registro y rara vez se edita directamente desde aquí */}
-                {renderProfileDetail(<FaBriefcase />, "Rol en MentorApp", profile?.role ? profile.role.charAt(0).toUpperCase() + profile.role.slice(1) : "No especificado")}
+                {renderProfileDetail(
+                  <FaBriefcase />,
+                  "Rol en MentorApp",
+                  profile?.role ? profile.role.charAt(0).toUpperCase() + profile.role.slice(1) : "No especificado"
+                )}
               </div>
             </div>
 
-            {/* Información de Ubicación */}
+            {/* Ubicación */}
             <div className="bg-white p-6 rounded-lg shadow-md border border-gray-100">
               <h2 className="text-2xl font-bold text-blue-700 mb-4 flex items-center">
                 <FaMapMarkerAlt className="mr-2 text-blue-500" /> Ubicación
@@ -621,7 +713,7 @@ const Perfil = () => {
               </div>
             </div>
 
-            {/* Información Específica por Rol */}
+            {/* Emprendedor */}
             {profile?.role === "emprendedor" && (
               <div className="md:col-span-2 bg-white p-6 rounded-lg shadow-md border border-gray-100">
                 <h2 className="text-2xl font-bold text-green-700 mb-4 flex items-center">
@@ -640,6 +732,7 @@ const Perfil = () => {
               </div>
             )}
 
+            {/* Consultor */}
             {profile?.role === "consultor" && (
               <div className="md:col-span-2 bg-white p-6 rounded-lg shadow-md border border-gray-100">
                 <h2 className="text-2xl font-bold text-purple-700 mb-4 flex items-center">
@@ -647,7 +740,6 @@ const Perfil = () => {
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {renderField(<FaGraduationCap />, "Último Grado Académico", "ultimoGrado", "select", ultimoGradoOptions)}
-                  {/* El campo "Otro Grado" se renderiza condicionalmente dentro de renderField */}
                   {renderField(<FaGraduationCap />, "Área de Estudios", "areaEstudios")}
                   {renderField(<FaHourglassHalf />, "Años de Experiencia", "anosExperiencia", "number")}
                   {renderField(<FaBriefcase />, "Exp. con MiPymes", "experienciaMipymes", "select", experienciaMipymesOptions)}
@@ -656,9 +748,8 @@ const Perfil = () => {
                   {renderField(<FaIndustry />, "Industrias", "industrias", "checkbox", undefined, false, true, industriasOptions)}
                   {renderField(<FaBriefcase />, "Caso de Éxito Relevante", "casoExito", "text", undefined, true)}
                   {renderField(<FaHandshake />, "Intervención Preferida", "intervencionPreferida", "select", intervencionPreferidaOptions)}
-                  {/* El campo "Otra Intervención" se renderiza condicionalmente dentro de renderField */}
                   {renderField(<FaHandshake />, "Enfoque de Acompañamiento", "acompanamiento", "select", acompanamientoOptions)}
-                  {renderField(<FaMapMarkerAlt />, "Modalidad de Consultoría", "modalidad", "select", modalityOptions)} {/* Usar modalityOptions */}
+                  {renderField(<FaMapMarkerAlt />, "Modalidad de Consultoría", "modalidad", "select", modalityOptions)}
                   {renderField(<FaTools />, "Herramientas Digitales", "herramientasDigitales", "checkbox", undefined, false, true, herramientasDigitalesOptions)}
                   {renderField(<FaFolderOpen />, "Recursos Propios", "recursosPropios", "select", recursosPropiosOptions)}
                   {renderField(<FaFileAlt />, "Reportes Estructurados", "reportesEstructurados", "select", reportesEstructuradosOptions)}
@@ -668,7 +759,6 @@ const Perfil = () => {
                   {formData.tarifaTipo === "Por hora" && renderField(<FaDollarSign />, "Tarifa por Hora", "tarifaHora", "number")}
                   {formData.tarifaTipo === "Por paquete" && renderField(<FaDollarSign />, "Tarifa por Paquete", "tarifaPaquete", "number")}
                   {renderField(<FaLightbulb />, "Motivación para Unirse", "motivacionConsultor", "select", motivacionConsultorOptions)}
-                  {/* El campo "Otra Motivación" se renderiza condicionalmente dentro de renderField */}
                   {renderField(<FaFilePdf />, "URL CV", "curriculum")}
                   {renderField(<FaBriefcase />, "URL Portafolio", "portafolio")}
                   {renderField(<FaLinkedin />, "URL LinkedIn", "linkedin")}
@@ -677,6 +767,7 @@ const Perfil = () => {
               </div>
             )}
 
+            {/* Empresa */}
             {profile?.role === "empresa" && (
               <div className="md:col-span-2 bg-white p-6 rounded-lg shadow-md border border-gray-100">
                 <h2 className="text-2xl font-bold text-orange-700 mb-4 flex items-center">
@@ -695,6 +786,7 @@ const Perfil = () => {
               </div>
             )}
 
+            {/* Universidad */}
             {profile?.role === "universidad" && (
               <div className="md:col-span-2 bg-white p-6 rounded-lg shadow-md border border-gray-100">
                 <h2 className="text-2xl font-bold text-red-700 mb-4 flex items-center">
@@ -711,6 +803,7 @@ const Perfil = () => {
               </div>
             )}
 
+            {/* Gobierno */}
             {profile?.role === "gobierno" && (
               <div className="md:col-span-2 bg-white p-6 rounded-lg shadow-md border border-gray-100">
                 <h2 className="text-2xl font-bold text-gray-700 mb-4 flex items-center">
