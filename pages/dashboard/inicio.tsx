@@ -209,7 +209,12 @@ const InicioDashboard: React.FC = () => {
         </section>
 
         {/* KPIs / estado */}
-        <section ref={(el) => (sectionRefs.current[0] = el)} className="py-4">
+        <section
+          ref={(el) => {
+            sectionRefs.current[0] = el;
+          }}
+          className="py-4"
+        >
           <div className="mx-auto max-w-7xl px-4">
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {[
@@ -243,7 +248,12 @@ const InicioDashboard: React.FC = () => {
         </section>
 
         {/* Lanzar diagnóstico */}
-        <section ref={(el) => (sectionRefs.current[1] = el)} className="py-10">
+        <section
+          ref={(el) => {
+            sectionRefs.current[1] = el;
+          }}
+          className="py-10"
+        >
           <div className="mx-auto max-w-7xl px-4">
             <div className="rounded-2xl border border-blue-200/60 bg-gradient-to-br from-blue-50 via-white to-cyan-50 p-6 md:p-10 shadow-sm">
               <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6">
@@ -284,7 +294,12 @@ const InicioDashboard: React.FC = () => {
         </section>
 
         {/* Mentoría */}
-        <section ref={(el) => (sectionRefs.current[2] = el)} className="py-8">
+        <section
+          ref={(el) => {
+            sectionRefs.current[2] = el;
+          }}
+          className="py-8"
+        >
           <div className="mx-auto max-w-7xl px-4">
             <div className="grid gap-4 lg:grid-cols-2">
               <div className="rounded-2xl border border-emerald-200/60 bg-white p-6 shadow-sm">
@@ -333,7 +348,12 @@ const InicioDashboard: React.FC = () => {
         </section>
 
         {/* Tips operativos */}
-        <section ref={(el) => (sectionRefs.current[3] = el)} className="py-10">
+        <section
+          ref={(el) => {
+            sectionRefs.current[3] = el;
+          }}
+          className="py-10"
+        >
           <div className="mx-auto max-w-7xl px-4">
             <div className="rounded-2xl border border-slate-200/60 bg-white p-6 shadow-sm">
               <h3 className="text-xl font-bold text-slate-900 mb-4">Atajos útiles</h3>
