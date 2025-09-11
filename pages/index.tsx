@@ -15,7 +15,8 @@ import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 // Partículas
 import Particles from "react-tsparticles";
 import { loadSlim } from "tsparticles-slim";
-import type { ISourceOptions, MoveDirection, OutMode } from "tsparticles-engine";
+// 👇 Importa como valores (sin `type`)
+import { ISourceOptions, MoveDirection, OutMode } from "tsparticles-engine";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -48,7 +49,7 @@ const Home: React.FC = () => {
       move: {
         direction: MoveDirection.top,
         enable: true,
-        outModes: { default: "bounce" as OutMode | "bounce" },
+        outModes: { default: OutMode.bounce },
         random: true,
         speed: { min: 3, max: 6 },
         straight: false,
@@ -66,7 +67,7 @@ const Home: React.FC = () => {
         random: true,
         animation: { enable: true, speed: 2, minimumValue: 0.5, sync: false },
       },
-      // Si quieres twinkle, habilítalo así (tipado correcto):
+      // twinkle opcional con tipado correcto:
       // twinkle: { particles: { enable: true, frequency: 0.05, opacity: 0.5, color: { value: "#ffffff" } } },
     },
     detectRetina: true,
@@ -216,7 +217,7 @@ const Home: React.FC = () => {
           {/* Por qué somos diferentes */}
           <section
             ref={(el) => { sectionRefs.current[2] = el; }}
-            className="py-20 md:py-32 px-4 container mx-auto text-center"
+            className="py-20 md:py-32 px-4 container mx-auto text-centER"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-blue-700 mb-12 flex items-center justify-center">
               <FaRocket className="text-5xl mr-4 text-cyan-600" /> Tu Ventaja Competitiva con MentorApp
@@ -331,7 +332,7 @@ const Home: React.FC = () => {
                 <li><Link href="/features" className="hover:text-white transition-colors duration-300">Características</Link></li>
                 <li><Link href="/about" className="hover:text-white transition-colors duration-300">Sobre Nosotros</Link></li>
                 <li><Link href="/pricing" className="hover:text-white transition-colors duration-300">Precios</Link></li>
-                <li><Link href="/blog" className="hover:text-white transition-colors duration-300">Blog</Link></li>
+                <li><Link href="/blog" className="hover:text-white transition-colors duración-300">Blog</Link></li>
               </ul>
             </div>
             <div className="col-span-1">
@@ -350,7 +351,7 @@ const Home: React.FC = () => {
               <p className="text-sm">+1 234 567 8900</p>
             </div>
           </div>
-          <div className="mt-8 pt-8 border-t border-gray-700 text-center text-sm text-gray-500">
+          <div className="mt-8 pt-8 border-top border-gray-700 text-center text-sm text-gray-500">
             © {new Date().getFullYear()} MentorApp. Todos los derechos reservados.
           </div>
         </footer>
