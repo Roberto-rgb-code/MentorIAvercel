@@ -1,12 +1,10 @@
 // pages/dashboard/diagnostico/emergencia.tsx
-import { useState, useEffect, ChangeEvent, useRef } from "react";
+import React, { useState, useEffect, ChangeEvent, useRef } from "react";
 import { useRouter } from "next/router";
 import { useAuth } from "../../../contexts/AuthContext";
 import PrivateLayout from "../../../components/layout/PrivateLayout";
 import "animate.css";
-import {
-  ArrowRightIcon,
-} from "@heroicons/react/24/solid";
+import { ArrowRightIcon } from "@heroicons/react/24/solid";
 
 /** ========= Tipos ========= */
 interface DiagnosticoEmergenciaData {
@@ -47,6 +45,10 @@ interface LLMAnalysisResult {
   recomendaciones_clave: string[];
 }
 
+type ChatItem =
+  | { type: "bot"; message: React.ReactNode; isLoader?: boolean }
+  | { type: "user"; message: React.ReactNode; isLoader?: boolean };
+
 /** ========= Loader minimal ========= */
 const UiverseLoader = () => (
   <>
@@ -56,7 +58,7 @@ const UiverseLoader = () => (
         display: inline-block;
         width: 1.2em;
         text-align: left;
-        animation: ellipsis steps(4,end) 900ms infinite;
+        animation: ellipsis steps(4, end) 900ms infinite;
       }
       @keyframes ellipsis {
         to {
@@ -74,7 +76,11 @@ interface ChatBubbleProps {
   isUser?: boolean;
   isLoader?: boolean;
 }
-const ChatBubble = ({ message, isUser = false, isLoader = false }: ChatBubbleProps) => {
+const ChatBubble: React.FC<ChatBubbleProps> = ({
+  message,
+  isUser = false,
+  isLoader = false,
+}) => {
   const alignClass = isUser ? "justify-end" : "justify-start";
   const bubbleClass = isUser
     ? "bg-red-600 text-white rounded-br-none"
@@ -92,37 +98,127 @@ const ChatBubble = ({ message, isUser = false, isLoader = false }: ChatBubblePro
 const chatQuestions: Array<{
   key: string;
   message: string;
-  component: ((props: any) => JSX.Element) | null;
+  component: React.ComponentType<any> | null; // <- fix: sin JSX.Element
   dataKey?: keyof DiagnosticoEmergenciaData;
 }> = [
-  { key: "intro1", message: "Este diagnóstico de emergencia identifica rápido lo más crítico para decidir y priorizar. La información es confidencial.", component: null },
-  { key: "intro2", message: "¿Listo? Empecemos con tus datos para contextualizar:", component: null },
+  {
+    key: "intro1",
+    message:
+      "Este diagnóstico de emergencia identifica rápido lo más crítico para decidir y priorizar. La información es confidencial.",
+    component: null,
+  },
+  {
+    key: "intro2",
+    message: "¿Listo? Empecemos con tus datos para contextualizar:",
+    component: null,
+  },
 
-  { key: "nombreSolicitante", message: "1/11. Tu nombre ✍️", component: (p) => <input {...p} type="text" placeholder="Tu nombre" />, dataKey: "nombreSolicitante" },
-  { key: "puestoSolicitante", message: "2/11. Tu puesto 💼", component: (p) => <input {...p} type="text" placeholder="Puesto" />, dataKey: "puestoSolicitante" },
-  { key: "nombreEmpresa", message: "3/11. Nombre de la empresa 🏢", component: (p) => <input {...p} type="text" placeholder="Empresa" />, dataKey: "nombreEmpresa" },
-  { key: "rfcEmpresa", message: "4/11. RFC (si aplica)", component: (p) => <input {...p} type="text" placeholder="RFC (opcional)" />, dataKey: "rfcEmpresa" },
-  { key: "giroIndustria", message: "5/11. Giro o industria 🏭", component: (p) => <input {...p} type="text" placeholder="Industria" />, dataKey: "giroIndustria" },
-  { key: "numeroEmpleados", message: "6/11. Nº de empleados 👥", component: (p) => <input {...p} type="text" placeholder="Ej. 25" />, dataKey: "numeroEmpleados" },
-  { key: "antiguedadEmpresa", message: "7/11. Antigüedad (años) ⏳", component: (p) => <input {...p} type="text" placeholder="Ej. 8" />, dataKey: "antiguedadEmpresa" },
-  { key: "ubicacion", message: "8/11. Ciudad y estado 📍", component: (p) => <input {...p} type="text" placeholder="Ciudad, Estado" />, dataKey: "ubicacion" },
-  { key: "telefonoContacto", message: "9/11. Teléfono 📞", component: (p) => <input {...p} type="tel" placeholder="Teléfono" />, dataKey: "telefonoContacto" },
-  { key: "correoElectronico", message: "10/11. Correo 📧", component: (p) => <input {...p} type="email" placeholder="Correo" />, dataKey: "correoElectronico" },
-  { key: "sitioWebRedes", message: "11/11. Sitio web o redes 🌐", component: (p) => <input {...p} type="text" placeholder="URL o usuario (opcional)" />, dataKey: "sitioWebRedes" },
+  {
+    key: "nombreSolicitante",
+    message: "1/11. Tu nombre ✍️",
+    component: (p: any) => <input {...p} type="text" placeholder="Tu nombre" />,
+    dataKey: "nombreSolicitante",
+  },
+  {
+    key: "puestoSolicitante",
+    message: "2/11. Tu puesto 💼",
+    component: (p: any) => <input {...p} type="text" placeholder="Puesto" />,
+    dataKey: "puestoSolicitante",
+  },
+  {
+    key: "nombreEmpresa",
+    message: "3/11. Nombre de la empresa 🏢",
+    component: (p: any) => <input {...p} type="text" placeholder="Empresa" />,
+    dataKey: "nombreEmpresa",
+  },
+  {
+    key: "rfcEmpresa",
+    message: "4/11. RFC (si aplica)",
+    component: (p: any) => <input {...p} type="text" placeholder="RFC (opcional)" />,
+    dataKey: "rfcEmpresa",
+  },
+  {
+    key: "giroIndustria",
+    message: "5/11. Giro o industria 🏭",
+    component: (p: any) => <input {...p} type="text" placeholder="Industria" />,
+    dataKey: "giroIndustria",
+  },
+  {
+    key: "numeroEmpleados",
+    message: "6/11. Nº de empleados 👥",
+    component: (p: any) => <input {...p} type="text" placeholder="Ej. 25" />,
+    dataKey: "numeroEmpleados",
+  },
+  {
+    key: "antiguedadEmpresa",
+    message: "7/11. Antigüedad (años) ⏳",
+    component: (p: any) => <input {...p} type="text" placeholder="Ej. 8" />,
+    dataKey: "antiguedadEmpresa",
+  },
+  {
+    key: "ubicacion",
+    message: "8/11. Ciudad y estado 📍",
+    component: (p: any) => <input {...p} type="text" placeholder="Ciudad, Estado" />,
+    dataKey: "ubicacion",
+  },
+  {
+    key: "telefonoContacto",
+    message: "9/11. Teléfono 📞",
+    component: (p: any) => <input {...p} type="tel" placeholder="Teléfono" />,
+    dataKey: "telefonoContacto",
+  },
+  {
+    key: "correoElectronico",
+    message: "10/11. Correo 📧",
+    component: (p: any) => <input {...p} type="email" placeholder="Correo" />,
+    dataKey: "correoElectronico",
+  },
+  {
+    key: "sitioWebRedes",
+    message: "11/11. Sitio web o redes 🌐",
+    component: (p: any) => <input {...p} type="text" placeholder="URL o usuario (opcional)" />,
+    dataKey: "sitioWebRedes",
+  },
 
-  { key: "areaMayorProblema", message: "Área con mayor problema (Ventas, Finanzas, Operaciones...) 🚨", component: (p) => <input {...p} type="text" placeholder="Área principal" />, dataKey: "areaMayorProblema" },
-  { key: "problematicaEspecifica", message: "Describe la problemática específica 🤯", component: (p) => <textarea {...p} rows={3} placeholder="Problema específico" />, dataKey: "problematicaEspecifica" },
-  { key: "principalPrioridad", message: "Principal prioridad a corto plazo 🎯", component: (p) => <textarea {...p} rows={2} placeholder="Prioridad principal" />, dataKey: "principalPrioridad" },
+  {
+    key: "areaMayorProblema",
+    message: "Área con mayor problema (Ventas, Finanzas, Operaciones...) 🚨",
+    component: (p: any) => <input {...p} type="text" placeholder="Área principal" />,
+    dataKey: "areaMayorProblema",
+  },
+  {
+    key: "problematicaEspecifica",
+    message: "Describe la problemática específica 🤯",
+    component: (p: any) => <textarea {...p} rows={3} placeholder="Problema específico" />,
+    dataKey: "problematicaEspecifica",
+  },
+  {
+    key: "principalPrioridad",
+    message: "Principal prioridad a corto plazo 🎯",
+    component: (p: any) => <textarea {...p} rows={2} placeholder="Prioridad principal" />,
+    dataKey: "principalPrioridad",
+  },
 
-  { key: "problemaMasUrgente", message: "En una frase, el problema más URGENTE hoy 💥", component: (p) => <textarea {...p} rows={2} placeholder="Problema urgente" />, dataKey: "problemaMasUrgente" },
-  { key: "impactoDelProblema", message: "¿Afecta finanzas, operación, clientes o personal? 📉", component: (p) => <textarea {...p} rows={2} placeholder="Impacto" />, dataKey: "impactoDelProblema" },
+  {
+    key: "problemaMasUrgente",
+    message: "En una frase, el problema más URGENTE hoy 💥",
+    component: (p: any) => <textarea {...p} rows={2} placeholder="Problema urgente" />,
+    dataKey: "problemaMasUrgente",
+  },
+  {
+    key: "impactoDelProblema",
+    message: "¿Afecta finanzas, operación, clientes o personal? 📉",
+    component: (p: any) => <textarea {...p} rows={2} placeholder="Impacto" />,
+    dataKey: "impactoDelProblema",
+  },
 
   {
     key: "continuidadNegocio",
     message: "Riesgo de detener operaciones 1–5 (1 sin impacto, 5 inminente) 🛑",
-    component: (p) => (
+    component: (p: any) => (
       <select {...p} className="w-full">
-        <option value="">Seleccione...</option><option value="1">1</option><option value="2">2</option>
+        <option value="">Seleccione...</option>
+        <option value="1">1</option><option value="2">2</option>
         <option value="3">3</option><option value="4">4</option><option value="5">5</option>
       </select>
     ),
@@ -131,9 +227,10 @@ const chatQuestions: Array<{
   {
     key: "flujoEfectivo",
     message: "¿Cubre gastos básicos 1 mes? 💰",
-    component: (p) => (
+    component: (p: any) => (
       <select {...p} className="w-full">
-        <option value="">Seleccione...</option><option value="Si">Sí</option><option value="No">No</option>
+        <option value="">Seleccione...</option>
+        <option value="Si">Sí</option><option value="No">No</option>
         <option value="Parcialmente">Parcialmente</option>
       </select>
     ),
@@ -142,10 +239,10 @@ const chatQuestions: Array<{
   {
     key: "ventasDisminuido",
     message: "¿Ventas han caído en 3 meses? 📉",
-    component: (p) => (
+    component: (p: any) => (
       <select {...p} className="w-full">
-        <option value="">Seleccione...</option><option value="Si">Sí</option>
-        <option value="No">No</option><option value="No lo sé">No lo sé</option>
+        <option value="">Seleccione...</option>
+        <option value="Si">Sí</option><option value="No">No</option><option value="No lo sé">No lo sé</option>
       </select>
     ),
     dataKey: "ventasDisminuido",
@@ -153,10 +250,10 @@ const chatQuestions: Array<{
   {
     key: "personalAfectado",
     message: "¿Conflictos/ausencias/rotación? 😟",
-    component: (p) => (
+    component: (p: any) => (
       <select {...p} className="w-full">
-        <option value="">Seleccione...</option><option value="Si">Sí</option>
-        <option value="No">No</option><option value="No aplica">No aplica</option>
+        <option value="">Seleccione...</option>
+        <option value="Si">Sí</option><option value="No">No</option><option value="No aplica">No aplica</option>
       </select>
     ),
     dataKey: "personalAfectado",
@@ -164,10 +261,10 @@ const chatQuestions: Array<{
   {
     key: "operacionesCalidadTiempo",
     message: "¿Cumples calidad y tiempos? ⚙️",
-    component: (p) => (
+    component: (p: any) => (
       <select {...p} className="w-full">
-        <option value="">Seleccione...</option><option value="Si">Sí</option>
-        <option value="No">No</option><option value="Parcialmente">Parcialmente</option>
+        <option value="">Seleccione...</option>
+        <option value="Si">Sí</option><option value="No">No</option><option value="Parcialmente">Parcialmente</option>
       </select>
     ),
     dataKey: "operacionesCalidadTiempo",
@@ -175,10 +272,10 @@ const chatQuestions: Array<{
   {
     key: "suministroMateriales",
     message: "¿Asegurado insumos críticos próximas semanas? 📦",
-    component: (p) => (
+    component: (p: any) => (
       <select {...p} className="w-full">
-        <option value="">Seleccione...</option><option value="Si">Sí</option>
-        <option value="No">No</option><option value="Parcialmente">Parcialmente</option>
+        <option value="">Seleccione...</option>
+        <option value="Si">Sí</option><option value="No">No</option><option value="Parcialmente">Parcialmente</option>
       </select>
     ),
     dataKey: "suministroMateriales",
@@ -186,9 +283,10 @@ const chatQuestions: Array<{
   {
     key: "capacidadAdaptarse",
     message: "Preparación 1–5 para decidir rápido 🧠",
-    component: (p) => (
+    component: (p: any) => (
       <select {...p} className="w-full">
-        <option value="">Seleccione...</option><option value="1">1</option><option value="2">2</option>
+        <option value="">Seleccione...</option>
+        <option value="1">1</option><option value="2">2</option>
         <option value="3">3</option><option value="4">4</option><option value="5">5</option>
       </select>
     ),
@@ -197,10 +295,10 @@ const chatQuestions: Array<{
   {
     key: "apoyoExterno",
     message: "¿Tienes apoyo externo? 🤝",
-    component: (p) => (
+    component: (p: any) => (
       <select {...p} className="w-full">
-        <option value="">Seleccione...</option><option value="Si">Sí</option>
-        <option value="No">No</option><option value="Estoy buscando">Estoy buscando</option>
+        <option value="">Seleccione...</option>
+        <option value="Si">Sí</option><option value="No">No</option><option value="Estoy buscando">Estoy buscando</option>
       </select>
     ),
     dataKey: "apoyoExterno",
@@ -208,7 +306,7 @@ const chatQuestions: Array<{
 ];
 
 /** ========= Componente principal ========= */
-const DiagnosticoEmergencia = () => {
+const DiagnosticoEmergencia: React.FC = () => {
   const { user } = useAuth();
   const router = useRouter();
   const chatWindowRef = useRef<HTMLDivElement>(null);
@@ -243,7 +341,7 @@ const DiagnosticoEmergencia = () => {
     createdAt: new Date().toISOString(),
   });
   const [currentAnswer, setCurrentAnswer] = useState("");
-  const [chatHistory, setChatHistory] = useState<any[]>([]);
+  const [chatHistory, setChatHistory] = useState<ChatItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [analisis, setAnalisis] = useState<LLMAnalysisResult | null>(null);
 
@@ -306,7 +404,6 @@ const DiagnosticoEmergencia = () => {
       { type: "bot", message: "Analizando tus respuestas...", isLoader: true },
     ]);
 
-    // Asegura userId (en caso de que el usuario terminara de loguearse tarde)
     const payload: DiagnosticoEmergenciaData = {
       ...finalDatos,
       userId: finalDatos.userId || user?.id || "anon",
@@ -316,17 +413,19 @@ const DiagnosticoEmergencia = () => {
     const timeout = setTimeout(() => ctrl.abort(), 30000); // 30s
 
     try {
-      const response = await fetch("https://mentorapp-api-llm.onrender.com/api/diagnostico/emergencia/analyze", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-        signal: ctrl.signal,
-      });
+      const response = await fetch(
+        "https://mentorapp-api-llm.onrender.com/api/diagnostico/emergencia/analyze",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+          signal: ctrl.signal,
+        }
+      );
 
       clearTimeout(timeout);
 
       if (!response.ok) {
-        // intentar leer detalle de error
         let msg = "Error al procesar el diagnóstico.";
         try {
           const err = await response.json();
@@ -363,7 +462,9 @@ const DiagnosticoEmergencia = () => {
                 </span>
               </h3>
 
-              <h3 className="font-bold text-lg text-red-700 mt-4">Recomendaciones (2–4 semanas)</h3>
+              <h3 className="font-bold text-lg text-red-700 mt-4">
+                Recomendaciones (2–4 semanas)
+              </h3>
               <ul className="list-disc list-inside mt-2">
                 {result.recomendaciones_clave.map((r, i) => (
                   <li key={i}>{r}</li>
@@ -456,7 +557,9 @@ const DiagnosticoEmergencia = () => {
             ))}
           </div>
 
-          {!analisis && !isLoading && <div className="animate__animated animate__fadeInUp">{renderCurrentQuestion()}</div>}
+          {!analisis && !isLoading && (
+            <div className="animate__animated animate__fadeInUp">{renderCurrentQuestion()}</div>
+          )}
 
           {analisis && (
             <div className="mt-8 text-center animate__animated animate__fadeIn">
