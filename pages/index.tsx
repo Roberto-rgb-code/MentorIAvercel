@@ -15,8 +15,8 @@ import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 // Partículas
 import Particles from "react-tsparticles";
 import { loadSlim } from "tsparticles-slim";
-// 👇 Importa como valores (sin `type`)
-import { ISourceOptions, MoveDirection, OutMode } from "tsparticles-engine";
+// Tipado opcional, pero sin enums (evita const enums con isolatedModules)
+import type { ISourceOptions } from "tsparticles-engine";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -47,9 +47,10 @@ const Home: React.FC = () => {
       color: { value: ["#ff6b6b", "#feca57", "#1dd1a1", "#54a0ff"] },
       links: { enable: false },
       move: {
-        direction: MoveDirection.top,
+        // ← usar literales string en lugar de enums
+        direction: "top",
         enable: true,
-        outModes: { default: OutMode.bounce },
+        outModes: { default: "bounce" },
         random: true,
         speed: { min: 3, max: 6 },
         straight: false,
@@ -67,7 +68,7 @@ const Home: React.FC = () => {
         random: true,
         animation: { enable: true, speed: 2, minimumValue: 0.5, sync: false },
       },
-      // twinkle opcional con tipado correcto:
+      // Si quieres twinkle, usa la forma tipada:
       // twinkle: { particles: { enable: true, frequency: 0.05, opacity: 0.5, color: { value: "#ffffff" } } },
     },
     detectRetina: true,
@@ -217,7 +218,7 @@ const Home: React.FC = () => {
           {/* Por qué somos diferentes */}
           <section
             ref={(el) => { sectionRefs.current[2] = el; }}
-            className="py-20 md:py-32 px-4 container mx-auto text-centER"
+            className="py-20 md:py-32 px-4 container mx-auto text-center"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-blue-700 mb-12 flex items-center justify-center">
               <FaRocket className="text-5xl mr-4 text-cyan-600" /> Tu Ventaja Competitiva con MentorApp
@@ -305,7 +306,7 @@ const Home: React.FC = () => {
               </p>
               <Link
                 href="/register"
-                className="inline-block bg-white text-blue-800 font-bold py-4 px-12 rounded-full text-lg md:text-xl shadow-lg hover:bg-gray-100 transform hover:scale-105 transition-all duration-300 ease-in-out border-2 border-white"
+                className="inline-block bg-white text-blue-800 font-bold py-4 px-12 rounded-full text-lg md:text-xl shadow-lg hover:bg-gray-100 transform hover:scale-105 transition-all duración-300 ease-in-out border-2 border-white"
               >
                 <FaUserPlus className="inline-block mr-3" /> Inicia Tu Transformación Ahora
               </Link>
@@ -332,7 +333,7 @@ const Home: React.FC = () => {
                 <li><Link href="/features" className="hover:text-white transition-colors duration-300">Características</Link></li>
                 <li><Link href="/about" className="hover:text-white transition-colors duration-300">Sobre Nosotros</Link></li>
                 <li><Link href="/pricing" className="hover:text-white transition-colors duration-300">Precios</Link></li>
-                <li><Link href="/blog" className="hover:text-white transition-colors duración-300">Blog</Link></li>
+                <li><Link href="/blog" className="hover:text-white transition-colors duration-300">Blog</Link></li>
               </ul>
             </div>
             <div className="col-span-1">
@@ -351,7 +352,7 @@ const Home: React.FC = () => {
               <p className="text-sm">+1 234 567 8900</p>
             </div>
           </div>
-          <div className="mt-8 pt-8 border-top border-gray-700 text-center text-sm text-gray-500">
+          <div className="mt-8 pt-8 border-t border-gray-700 text-center text-sm text-gray-500">
             © {new Date().getFullYear()} MentorApp. Todos los derechos reservados.
           </div>
         </footer>
