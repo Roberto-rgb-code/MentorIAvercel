@@ -144,21 +144,21 @@ interface LLMAnalysisResult {
 
 // ===== UI helpers =====
 const LikertChips: React.FC<{ value: Likert; onSelect: (v: Likert) => void }>
-= ({ value, onSelect }) => (
-  <div className="flex flex-wrap gap-2 mt-2">
-    {["1", "2", "3", "4", "5"].map((v) => (
-      <button
-        key={v}
-        type="button"
-        className={`px-4 py-2 rounded-xl border text-sm font-semibold transition
+  = ({ value, onSelect }) => (
+    <div className="flex flex-wrap gap-2 mt-2">
+      {["1", "2", "3", "4", "5"].map((v) => (
+        <button
+          key={v}
+          type="button"
+          className={`px-4 py-2 rounded-xl border text-sm font-semibold transition
           ${value === v
-            ? "bg-indigo-600 text-white border-indigo-700 shadow"
-            : "bg-white text-gray-700 border-gray-300 hover:bg-indigo-50"}`}
-        onClick={() => onSelect(v as Likert)}
-      >{v}</button>
-    ))}
-  </div>
-);
+              ? "bg-indigo-600 text-white border-indigo-700 shadow"
+              : "bg-white text-gray-700 border-gray-300 hover:bg-indigo-50"}`}
+          onClick={() => onSelect(v as Likert)}
+        >{v}</button>
+      ))}
+    </div>
+  );
 
 const TypingDots = () => (
   <div className="flex items-center gap-2 text-gray-500">
@@ -169,16 +169,16 @@ const TypingDots = () => (
 );
 
 const Bubble: React.FC<{ from: "bot" | "user"; children: React.ReactNode }>
-= ({ from, children }) => (
-  <div className={`w-full flex ${from === "user" ? "justify-end" : "justify-start"}`}>
-    <div
-      className={`max-w-[85%] md:max-w-[70%] rounded-2xl px-4 py-3 shadow
+  = ({ from, children }) => (
+    <div className={`w-full flex ${from === "user" ? "justify-end" : "justify-start"}`}>
+      <div
+        className={`max-w-[85%] md:max-w-[70%] rounded-2xl px-4 py-3 shadow
       ${from === "user" ? "bg-indigo-600 text-white rounded-br-sm" : "bg-white text-gray-800 border rounded-bl-sm"}`}
-    >
-      {children}
+      >
+        {children}
+      </div>
     </div>
-  </div>
-);
+  );
 
 const SevBadge: React.FC<{ sev: string }> = ({ sev }) => {
   const map: Record<string, string> = {
@@ -480,6 +480,9 @@ const ChatbotDiagnostico: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
 
+  // === REF del bloque a exportar como PDF ===
+  const pdfRef = useRef<HTMLDivElement>(null);
+
   // Persistencia local
   useEffect(() => {
     const saved = localStorage.getItem("diag_profundo_chatbot");
@@ -666,27 +669,24 @@ const ChatbotDiagnostico: React.FC = () => {
   }, [idx]);
 
   function handleUserSend(text: string) {
-  const s = steps[idx];
-  if (!s) return;
+    const s = steps[idx];
+    if (!s) return;
 
-  if (s.kind === "text") {
-    setMessages((m) => [...m, { from: "user", text }]);
-    setData((d) => ({ ...d, [s.field]: text } as any));
-    setIdx(idx + 1);
-    setInput("");
-    return;
+    if (s.kind === "text") {
+      setMessages((m) => [...m, { from: "user", text }]);
+      setData((d) => ({ ...d, [s.field]: text } as any));
+      setIdx(idx + 1);
+      setInput("");
+      return;
+    }
+
+    if (text.trim()) {
+      setMessages((m) => [...m, { from: "user", text }]);
+      if ("field" in s) setData((d) => ({ ...d, [s.field]: text } as any));
+      setIdx(idx + 1);
+      setInput("");
+    }
   }
-
-  // 👇 Antes: if (s.kind !== "text" && text.trim()) { ... }
-  // Ahora: solo validamos que haya texto; el narrowing previo ya excluyó "text".
-  if (text.trim()) {
-    setMessages((m) => [...m, { from: "user", text }]);
-    if ("field" in s) setData((d) => ({ ...d, [s.field]: text } as any));
-    setIdx(idx + 1);
-    setInput("");
-  }
-}
-
 
   function handleLikertAnswer(field: keyof DiagnosticoProfundoData, v: Likert) {
     setMessages((m) => [...m, { from: "user", text: `Respuesta: ${v}` }]);
@@ -705,8 +705,8 @@ const ChatbotDiagnostico: React.FC = () => {
     if (target >= 0) setIdx(target);
   }
 
-  // Llamada a backend (unificado con el general)
-  const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "https://mentorapp-api-llm-1.onrender.com";
+  // Llamada a backend
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "https://mentorapp-api-llm.onrender.com";
 
   async function sendAll() {
     setError(null);
@@ -735,7 +735,6 @@ const ChatbotDiagnostico: React.FC = () => {
   }
 
   function resetAll() {
-    // FIX: usar user?.id
     setData(emptyData(user?.id || ""));
     setIdx(0);
     setMessages([]);
@@ -751,7 +750,7 @@ const ChatbotDiagnostico: React.FC = () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `diagnostico-profundo-${new Date().toISOString().slice(0,10)}.json`;
+    a.download = `diagnostico-profundo-${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -760,7 +759,99 @@ const ChatbotDiagnostico: React.FC = () => {
     await navigator.clipboard.writeText(JSON.stringify(analysis, null, 2));
     alert("Resultado copiado al portapapeles.");
   };
-  const printPDF = () => window.print();
+
+  // ===== Exportar a PDF con buen UX/UI (paginado) =====
+  const exportPDF = async () => {
+    if (!pdfRef.current) return;
+    if (typeof window === "undefined") return; // evita SSR
+
+    const el = pdfRef.current;
+
+    // Cargas dinámicas robustas y normalización de exportaciones
+    const h2cMod: any = await import("html2canvas");
+    const jsPDFMod: any = await import("jspdf");
+
+    const runHtml2Canvas: any = h2cMod?.default || h2cMod;          // función
+    const JsPDFCtor: any = jsPDFMod?.jsPDF || jsPDFMod?.default;     // clase
+
+    if (!runHtml2Canvas || !JsPDFCtor) {
+      alert("No fue posible cargar los módulos de exportación.");
+      return;
+    }
+
+    // Añadimos margen y un header visual
+    const scale = Math.min(2, window.devicePixelRatio || 1.5);
+
+    const canvas: HTMLCanvasElement = await runHtml2Canvas(el, {
+      scale,
+      backgroundColor: "#ffffff",
+      useCORS: true,
+      logging: false,
+      windowWidth: el.scrollWidth,
+    });
+
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new JsPDFCtor("p", "mm", "a4");
+
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const imgProps = pdf.getImageProperties(imgData);
+    const imgWidth = pageWidth - 20; // márgenes
+    const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+
+    // Si excede una hoja, hacemos slicing manual
+    let remainingHeight = imgHeight;
+    const position = 20; // espacio después del header
+    let sY = 0;
+    const sliceHeightPx = (pageHeight - 40) * (canvas.height / imgHeight); // 20 top + 20 bottom
+
+    const title = "Resultados del Diagnóstico Profundo";
+    const subtitle = `${data?.nombreEmpresa || "Empresa"} — ${new Date().toLocaleDateString()}`;
+
+    let page = 1;
+    while (remainingHeight > 0) {
+      // Header
+      pdf.setFillColor(237, 233, 254); // indigo-100
+      pdf.rect(0, 0, pageWidth, 18, "F");
+      pdf.setTextColor(55, 48, 163); // indigo-700
+      pdf.setFontSize(12);
+      pdf.text(title, 10, 11);
+      pdf.setTextColor(107, 114, 128); // gray-500
+      pdf.setFontSize(9);
+      pdf.text(subtitle, 10, 16);
+
+      // Pie de página
+      pdf.setTextColor(156, 163, 175);
+      pdf.setFontSize(8);
+      pdf.text(`Página ${page}`, pageWidth - 30, pageHeight - 6);
+
+      const pageCanvas = document.createElement("canvas");
+      const ctx = pageCanvas.getContext("2d")!;
+      const sHeight = Math.min(sliceHeightPx, canvas.height - sY);
+
+      pageCanvas.width = canvas.width;
+      pageCanvas.height = sHeight;
+
+      ctx.drawImage(
+        canvas,
+        0, sY, canvas.width, sHeight,
+        0, 0, canvas.width, sHeight
+      );
+
+      const pageImgData = pageCanvas.toDataURL("image/png");
+      const pageImgHeight = (sHeight * imgWidth) / canvas.width;
+
+      pdf.addImage(pageImgData, "PNG", 10, position, imgWidth, pageImgHeight);
+
+      remainingHeight -= (pageHeight - 40);
+      sY += sHeight;
+      page += 1;
+
+      if (remainingHeight > 0) pdf.addPage();
+    }
+
+    pdf.save(`diagnostico-profundo-${new Date().toISOString().slice(0, 10)}.pdf`);
+  };
 
   const priOrder: Record<string, number> = { P1: 0, P2: 1, P3: 2 };
 
@@ -796,8 +887,8 @@ const ChatbotDiagnostico: React.FC = () => {
             </div>
           </div>
           <div className="flex gap-2">
-            <button className="px-3 py-2 text-sm rounded-xl border" onClick={() => setIdx(Math.max(0, idx - 1))}>⟵ Atrás</button>
-            <button className="px-3 py-2 text-sm rounded-xl border" onClick={() => setIdx(Math.min(steps.length - 1, idx + 1))}>Siguiente ⟶</button>
+            <button className="px-3 py-2 text-sm rounded-xl border" onClick={() => setIdx(Math.max(0, idx - 1))} aria-label="Atrás">⟵ Atrás</button>
+            <button className="px-3 py-2 text-sm rounded-xl border" onClick={() => setIdx(Math.min(steps.length - 1, idx + 1))} aria-label="Siguiente">Siguiente ⟶</button>
             <button className="px-3 py-2 text-sm rounded-xl border" onClick={resetAll}>Reiniciar</button>
             <button className="px-3 py-2 text-sm rounded-xl bg-indigo-600 text-white" onClick={() => router.push("/dashboard/inicio")}>Cerrar</button>
           </div>
@@ -890,16 +981,25 @@ const ChatbotDiagnostico: React.FC = () => {
 
         {/* Resultado IA */}
         {analysis && (
-          <div className="w-full max-w-5xl mt-6 bg-white border rounded-2xl shadow p-6 print:border-0 print:shadow-none print:p-0">
+          <div
+            ref={pdfRef}
+            className="w-full max-w-5xl mt-6 bg-white border rounded-2xl shadow p-6 print:border-0 print:shadow-none print:p-0"
+          >
             <div className="flex items-start justify-between gap-4">
               <div>
                 <div className="text-2xl font-extrabold text-indigo-800 mb-2">Resultados del Diagnóstico Profundo</div>
                 <div className="text-sm text-gray-500">Generado automáticamente con análisis consultivo por dominios</div>
               </div>
               <div className="flex flex-wrap gap-2">
-                <button className="px-3 py-2 text-sm rounded-lg border" onClick={downloadJSON}>Descargar JSON</button>
-                <button className="px-3 py-2 text-sm rounded-lg border" onClick={copyJSON}>Copiar</button>
-                <button className="px-3 py-2 text-sm rounded-lg bg-indigo-600 text-white" onClick={printPDF}>Imprimir / PDF</button>
+                <button className="px-3 py-2 text-sm rounded-lg border" onClick={downloadJSON} title="Descargar como JSON">
+                  Descargar JSON
+                </button>
+                <button className="px-3 py-2 text-sm rounded-lg border" onClick={copyJSON} title="Copiar JSON al portapapeles">
+                  Copiar
+                </button>
+                <button className="px-3 py-2 text-sm rounded-lg bg-indigo-600 text-white" onClick={exportPDF} title="Exportar PDF">
+                  Exportar PDF
+                </button>
               </div>
             </div>
 
