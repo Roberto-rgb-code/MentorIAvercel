@@ -34,7 +34,6 @@ type NotificationBellProps = {
 function NotificationBell({ renderTrigger }: NotificationBellProps) {
   const [open, setOpen] = useState(false);
   const [items] = useState<Array<{ id: string; title: string; time: string }>>([
-    // Puedes vaciar este arreglo o alimentarlo desde tu backend
     // { id: "1", title: "Tienes un nuevo mensaje", time: "hace 2h" },
     // { id: "2", title: "Tu diagnóstico está listo", time: "ayer" },
   ]);
@@ -189,7 +188,7 @@ const Navbar = () => {
                 <Link href="/dashboard/marketplace" className={navLinkClasses("/dashboard/marketplace")}>
                   Marketplace
                 </Link>
-                <Link href="/plans" className={navLinkClasses("/plans")}>
+                <Link href="/dashboard/plans" className={navLinkClasses("/dashboard/plans")}>
                   Planes y Paquetes
                 </Link>
                 <Link href="/dashboard/ayuda" className={navLinkClasses("/dashboard/ayuda")}>
@@ -481,6 +480,13 @@ const Navbar = () => {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Marketplace
+              </Link>
+              <Link
+                href="/dashboard/plans"
+                className="text-white text-3xl font-bold hover:text-blue-200"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Planes y Paquetes
               </Link>
 
               {/* Carrito (móvil) — PRIVADO */}

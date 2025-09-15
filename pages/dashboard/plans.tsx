@@ -1,6 +1,7 @@
 // pages/dashboard/plans.tsx
 import React from "react";
 import Link from "next/link";
+import Head from "next/head";
 import PrivateLayout from "@/components/layout/PrivateLayout";
 
 // Puedes gestionar estas features como datos para mantener el JSX limpio
@@ -27,6 +28,11 @@ const planFeatures = {
 const Plans: React.FC = () => {
   return (
     <PrivateLayout>
+      <Head>
+        <title>Planes y Paquetes · MenthIA</title>
+        <meta name="description" content="Elige el plan ideal para tu empresa y escala con mentoría, cursos y herramientas." />
+      </Head>
+
       {/* Hero */}
       <section className="text-center py-16 bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
         <div className="max-w-5xl mx-auto px-4">
@@ -56,15 +62,16 @@ const Plans: React.FC = () => {
                 <ul className="mt-6 space-y-4 text-gray-700">
                   {planFeatures.basic.map((f, i) => (
                     <li key={i} className="flex items-center text-lg">
-                      <span className="text-blue-500 mr-3 text-2xl">{f.icon}</span>
+                      <span className="text-blue-500 mr-3 text-2xl" aria-hidden="true">{f.icon}</span>
                       {f.text}
                     </li>
                   ))}
                 </ul>
               </div>
               <Link
-                href="/register"
+                href={{ pathname: "/dashboard/pagos", query: { plan: "basic" } }}
                 className="mt-10 block w-full bg-blue-600 text-white py-3.5 rounded-lg text-lg font-semibold hover:bg-blue-700 text-center transition-colors"
+                aria-label="Seleccionar plan Básico"
               >
                 Empezar con Básico
               </Link>
@@ -86,15 +93,16 @@ const Plans: React.FC = () => {
                 <ul className="mt-6 space-y-4 text-gray-700">
                   {planFeatures.pro.map((f, i) => (
                     <li key={i} className="flex items-center text-lg">
-                      <span className="text-blue-500 mr-3 text-2xl">{f.icon}</span>
+                      <span className="text-blue-500 mr-3 text-2xl" aria-hidden="true">{f.icon}</span>
                       {f.text}
                     </li>
                   ))}
                 </ul>
               </div>
               <Link
-                href="/register"
+                href={{ pathname: "/dashboard/pagos", query: { plan: "pro" } }}
                 className="mt-10 block w-full bg-blue-600 text-white py-3.5 rounded-lg text-lg font-semibold hover:bg-blue-700 text-center transition-colors"
+                aria-label="Seleccionar plan Pro"
               >
                 Elegir Plan Pro
               </Link>
@@ -113,15 +121,16 @@ const Plans: React.FC = () => {
                 <ul className="mt-6 space-y-4 text-gray-700">
                   {planFeatures.empresa.map((f, i) => (
                     <li key={i} className="flex items-center text-lg">
-                      <span className="text-blue-500 mr-3 text-2xl">{f.icon}</span>
+                      <span className="text-blue-500 mr-3 text-2xl" aria-hidden="true">{f.icon}</span>
                       {f.text}
                     </li>
                   ))}
                 </ul>
               </div>
               <Link
-                href="/register"
+                href={{ pathname: "/dashboard/pagos", query: { plan: "empresa" } }}
                 className="mt-10 block w-full bg-blue-600 text-white py-3.5 rounded-lg text-lg font-semibold hover:bg-blue-700 text-center transition-colors"
+                aria-label="Seleccionar plan Empresa"
               >
                 Solicitar Plan Empresa
               </Link>
@@ -141,8 +150,9 @@ const Plans: React.FC = () => {
             Agenda una consulta gratuita y despeja todas tus inquietudes.
           </p>
           <Link
-            href="/contact"
+            href="/dashboard/ayuda"
             className="mt-8 inline-block bg-white text-blue-600 px-8 md:px-10 py-3.5 rounded-full text-lg font-semibold shadow-lg hover:bg-gray-100 transition-all"
+            aria-label="Ir a ayuda para agendar una consulta"
           >
             Agenda una Consulta Gratuita
           </Link>
