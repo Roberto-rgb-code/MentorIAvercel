@@ -1,5 +1,5 @@
 // components/auth/Login.tsx
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useRouter } from "next/router";
 import {
   signInWithEmailAndPassword,
@@ -7,26 +7,21 @@ import {
   GoogleAuthProvider,
   FacebookAuthProvider,
   OAuthProvider,
-  User,
+  type AuthProvider as FirebaseAuthProvider,
 } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
-import { auth, db } from "../../lib/firebase";
+import { auth } from "../../lib/firebase";
 import { FaGoogle, FaFacebook, FaApple, FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "react-toastify";
 
-// Particles (sustituye a THREE)
+// Partículas
 import Particles from "react-tsparticles";
-import type { Engine, Container } from "tsparticles-engine";
+import type { Engine } from "tsparticles-engine";
 import { loadSlim } from "tsparticles-slim";
 
-// ===== Fondo con partículas (sin Three) =====
+// ===== Fondo con partículas =====
 const ParticleBackground = () => {
   const particlesInit = useCallback(async (engine: Engine) => {
     await loadSlim(engine);
-  }, []);
-
-  const particlesLoaded = useCallback(async (_container?: Container) => {
-    // no-op
   }, []);
 
   return (
@@ -34,7 +29,6 @@ const ParticleBackground = () => {
       <Particles
         id="tsparticles-login"
         init={particlesInit}
-        loaded={particlesLoaded}
         options={{
           fullScreen: { enable: false, zIndex: 0 },
           background: { color: { value: "transparent" } },
@@ -53,7 +47,7 @@ const ParticleBackground = () => {
           },
           particles: {
             number: { value: 120, density: { enable: true, area: 800 } },
-            color: { value: ["#93C5FD", "#A5B4FC", "#C7D2FE"] }, // azul/indigo claros
+            color: { value: ["#93C5FD", "#A5B4FC", "#C7D2FE"] },
             links: {
               enable: true,
               color: "#A5B4FC",
@@ -73,30 +67,6 @@ const ParticleBackground = () => {
   );
 };
 
-// ===== Redirección por rol conservando tu lógica =====
-const redirectByRole = async (user: User, router: ReturnType<typeof useRouter>) => {
-  if (!user) return;
-  try {
-    const snap = await getDoc(doc(db, "users", user.uid));
-    if (snap.exists()) {
-      const role = snap.data()?.role;
-      if (["emprendedor", "empresa", "universidad", "gobierno"].includes(role)) {
-        router.push("/dashboard/inicio");
-      } else if (role === "consultor") {
-        router.push("/dashboard/consultor");
-      } else {
-        router.push("/dashboard/inicio");
-      }
-    } else {
-      router.push("/dashboard/inicio");
-    }
-  } catch (e: any) {
-    console.error("redirectByRole error:", e);
-    toast.error("Error al redirigir. Intenta de nuevo.");
-    router.push("/dashboard/inicio");
-  }
-};
-
 const Login = () => {
   const router = useRouter();
 
@@ -106,24 +76,24 @@ const Login = () => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // ===== Handlers =====
+  // ===== Email/Password =====
   const handleLogin = async (e?: React.FormEvent) => {
     e?.preventDefault();
     setError("");
     setIsLoading(true);
 
     try {
-      const cred = await signInWithEmailAndPassword(auth, email, password);
+      await signInWithEmailAndPassword(auth, email, password);
       toast.success("¡Inicio de sesión exitoso!");
-      await redirectByRole(cred.user, router);
+      router.replace("/dashboard/index"); // 👈 evita volver al login con “atrás”
     } catch (err: any) {
       let msg = "Error al iniciar sesión. Verifica tus credenciales.";
       if (["auth/invalid-email", "auth/user-not-found", "auth/wrong-password"].includes(err?.code)) {
-        msg = "Correo o contraseña incorrectos. Inténtalo de nuevo.";
+        msg = "Correo o contraseña incorrectos.";
       } else if (err?.code === "auth/network-request-failed") {
         msg = "Problema de conexión. Revisa tu internet.";
       } else if (err?.code === "auth/too-many-requests") {
-        msg = "Demasiados intentos. Intenta más tarde o usa 'Olvidaste tu contraseña'.";
+        msg = "Demasiados intentos. Intenta más tarde.";
       }
       setError(msg);
       toast.error(msg);
@@ -132,28 +102,27 @@ const Login = () => {
     }
   };
 
+  // ===== Social =====
   const handleSocialLogin = async (providerName: "google" | "facebook" | "apple") => {
-    let provider;
-    switch (providerName) {
-      case "google":
-        provider = new GoogleAuthProvider();
-        break;
-      case "facebook":
-        provider = new FacebookAuthProvider();
-        break;
-      case "apple":
-        provider = new OAuthProvider("apple.com");
-        provider.addScope("email");
-        provider.addScope("name");
-        break;
+    let provider: FirebaseAuthProvider | null = null;
+
+    if (providerName === "google") provider = new GoogleAuthProvider();
+    if (providerName === "facebook") provider = new FacebookAuthProvider();
+    if (providerName === "apple") {
+      const p = new OAuthProvider("apple.com");
+      p.addScope("email");
+      p.addScope("name");
+      provider = p;
     }
+
+    if (!provider) return;
 
     setError("");
     setIsLoading(true);
     try {
-      const cred = await signInWithPopup(auth, provider);
+      await signInWithPopup(auth, provider);
       toast.success(`¡Inicio de sesión con ${providerName} exitoso!`);
-      await redirectByRole(cred.user, router);
+      router.replace("/dashboard/index"); // 👈 unifica destino
     } catch (err: any) {
       let msg = `Error al iniciar sesión con ${providerName}.`;
       if (err?.code === "auth/network-request-failed") msg = "Problema de conexión. Revisa tu internet.";
@@ -172,7 +141,7 @@ const Login = () => {
     <div className="min-h-screen flex flex-col relative overflow-hidden">
       <ParticleBackground />
 
-      {/* Degradé y blobs translúcidos (manteniendo tu estilo) */}
+      {/* Degradé + blobs */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-400 via-cyan-400 via-sky-300 to-indigo-400" />
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-full blur-3xl animate-pulse" />
@@ -180,7 +149,7 @@ const Login = () => {
         <div className="absolute top-1/2 right-1/3 w-64 h-64 bg-gradient-to-r from-cyan-500/20 to-blue-600/20 rounded-full blur-2xl animate-pulse delay-500" />
       </div>
 
-      {/* Header con enlace a "/" */}
+      {/* Header */}
       <div className="relative z-10 pt-6 pl-8">
         <h1
           className="text-white text-2xl font-semibold cursor-pointer hover:underline"
@@ -190,14 +159,12 @@ const Login = () => {
         </h1>
       </div>
 
-      {/* Contenido principal */}
+      {/* Card */}
       <div className="relative z-10 flex-1 flex items-center justify-center px-4 py-8">
         <div className="w-full max-w-md">
           <div className="bg-white/90 backdrop-blur-md rounded-xl shadow-2xl p-8 border border-white/20">
             <div className="mb-8">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-                Inicia sesión en tu cuenta
-              </h2>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-2">Inicia sesión en tu cuenta</h2>
             </div>
 
             {error && (
@@ -216,7 +183,7 @@ const Login = () => {
                   id="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="ejemplo@dominio.com"
                   required
                 />
@@ -230,7 +197,7 @@ const Login = () => {
                   <button
                     type="button"
                     onClick={() => router.push("/reset-password")}
-                    className="text-sm text-blue-600 hover:text-blue-500 transition-colors"
+                    className="text-sm text-blue-600 hover:text-blue-500"
                   >
                     ¿Olvidaste tu contraseña?
                   </button>
@@ -241,14 +208,14 @@ const Login = () => {
                     id="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="••••••••"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword((s) => !s)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                     aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
                   >
                     {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
@@ -259,16 +226,9 @@ const Login = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-semibold shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-[1.02] disabled:opacity-50"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-semibold shadow-lg disabled:opacity-50"
               >
-                {isLoading ? (
-                  <div className="flex items-center justify-center">
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2"></div>
-                    Iniciando sesión...
-                  </div>
-                ) : (
-                  "Iniciar Sesión"
-                )}
+                {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
               </button>
             </form>
 
@@ -282,25 +242,23 @@ const Login = () => {
               <button
                 onClick={() => handleSocialLogin("google")}
                 disabled={isLoading}
-                className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-all duration-200"
+                className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
               >
                 <FaGoogle className="text-red-500 mr-3 text-lg" />
                 Inicia sesión con Google
               </button>
-
               <button
                 onClick={() => handleSocialLogin("facebook")}
                 disabled={isLoading}
-                className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-all duration-200"
+                className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
               >
                 <FaFacebook className="text-blue-600 mr-3 text-lg" />
                 Inicia sesión con Facebook
               </button>
-
               <button
                 onClick={() => handleSocialLogin("apple")}
                 disabled={isLoading}
-                className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-all duration-200"
+                className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
               >
                 <FaApple className="text-black mr-3 text-lg" />
                 Inicia sesión con Apple
@@ -312,7 +270,7 @@ const Login = () => {
                 ¿No tienes cuenta?{" "}
                 <button
                   onClick={() => router.push("/register")}
-                  className="text-blue-600 hover:text-blue-500 font-semibold transition-colors"
+                  className="text-blue-600 hover:text-blue-500 font-semibold"
                 >
                   Regístrate
                 </button>
@@ -323,11 +281,11 @@ const Login = () => {
       </div>
 
       {/* Footer */}
-      <div className="relative z-10 pb-6 px-8">
-        <div className="flex flex-col sm:flex-row items-center justify-center text-white/80 text-sm space-y-2 sm:space-y-0 sm:space-x-6">
-          <span>© MenthIA</span>
-          <button className="hover:text-white transition-colors">Privacidad y condiciones</button>
-        </div>
+      <div className="relative z-10 pb-6 px-8 text-white/80 text-sm text-center">
+        © MenthIA ·{" "}
+        <button onClick={() => router.push("/aviso-privacidad")} className="hover:text-white">
+          Privacidad y condiciones
+        </button>
       </div>
     </div>
   );
