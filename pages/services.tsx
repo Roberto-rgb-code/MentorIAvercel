@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import {
   FaChartLine, FaHandshake, FaGraduationCap, FaStore, FaUsers,
   FaUserPlus, FaArrowRight, FaChevronDown, FaChevronUp,
-  FaChevronLeft, FaChevronRight
+  FaChevronLeft, FaChevronRight, FaBrain, FaEye, FaRocket
 } from 'react-icons/fa';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
@@ -18,82 +18,72 @@ import type { IOptions, RecursivePartial } from 'tsparticles-engine';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Datos de los servicios
+// Datos de los servicios actualizados
 const servicesData = [
   {
     id: 'diagnostics',
-    title: 'Diagnósticos Estratégicos',
-    description: 'Identificamos fortalezas y áreas de oportunidad con análisis accionables para trazar el camino al éxito.',
-    icon: FaChartLine,
+    title: 'Diagnósticos Predictivos',
+    description: 'Radiografía 360° con IA: detecta cuellos de botella y oportunidades ocultas; supervisadas por un experto humano.',
+    icon: FaBrain,
     color: 'from-blue-500 to-blue-700',
     details: [
-      'Análisis FODA completo',
-      'Evaluación de mercado y competencia',
-      'Identificación de cuellos de botella',
-      'Reportes ejecutivos detallados',
-    ],
-    phase: 'PHASE II',
-    progress: 65
+      'Análisis 360° con inteligencia artificial',
+      'Detección de oportunidades ocultas',
+      'Supervisión de experto humano',
+      'Reportes predictivos personalizados',
+    ]
   },
   {
     id: 'mentoring',
-    title: 'Mentoría de Alto Impacto',
-    description: 'Acompañamiento 1 a 1 con mentores expertos. Planes de acción prácticos y seguimiento continuo.',
+    title: 'Mentoría de Alto Impacto (Humano-IA)',
+    description: 'Sesiones con asesor experto con plan de acción y métricas automáticas obtenidas con IA.',
     icon: FaHandshake,
     color: 'from-purple-500 to-purple-700',
     details: [
-      'Sesiones 1 a 1 personalizadas',
-      'Planes de acción con seguimiento',
-      'Acceso a red de contactos del mentor',
-      'Desarrollo de liderazgo',
-    ],
-    phase: 'PHASE I',
-    progress: 42
+      'Sesiones 1 a 1 con asesor experto',
+      'Planes de acción personalizados',
+      'Métricas automáticas con IA',
+      'Seguimiento continuo y resultados',
+    ]
   },
   {
     id: 'courses',
     title: 'Cursos Especializados',
-    description: 'Biblioteca de contenidos para potenciar habilidades: finanzas, marketing, operaciones y más.',
+    description: 'Talleres prácticos en línea con casos de uso impartidos por los mejores asesores.',
     icon: FaGraduationCap,
     color: 'from-green-500 to-green-700',
     details: [
-      'Cursos online a tu ritmo',
-      'Contenido actualizado por expertos',
-      'Certificaciones al finalizar',
-      'Materiales y ejercicios',
-    ],
-    phase: 'PHASE III',
-    progress: 89
+      'Talleres prácticos online',
+      'Casos de uso reales',
+      'Impartidos por mejores asesores',
+      'Certificaciones especializadas',
+    ]
   },
   {
     id: 'ecosystem',
     title: 'Ecosistema Comercial',
-    description: 'Conecta con socios, proveedores y clientes. Multiplica oportunidades dentro de la comunidad.',
+    description: 'Marketplace integral: proveedores, clientes y alianzas recomendadas por IA.',
     icon: FaStore,
     color: 'from-yellow-500 to-yellow-700',
     details: [
-      'Directorio de empresas y emprendedores',
-      'Oportunidades de colaboración',
-      'Foros y networking',
-      'Eventos exclusivos',
-    ],
-    phase: 'PHASE II',
-    progress: 51
+      'Marketplace integral',
+      'Proveedores verificados',
+      'Clientes potenciales',
+      'Alianzas recomendadas por IA',
+    ]
   },
   {
     id: 'community',
-    title: 'Comunidad Exclusiva',
-    description: 'Comparte experiencias, resuelve dudas y crece con otros emprendedores.',
+    title: 'Comunidad Ejecutiva',
+    description: 'Conecta con personas de valor con problemas y soluciones reales.',
     icon: FaUsers,
     color: 'from-red-500 to-red-700',
     details: [
-      'Grupos por sector',
-      'Q&A en vivo',
-      'Meetups y networking',
-      'Feedback constructivo',
-    ],
-    phase: 'PHASE III',
-    progress: 78
+      'Red de ejecutivos verificados',
+      'Problemas y soluciones reales',
+      'Networking estratégico',
+      'Eventos exclusivos',
+    ]
   },
 ];
 
@@ -125,9 +115,9 @@ const Services = () => {
       color: { value: '#00bcd4' },
       links: { color: '#4dd0e1', distance: 150, enable: true, opacity: 0.5, width: 1 },
       move: {
-        direction: 'none' as const,                 // <- literal, no string ancho
+        direction: 'none' as const,
         enable: true,
-        outModes: { default: 'bounce' as const },   // <- literal permitido
+        outModes: { default: 'bounce' as const },
         random: false,
         speed: 1,
         straight: false
@@ -144,6 +134,7 @@ const Services = () => {
   useEffect(() => {
     gsap.fromTo('.hero-services-title', { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1.4, ease: 'power3.out' });
     gsap.fromTo('.hero-services-description', { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1.4, delay: 0.4, ease: 'power3.out' });
+    gsap.fromTo('.hero-services-subtitle', { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1.4, delay: 0.6, ease: 'power3.out' });
     gsap.fromTo('.hero-services-cta', { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 1.2, delay: 0.8, ease: 'elastic.out(1, 0.8)' });
 
     serviceRefs.current.forEach((el) => {
@@ -211,11 +202,10 @@ const Services = () => {
     if (!track || !container || !firstCard) return 0;
 
     const cardWidth = firstCard.offsetWidth;
-    const cardMarginX = 25 * 2; // según CSS .carousel-card { margin: 0 25px; }
+    const cardMarginX = 25 * 2;
     const amountToMove = idx * (cardWidth + cardMarginX);
     const containerCenter = container.offsetWidth / 2;
     const cardCenter = cardWidth / 2;
-    // -25 para compensar el gap visual del borde
     const targetTranslateX = containerCenter - cardCenter - amountToMove - 25;
     return targetTranslateX;
   }, []);
@@ -230,7 +220,6 @@ const Services = () => {
     updateClasses(clamped);
     requestAnimationFrame(() => {
       animateActiveCard();
-      animateDataCounter();
     });
   }, [computeTranslateX, updateClasses]);
 
@@ -259,7 +248,7 @@ const Services = () => {
   const canPrev = currentIndex > 0;
   const canNext = currentIndex < servicesData.length - 1;
 
-  // ---- Efectos “HUD” de la tarjeta activa (scan line + progress anim) ----
+  // ---- Efectos "HUD" de la tarjeta activa (scan line) ----
   const animateActiveCard = () => {
     const active = cardRefs.current[currentIndex];
     if (!active) return;
@@ -288,45 +277,9 @@ const Services = () => {
     }, 2000);
   };
 
-  const animateDataCounter = () => {
-    const active = cardRefs.current[currentIndex];
-    if (!active) return;
-    const stats = active.querySelector<HTMLDivElement>('.card-stats');
-    const bar = active.querySelector<HTMLDivElement>('.progress-value');
-    if (!stats || !bar) return;
-
-    const right = stats.querySelector('span:last-child');
-    if (!right) return;
-
-    const match = right.textContent?.match(/(\d+)%/);
-    if (!match) return;
-
-    const target = parseInt(match[1], 10);
-    let current = 0;
-    right.textContent = '0% COMPLETE';
-    bar.style.width = '0%';
-
-    const int = setInterval(() => {
-      current += Math.ceil(target / 15);
-      if (current >= target) {
-        current = target;
-        clearInterval(int);
-      }
-      right.textContent = `${current}% COMPLETE`;
-    }, 50);
-
-    setTimeout(() => {
-      bar.style.transition = 'width 0.8s cubic-bezier(0.17, 0.67, 0.83, 0.67)';
-      bar.style.width = `${target}%`;
-      setTimeout(() => {
-        bar.style.transition = 'none';
-      }, 900);
-    }, 100);
-  };
-
   return (
     <PrivateLayout>
-      {/* Estilos “futuristas” + carrusel */}
+      {/* Estilos "futuristas" + carrusel */}
       <style jsx global>{`
         :root {
           --glow-primary: rgba(56, 189, 248, 0.7);
@@ -387,7 +340,7 @@ const Services = () => {
         .carousel-card.is-next { transform-origin: left center; transform: scale(0.75) rotateY(-45deg) translateX(80px) translateZ(-150px); }
         .carousel-card.is-active { transform: scale(1) rotateY(0) translateZ(0); opacity: 1; z-index: 20; box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 40px var(--glow-primary), inset 0 0 20px rgba(56,189,248,0.1); filter: saturate(1.2) brightness(1.1); }
 
-        /* Header con icono (sustituye la imagen) */
+        /* Header con icono */
         .card-header {
           position: relative;
           height: 180px;
@@ -416,11 +369,6 @@ const Services = () => {
         .carousel-card.is-active .card-title::after { opacity: .8; }
 
         .card-description { font-size:.95rem; line-height:1.6; color: rgba(241,245,249,0.85); font-weight:300; }
-
-        .card-progress { height:3px; background: rgba(56,189,248,0.15); margin-top:1rem; position: relative; border-radius:4px; overflow: hidden; }
-        .progress-value { position:absolute; height:100%; background: linear-gradient(90deg, var(--neon-blue), var(--neon-green)); border-radius:4px; width: 75%; }
-
-        .card-stats { display:flex; justify-content: space-between; margin-top:.5rem; font-size:.75rem; color: rgba(241,245,249,0.6); }
 
         .details {
           margin-top: 1rem;
@@ -467,19 +415,26 @@ const Services = () => {
           {/* Hero */}
           <section className="min-h-[80vh] flex items-center justify-center text-center overflow-hidden shadow-2xl relative">
             <div className="absolute inset-0 bg-black/60 z-0"></div>
-            <div className="relative z-10 p-4 max-w-5xl mx-auto">
-              <h1 className="hero-services-title text-5xl md:text-7xl font-extrabold text-white leading-tight mb-6 drop-shadow-lg">
-                Nuestras <span className="text-blue-400">Soluciones</span> Integrales
+            <div className="relative z-10 p-4 max-w-6xl mx-auto">
+              <h2 className="text-2xl md:text-3xl font-bold text-cyan-400 mb-4">Soluciones Integrales</h2>
+              <h1 className="hero-services-title text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6 drop-shadow-lg">
+                Mentores expertos + <span className="text-blue-400">Inteligencia Artificial</span> para escalar tu negocio en un solo lugar
               </h1>
-              <p className="hero-services-description text-xl md:text-2xl text-indigo-200 mb-10 max-w-3xl mx-auto">
-                Descubre cómo MentorApp impulsa tu negocio con estrategias personalizadas y el apoyo de una comunidad experta.
+              <p className="hero-services-description text-lg md:text-xl text-indigo-200 mb-6 max-w-4xl mx-auto">
+                Plataforma digital creada para potenciar el talento humano usando herramientas de IA que fortalecen tu negocio.
+              </p>
+              <p className="hero-services-subtitle text-base md:text-lg text-gray-300 mb-10 max-w-4xl mx-auto">
+                Empresa mexicana dedicada a conectar las necesidades reales de los emprendedores y empresas con asesores expertos usando como apoyo herramientas de Inteligencia Artificial (IA)
+              </p>
+              <p className="text-lg md:text-xl text-yellow-300 mb-10 font-semibold">
+                Mentores, Patronos, Líderes de opinión.
               </p>
               <div className="hero-services-cta">
                 <Link
-                  href="#services-grid"
+                  href="/register"
                   className="inline-block bg-yellow-400 text-blue-900 font-bold py-4 px-12 rounded-full text-lg md:text-xl shadow-lg hover:bg-yellow-300 transform hover:scale-105 transition-all duration-300 ease-in-out"
                 >
-                  Explorar Servicios
+                  <FaUserPlus className="inline-block mr-3" /> Únete hoy
                 </Link>
               </div>
             </div>
@@ -488,7 +443,7 @@ const Services = () => {
           {/* Carrusel Servicios */}
           <section id="services-grid" className="py-16 md:py-24 container mx-auto relative z-10">
             <h2 className="text-4xl md:text-5xl font-bold text-center text-blue-300 mb-10">
-              Servicios a tu Medida
+              Servicios Inteligentes a tu Medida
             </h2>
 
             <div className="carousel-container" ref={containerRef}>
@@ -531,25 +486,16 @@ const Services = () => {
                         </h3>
                         <p className="card-description">{s.description}</p>
 
-                        {/* Progreso + stats */}
-                        <div className="card-progress">
-                          <div className="progress-value" style={{ width: `${s.progress}%` }} />
-                        </div>
-                        <div className="card-stats">
-                          <span>{s.phase}</span>
-                          <span>{s.progress}% COMPLETE</span>
-                        </div>
-
-                        {/* Botón Más detalles */}
+                        {/* Botón Ver detalles / Probar ahora */}
                         <button
                           onClick={() => toggleDetails(s.id)}
-                          className={`neo-btn mt-4 w-full ${buttonBg} text-white py-2.5 px-4 rounded-full font-semibold transition-colors duración-200 shadow-md flex items-center justify-center`}
+                          className={`neo-btn mt-4 w-full ${buttonBg} text-white py-2.5 px-4 rounded-full font-semibold transition-colors duration-200 shadow-md flex items-center justify-center`}
                           type="button"
                         >
                           {expandedService === s.id ? (
                             <>Ver menos <FaChevronUp className="ml-2" /></>
                           ) : (
-                            <>Más detalles <FaChevronDown className="ml-2" /></>
+                            <>Ver detalles <FaChevronDown className="ml-2" /></>
                           )}
                         </button>
 
@@ -576,7 +522,7 @@ const Services = () => {
                                 href="/register"
                                 className="inline-flex items-center justify-center bg-white text-blue-900 font-bold py-2.5 px-6 rounded-full text-sm shadow-lg hover:bg-gray-100 transition-all"
                               >
-                                <FaUserPlus className="mr-2" /> Regístrate y empieza ahora
+                                <FaRocket className="mr-2" /> Probar ahora
                               </Link>
                             </div>
                           </motion.div>
@@ -628,7 +574,7 @@ const Services = () => {
                 ¡Impulsa tu Negocio Hoy Mismo!
               </h2>
               <p className="text-xl md:text-2xl text-purple-100 max-w-3xl mx-auto mb-10">
-                Regístrate en MentorApp y comienza a transformar tus ideas en éxito con el apoyo de nuestra comunidad y expertos.
+                Regístrate en MenthIA y comienza a transformar tus ideas en éxito con el apoyo de nuestra comunidad y expertos.
               </p>
               <Link
                 href="/register"
