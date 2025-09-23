@@ -15,33 +15,12 @@ import { doc, setDoc, getDoc } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
 import { FaGoogle, FaFacebook, FaApple } from "react-icons/fa";
 
-// --- Constants ---
 const ROLES_FINAL = [
-  {
-    value: "emprendedor",
-    label: "PyME / Emprendedor",
-    description: "Acceso freemium/premium, diagnóstico, cursos y comunidad.",
-  },
-  {
-    value: "consultor",
-    label: "Consultor Independiente",
-    description: "Carga perfil experto, gestión de agenda, consultoría 1:1.",
-  },
-  {
-    value: "empresa",
-    label: "Empresa (Licenciataria)",
-    description: "Acceso corporativo, métricas de empleados, equipos.",
-  },
-  {
-    value: "universidad",
-    label: "Universidad",
-    description: "Gestión de usuarios institucional, seguimiento académico.",
-  },
-  {
-    value: "gobierno",
-    label: "Gobierno",
-    description: "Reportes de impacto, acceso institucional, licenciamiento.",
-  },
+  { value: "emprendedor", label: "PyME / Emprendedor", description: "Acceso freemium/premium, diagnóstico, cursos y comunidad." },
+  { value: "consultor", label: "Consultor Independiente", description: "Carga perfil experto, gestión de agenda, consultoría 1:1." },
+  { value: "empresa", label: "Empresa (Licenciataria)", description: "Acceso corporativo, métricas de empleados, equipos." },
+  { value: "universidad", label: "Universidad", description: "Gestión de usuarios institucional, seguimiento académico." },
+  { value: "gobierno", label: "Gobierno", description: "Reportes de impacto, acceso institucional, licenciamiento." },
 ];
 
 const INITIAL_USER_DATA = {
@@ -66,7 +45,7 @@ const Register = () => {
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  // --- State para roles negocio/institución ---
+  // --- negocio/institución
   const [motivation, setMotivation] = useState("");
   const [businessName, setBusinessName] = useState("");
   const [businessRelationship, setBusinessRelationship] = useState("");
@@ -78,7 +57,7 @@ const Register = () => {
   const [supportAreas, setSupportAreas] = useState<string[]>([]);
   const [otherSupportArea, setOtherSupportArea] = useState("");
 
-  // --- State para consultor ---
+  // --- consultor
   const [ultimoGrado, setUltimoGrado] = useState("");
   const [otroGrado, setOtroGrado] = useState("");
   const [areaEstudios, setAreaEstudios] = useState("");
@@ -111,7 +90,6 @@ const Register = () => {
   const [referencias, setReferencias] = useState("");
   const [confirmacionEntrevista, setConfirmacionEntrevista] = useState(false);
 
-  // helpers
   const handleRoleSelection = (selectedRole: string) => {
     setRole(selectedRole);
     setStep(2);
@@ -135,14 +113,12 @@ const Register = () => {
     }
   };
 
-  // pasos máximos por rol
   const getMaxSteps = useMemo(() => {
     if (["emprendedor", "empresa", "universidad", "gobierno"].includes(role)) return 6;
     if (role === "consultor") return 8;
     return 1;
   }, [role]);
 
-  // validaciones por paso
   const handleNext = () => {
     setError("");
 
@@ -271,7 +247,6 @@ const Register = () => {
 
   const handleBack = () => setStep((s) => Math.max(1, s - 1));
 
-  // Guardar perfil en Firestore (idempotente)
   const saveUserData = async (user: User) => {
     const userRef = doc(db, "users", user.uid);
     const snap = await getDoc(userRef);
@@ -351,7 +326,6 @@ const Register = () => {
       });
     }
 
-    // Si ya existe, no pisamos todo a ciegas — para simplificar, aquí hacemos setDoc merge
     await setDoc(userRef, baseData, { merge: true });
   };
 
@@ -360,10 +334,8 @@ const Register = () => {
       setError("Completa todos los pasos antes de registrarte.");
       return;
     }
-
     setError("");
     setSubmitting(true);
-
     try {
       const cred = await createUserWithEmailAndPassword(auth, userData.email, userData.password);
       if (cred?.user) {
@@ -393,7 +365,6 @@ const Register = () => {
   const handleSocialLogin = async (providerName: "google" | "facebook" | "apple") => {
     setError("");
     setSubmitting(true);
-
     try {
       let provider;
       if (providerName === "google") provider = new GoogleAuthProvider();
@@ -403,10 +374,8 @@ const Register = () => {
         provider.addScope("email");
         provider.addScope("name");
       }
-
       const cred = await signInWithPopup(auth, provider as any);
       if (cred?.user) {
-        // asegura perfil en Firestore si no existía
         await saveUserData(cred.user);
         router.push("/dashboard/inicio");
       } else {
@@ -430,12 +399,10 @@ const Register = () => {
     }
   };
 
-  // Indicador visual de pasos (sin el paso de rol)
   const renderStepIndicator = () => {
     const total = getMaxSteps - 1;
     const current = role ? step - 1 : 0;
     if (!role || total <= 0) return null;
-
     return (
       <div className="flex justify-center mb-6">
         {Array.from({ length: total }).map((_, i) => (
@@ -450,6 +417,21 @@ const Register = () => {
     );
   };
 
+  const PasoButtons = ({
+    onNext,
+    onBack,
+    nextText = "Siguiente",
+  }: { onNext: () => void; onBack: () => void; nextText?: string }) => (
+    <div className="flex justify-between mt-6">
+      <button onClick={onBack} className="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300">
+        Volver
+      </button>
+      <button onClick={onNext} className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700">
+        {nextText}
+      </button>
+    </div>
+  );
+
   const renderStep = () => {
     switch (step) {
       case 1:
@@ -458,17 +440,11 @@ const Register = () => {
             <h2 className="text-3xl font-extrabold text-gray-900 mb-6 text-center">
               ¿Qué te trae a MentorApp?
             </h2>
-
-            {/* Botón volver al inicio */}
             <div className="mb-4">
-              <Link
-                href="/"
-                className="inline-flex items-center text-sm text-blue-600 hover:text-blue-700 underline"
-              >
+              <Link href="/" className="inline-flex items-center text-sm text-blue-600 hover:text-blue-700 underline">
                 ← Volver al inicio
               </Link>
             </div>
-
             <div className="space-y-4">
               {ROLES_FINAL.map((rol) => (
                 <button
@@ -481,23 +457,18 @@ const Register = () => {
                 </button>
               ))}
             </div>
-
             <div className="mt-6 text-center text-sm text-gray-600">
               ¿Ya tienes cuenta?{" "}
-              <Link href="/login" className="text-blue-600 hover:underline">
-                Inicia sesión
-              </Link>
+              <Link href="/login" className="text-blue-600 hover:underline">Inicia sesión</Link>
             </div>
           </div>
         );
 
-      // Paso 2: Sobre ti
+      // Paso 1 (Sobre ti)
       case 2:
         return (
           <div className="animate-fade-in">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-              🔹 Paso 1: Sobre ti
-            </h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">🔹 Paso 1: Sobre ti</h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-gray-700 font-medium mb-2">Nombre completo</label>
@@ -520,9 +491,7 @@ const Register = () => {
                 />
               </div>
               <div>
-                <label className="block text-gray-700 font-medium mb-2">
-                  Número de teléfono (+ lada internacional)
-                </label>
+                <label className="block text-gray-700 font-medium mb-2">Número de teléfono (+ lada internacional)</label>
                 <input
                   type="tel"
                   value={userData.phone}
@@ -544,9 +513,7 @@ const Register = () => {
                 />
               </div>
               <div>
-                <label className="block text-gray-700 font-medium mb-2">
-                  Idioma preferido para la plataforma
-                </label>
+                <label className="block text-gray-700 font-medium mb-2">Idioma preferido</label>
                 <select
                   value={userData.language}
                   onChange={(e) => setUserData({ ...userData, language: e.target.value })}
@@ -597,28 +564,246 @@ const Register = () => {
                 />
               </div>
             </div>
-
-            <div className="flex justify-between mt-6">
-              <button
-                onClick={handleBack}
-                className="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300"
-              >
-                Volver
-              </button>
-              <button
-                onClick={handleNext}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700"
-              >
-                Siguiente
-              </button>
-            </div>
+            <PasoButtons onBack={handleBack} onNext={handleNext} />
           </div>
         );
 
-      // (El resto de pasos son los mismos que ya tienes, con los mismos handlers y validaciones)
-      // Para no alargar demasiado, conservo tu contenido y solo aseguro consistencia visual y botones.
-      // --- Pega aquí los pasos 3,4,5,6,7,8 tal cual los tenías ---
+      // ===== Flujos intermedios (AQUÍ ESTABA EL HUECO) =====
 
+      // Negocio/Institución — Paso 2
+      case 3:
+        if (["emprendedor", "empresa", "universidad", "gobierno"].includes(role)) {
+          return (
+            <div className="animate-fade-in">
+              <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">🔹 Paso 2: Sobre tu Negocio/Institución</h2>
+              <div className="space-y-4">
+                <input className="w-full p-3 border rounded-lg" placeholder="Motivación principal"
+                  value={motivation} onChange={(e) => setMotivation(e.target.value)} />
+                <input className="w-full p-3 border rounded-lg" placeholder="Nombre del negocio / institución"
+                  value={businessName} onChange={(e) => setBusinessName(e.target.value)} />
+                <input className="w-full p-3 border rounded-lg" placeholder="Relación con el negocio (propietario, empleado, etc.)"
+                  value={businessRelationship} onChange={(e) => setBusinessRelationship(e.target.value)} />
+                <select className="w-full p-3 border rounded-lg bg-white"
+                  value={businessStage} onChange={(e) => setBusinessStage(e.target.value)}>
+                  <option value="">Etapa</option>
+                  <option>Idea</option><option>Arranque</option><option>Tracción</option><option>Escala</option>
+                </select>
+              </div>
+              <PasoButtons onBack={handleBack} onNext={handleNext} />
+            </div>
+          );
+        }
+        // Consultor — Paso 2 (Formación y experiencia)
+        return (
+          <div className="animate-fade-in">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">🔹 Paso 2: Formación y Experiencia</h2>
+            <div className="space-y-4">
+              <select className="w-full p-3 border rounded-lg bg-white"
+                value={ultimoGrado} onChange={(e) => setUltimoGrado(e.target.value)}>
+                <option value="">Último grado</option>
+                <option>Licenciatura</option><option>Maestría</option><option>Doctorado</option><option>Otro</option>
+              </select>
+              {ultimoGrado === "Otro" && (
+                <input className="w-full p-3 border rounded-lg" placeholder="Especifica tu grado"
+                  value={otroGrado} onChange={(e) => setOtroGrado(e.target.value)} />
+              )}
+              <input className="w-full p-3 border rounded-lg" placeholder="Área de estudios"
+                value={areaEstudios} onChange={(e) => setAreaEstudios(e.target.value)} />
+              <input className="w-full p-3 border rounded-lg" placeholder="Años de experiencia"
+                value={anosExperiencia} onChange={(e) => setAnosExperiencia(e.target.value)} />
+              <select className="w-full p-3 border rounded-lg bg-white"
+                value={experienciaMipymes} onChange={(e) => setExperienciaMipymes(e.target.value)}>
+                <option value="">Experiencia con MiPyMEs</option>
+                <option>Alta</option><option>Media</option><option>Baja</option>
+              </select>
+              <select className="w-full p-3 border rounded-lg bg-white"
+                value={colaboracionInstitucional} onChange={(e) => setColaboracionInstitucional(e.target.value)}>
+                <option value="">Colaboración con instituciones</option>
+                <option>Frecuente</option><option>Ocasional</option><option>Nula</option>
+              </select>
+            </div>
+            <PasoButtons onBack={handleBack} onNext={handleNext} />
+          </div>
+        );
+
+      // Negocio/Institución — Paso 3 | Consultor — Paso 3 (áreas/industrias/caso de éxito)
+      case 4:
+        if (["emprendedor", "empresa", "universidad", "gobierno"].includes(role)) {
+          return (
+            <div className="animate-fade-in">
+              <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">🔹 Paso 3: Retos y Metas</h2>
+              <div className="space-y-4">
+                <input className="w-full p-3 border rounded-lg" placeholder="Principal reto actual"
+                  value={mainChallenge} onChange={(e) => setMainChallenge(e.target.value)} />
+                <div>
+                  <label className="block text-gray-700 font-medium mb-2">Metas (selecciona y/o escribe)</label>
+                  <div className="flex flex-wrap gap-3">
+                    {["Ventas", "Operación", "Finanzas", "Talento", "Otro"].map((g) => (
+                      <label key={g} className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={goals.includes(g)}
+                          onChange={() => handleCheckboxChange(setGoals, goals, g, otherGoal, setOtherGoal)}
+                        />
+                        <span>{g}</span>
+                      </label>
+                    ))}
+                  </div>
+                  {goals.includes("Otro") && (
+                    <input className="mt-2 w-full p-3 border rounded-lg" placeholder="Otra meta"
+                      value={otherGoal} onChange={(e) => setOtherGoal(e.target.value)} />
+                  )}
+                </div>
+                <select className="w-full p-3 border rounded-lg bg-white"
+                  value={previousAdvisory} onChange={(e) => setPreviousAdvisory(e.target.value)}>
+                  <option value="">¿Has tenido asesoría previa?</option>
+                  <option>Sí</option><option>No</option>
+                </select>
+              </div>
+              <PasoButtons onBack={handleBack} onNext={handleNext} />
+            </div>
+          );
+        }
+        // Consultor
+        return (
+          <div className="animate-fade-in">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">🔹 Paso 3: Áreas, Industrias y Caso de éxito</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Áreas de experiencia</label>
+                <div className="flex flex-wrap gap-3">
+                  {["Estrategia", "Finanzas", "Operaciones", "Marketing", "Talento", "Otro"].map((a) => (
+                    <label key={a} className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={areasExperiencia.includes(a)}
+                        onChange={() => handleCheckboxChange(setAreasExperiencia, areasExperiencia, a, otherAreaExperiencia, setOtherAreaExperiencia)}
+                      />
+                      <span>{a}</span>
+                    </label>
+                  ))}
+                </div>
+                {areasExperiencia.includes("Otro") && (
+                  <input className="mt-2 w-full p-3 border rounded-lg" placeholder="Otra área"
+                    value={otherAreaExperiencia} onChange={(e) => setOtherAreaExperiencia(e.target.value)} />
+                )}
+              </div>
+
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Industrias</label>
+                <div className="flex flex-wrap gap-3">
+                  {["Retail", "Manufactura", "Servicios", "Tecnología", "Salud", "Otro"].map((i) => (
+                    <label key={i} className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={industrias.includes(i)}
+                        onChange={() => handleCheckboxChange(setIndustrias, industrias, i, otherIndustry, setOtherIndustry)}
+                      />
+                      <span>{i}</span>
+                    </label>
+                  ))}
+                </div>
+                {industrias.includes("Otro") && (
+                  <input className="mt-2 w-full p-3 border rounded-lg" placeholder="Otra industria"
+                    value={otherIndustry} onChange={(e) => setOtherIndustry(e.target.value)} />
+                )}
+              </div>
+
+              <textarea className="w-full p-3 border rounded-lg" placeholder="Describe un caso de éxito brevemente"
+                value={casoExito} onChange={(e) => setCasoExito(e.target.value)} />
+              <div className="flex flex-col gap-2">
+                <select className="w-full p-3 border rounded-lg bg-white"
+                  value={intervencionPreferida} onChange={(e) => setIntervencionPreferida(e.target.value)}>
+                  <option value="">Intervención preferida</option>
+                  <option>Diagnóstico</option><option>Implementación</option><option>Acompañamiento</option><option>Otro</option>
+                </select>
+                {intervencionPreferida === "Otro" && (
+                  <input className="w-full p-3 border rounded-lg" placeholder="Especifica intervención"
+                    value={otraIntervencion} onChange={(e) => setOtraIntervencion(e.target.value)} />
+                )}
+              </div>
+            </div>
+            <PasoButtons onBack={handleBack} onNext={handleNext} />
+          </div>
+        );
+
+      // Negocio/Institución — Paso 4 | Consultor — Paso 4 (estilo y metodología)
+      case 5:
+        if (["emprendedor", "empresa", "universidad", "gobierno"].includes(role)) {
+          return (
+            <div className="animate-fade-in">
+              <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">🔹 Paso 4: Áreas de Apoyo</h2>
+              <div className="space-y-4">
+                <div className="flex flex-wrap gap-3">
+                  {["Diagnóstico", "Mentoría", "Capacitación", "Implementación", "Otro"].map((s) => (
+                    <label key={s} className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={supportAreas.includes(s)}
+                        onChange={() => handleCheckboxChange(setSupportAreas, supportAreas, s, otherSupportArea, setOtherSupportArea)}
+                      />
+                      <span>{s}</span>
+                    </label>
+                  ))}
+                </div>
+                {supportAreas.includes("Otro") && (
+                  <input className="w-full p-3 border rounded-lg" placeholder="Otra área de apoyo"
+                    value={otherSupportArea} onChange={(e) => setOtherSupportArea(e.target.value)} />
+                )}
+              </div>
+              <PasoButtons onBack={handleBack} onNext={handleNext} />
+            </div>
+          );
+        }
+        // Consultor — Estilo y metodología
+        return (
+          <div className="animate-fade-in">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">🔹 Paso 4: Estilo y Metodología</h2>
+            <div className="space-y-4">
+              <select className="w-full p-3 border rounded-lg bg-white"
+                value={acompanamiento} onChange={(e) => setAcompanamiento(e.target.value)}>
+                <option value="">Nivel de acompañamiento</option>
+                <option>Ligero</option><option>Medio</option><option>Intensivo</option>
+              </select>
+              <select className="w-full p-3 border rounded-lg bg-white"
+                value={modalidad} onChange={(e) => setModalidad(e.target.value)}>
+                <option value="">Modalidad</option>
+                <option>Remoto</option><option>Presencial</option><option>Mixto</option>
+              </select>
+
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Herramientas digitales</label>
+                <div className="flex flex-wrap gap-3">
+                  {["Drive", "Notion", "Slack", "Zoom", "Otra"].map((h) => (
+                    <label key={h} className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={herramientasDigitales.includes(h)}
+                        onChange={() => handleCheckboxChange(setHerramientasDigitales, herramientasDigitales, h, otherDigitalTool, setOtherDigitalTool)}
+                      />
+                      <span>{h}</span>
+                    </label>
+                  ))}
+                </div>
+                {herramientasDigitales.includes("Otra") && (
+                  <input className="mt-2 w-full p-3 border rounded-lg" placeholder="Otra herramienta"
+                    value={otherDigitalTool} onChange={(e) => setOtherDigitalTool(e.target.value)} />
+                )}
+              </div>
+
+              <input className="w-full p-3 border rounded-lg" placeholder="Recursos propios (p. ej. plantillas)"
+                value={recursosPropios} onChange={(e) => setRecursosPropios(e.target.value)} />
+              <select className="w-full p-3 border rounded-lg bg-white"
+                value={reportesEstructurados} onChange={(e) => setReportesEstructurados(e.target.value)}>
+                <option value="">¿Entregas reportes/formatos?</option>
+                <option>Sí</option><option>No</option>
+              </select>
+            </div>
+            <PasoButtons onBack={handleBack} onNext={handleNext} />
+          </div>
+        );
+
+      // Negocio/Institución — Paso 5: Registro final (ya lo tenías)
       case 6:
         if (["emprendedor", "empresa", "universidad", "gobierno"].includes(role)) {
           return (
@@ -644,35 +829,18 @@ const Register = () => {
                   />
                   <label className="ml-2 text-gray-800">
                     Acepto el{" "}
-                    <Link href="/aviso-privacidad" target="_blank" className="text-blue-600 underline">
-                      Aviso de Privacidad
-                    </Link>{" "}
+                    <Link href="/aviso-privacidad" target="_blank" className="text-blue-600 underline">Aviso de Privacidad</Link>{" "}
                     y los{" "}
-                    <Link href="/terminos-uso" target="_blank" className="text-blue-600 underline">
-                      Términos de Uso
-                    </Link>.
+                    <Link href="/terminos-uso" target="_blank" className="text-blue-600 underline">Términos de Uso</Link>.
                   </label>
                 </div>
               </div>
 
-              {error && (
-                <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm text-center">
-                  {error}
-                </div>
-              )}
+              {error && <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm text-center">{error}</div>}
 
               <div className="flex justify-between mt-6">
-                <button
-                  onClick={handleBack}
-                  className="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300"
-                >
-                  Volver
-                </button>
-                <button
-                  onClick={onFinalSubmit}
-                  disabled={submitting}
-                  className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-60"
-                >
+                <button onClick={handleBack} className="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300">Volver</button>
+                <button onClick={onFinalSubmit} disabled={submitting} className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-60">
                   {submitting ? "Registrando..." : "Registrarme"}
                 </button>
               </div>
@@ -680,28 +848,13 @@ const Register = () => {
               <div className="mt-6 text-center text-gray-600">
                 <p className="mb-4">O regístrate con:</p>
                 <div className="flex justify-center space-x-4">
-                  <button
-                    onClick={() => handleSocialLogin("google")}
-                    disabled={submitting}
-                    className="p-3 border border-gray-300 rounded-full shadow-sm hover:shadow-md disabled:opacity-60"
-                    aria-label="Regístrate con Google"
-                  >
+                  <button onClick={() => handleSocialLogin("google")} disabled={submitting} className="p-3 border border-gray-300 rounded-full shadow-sm hover:shadow-md disabled:opacity-60" aria-label="Regístrate con Google">
                     <FaGoogle className="w-6 h-6" />
                   </button>
-                  <button
-                    onClick={() => handleSocialLogin("facebook")}
-                    disabled={submitting}
-                    className="p-3 border border-gray-300 rounded-full shadow-sm hover:shadow-md disabled:opacity-60"
-                    aria-label="Regístrate con Facebook"
-                  >
+                  <button onClick={() => handleSocialLogin("facebook")} disabled={submitting} className="p-3 border border-gray-300 rounded-full shadow-sm hover:shadow-md disabled:opacity-60" aria-label="Regístrate con Facebook">
                     <FaFacebook className="w-6 h-6" />
                   </button>
-                  <button
-                    onClick={() => handleSocialLogin("apple")}
-                    disabled={submitting}
-                    className="p-3 border border-gray-300 rounded-full shadow-sm hover:shadow-md disabled:opacity-60"
-                    aria-label="Regístrate con Apple"
-                  >
+                  <button onClick={() => handleSocialLogin("apple")} disabled={submitting} className="p-3 border border-gray-300 rounded-full shadow-sm hover:shadow-md disabled:opacity-60" aria-label="Regístrate con Apple">
                     <FaApple className="w-6 h-6" />
                   </button>
                 </div>
@@ -709,9 +862,77 @@ const Register = () => {
             </div>
           );
         }
+        // Consultor — Paso 5: Disponibilidad y condiciones
+        return (
+          <div className="animate-fade-in">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">🔹 Paso 5: Disponibilidad y Condiciones</h2>
+            <div className="space-y-4">
+              <input className="w-full p-3 border rounded-lg" placeholder="Horas semanales disponibles"
+                value={horasSemanales} onChange={(e) => setHorasSemanales(e.target.value)} />
+              <select className="w-full p-3 border rounded-lg bg-white"
+                value={trabajoProyecto} onChange={(e) => setTrabajoProyecto(e.target.value)}>
+                <option value="">¿Aceptas trabajo por proyecto?</option>
+                <option>Sí</option><option>No</option>
+              </select>
+
+              <div className="flex flex-col gap-2">
+                <select className="w-full p-3 border rounded-lg bg-white"
+                  value={tarifaTipo} onChange={(e) => setTarifaTipo(e.target.value)}>
+                  <option value="">Tipo de tarifa</option>
+                  <option>Por hora</option><option>Por paquete</option><option>A convenir</option>
+                </select>
+                {tarifaTipo === "Por hora" && (
+                  <input className="w-full p-3 border rounded-lg" placeholder="Tarifa por hora (MXN/USD)"
+                    value={tarifaHora} onChange={(e) => setTarifaHora(e.target.value)} />
+                )}
+                {tarifaTipo === "Por paquete" && (
+                  <input className="w-full p-3 border rounded-lg" placeholder="Tarifa por paquete"
+                    value={tarifaPaquete} onChange={(e) => setTarifaPaquete(e.target.value)} />
+                )}
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <select className="w-full p-3 border rounded-lg bg-white"
+                  value={motivacionConsultor} onChange={(e) => setMotivacionConsultor(e.target.value)}>
+                  <option value="">Motivación principal</option>
+                  <option>Impacto</option><option>Ingresos</option><option>Marca personal</option><option>Otro</option>
+                </select>
+                {motivacionConsultor === "Otro" && (
+                  <input className="w-full p-3 border rounded-lg" placeholder="Especifica tu motivación"
+                    value={otraMotivacion} onChange={(e) => setOtraMotivacion(e.target.value)} />
+                )}
+              </div>
+            </div>
+            <PasoButtons onBack={handleBack} onNext={handleNext} />
+          </div>
+        );
+
+      // Consultor — Paso 6: Validaciones (CV/links/referencias)
+      case 7:
+        if (role === "consultor") {
+          return (
+            <div className="animate-fade-in">
+              <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">🔹 Paso 6: Validaciones</h2>
+              <div className="space-y-4">
+                <input className="w-full p-3 border rounded-lg" placeholder="URL a tu CV (Drive/Link)"
+                  value={curriculum} onChange={(e) => setCurriculum(e.target.value)} />
+                <input className="w-full p-3 border rounded-lg" placeholder="URL a tu portafolio (opcional)"
+                  value={portafolio} onChange={(e) => setPortafolio(e.target.value)} />
+                <input className="w-full p-3 border rounded-lg" placeholder="URL a tu LinkedIn (opcional)"
+                  value={linkedin} onChange={(e) => setLinkedin(e.target.value)} />
+                <textarea className="w-full p-3 border rounded-lg" placeholder="Referencias (nombre + contacto)"
+                  value={referencias} onChange={(e) => setReferencias(e.target.value)} />
+              </div>
+
+              {error && <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm text-center">{error}</div>}
+
+              <PasoButtons onBack={handleBack} onNext={handleNext} nextText="Continuar" />
+            </div>
+          );
+        }
         return null;
 
-      // Paso 8 final consultor (mantenido igual que el tuyo, solo usando onFinalSubmit y disabled)
+      // Consultor — Paso 7: Registro final (tu caso 8)
       case 8:
         if (role === "consultor") {
           return (
@@ -737,13 +958,9 @@ const Register = () => {
                   />
                   <label className="ml-2 text-gray-800">
                     Acepto el{" "}
-                    <Link href="/aviso-privacidad" target="_blank" className="text-blue-600 underline">
-                      Aviso de Privacidad
-                    </Link>{" "}
+                    <Link href="/aviso-privacidad" target="_blank" className="text-blue-600 underline">Aviso de Privacidad</Link>{" "}
                     y los{" "}
-                    <Link href="/terminos-uso" target="_blank" className="text-blue-600 underline">
-                      Términos de Uso
-                    </Link>.
+                    <Link href="/terminos-uso" target="_blank" className="text-blue-600 underline">Términos de Uso</Link>.
                   </label>
                 </div>
                 <div className="flex items-center">
@@ -759,24 +976,11 @@ const Register = () => {
                 </div>
               </div>
 
-              {error && (
-                <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm text-center">
-                  {error}
-                </div>
-              )}
+              {error && <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm text-center">{error}</div>}
 
               <div className="flex justify-between mt-6">
-                <button
-                  onClick={handleBack}
-                  className="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300"
-                >
-                  Volver
-                </button>
-                <button
-                  onClick={onFinalSubmit}
-                  disabled={submitting}
-                  className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-60"
-                >
+                <button onClick={handleBack} className="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300">Volver</button>
+                <button onClick={onFinalSubmit} disabled={submitting} className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-60">
                   {submitting ? "Registrando..." : "Registrarme"}
                 </button>
               </div>
@@ -784,28 +988,13 @@ const Register = () => {
               <div className="mt-6 text-center text-gray-600">
                 <p className="mb-4">O regístrate con:</p>
                 <div className="flex justify-center space-x-4">
-                  <button
-                    onClick={() => handleSocialLogin("google")}
-                    disabled={submitting}
-                    className="p-3 border border-gray-300 rounded-full shadow-sm hover:shadow-md disabled:opacity-60"
-                    aria-label="Regístrate con Google"
-                  >
+                  <button onClick={() => handleSocialLogin("google")} disabled={submitting} className="p-3 border border-gray-300 rounded-full shadow-sm hover:shadow-md disabled:opacity-60" aria-label="Regístrate con Google">
                     <FaGoogle className="w-6 h-6" />
                   </button>
-                  <button
-                    onClick={() => handleSocialLogin("facebook")}
-                    disabled={submitting}
-                    className="p-3 border border-gray-300 rounded-full shadow-sm hover:shadow-md disabled:opacity-60"
-                    aria-label="Regístrate con Facebook"
-                  >
+                  <button onClick={() => handleSocialLogin("facebook")} disabled={submitting} className="p-3 border border-gray-300 rounded-full shadow-sm hover:shadow-md disabled:opacity-60" aria-label="Regístrate con Facebook">
                     <FaFacebook className="w-6 h-6" />
                   </button>
-                  <button
-                    onClick={() => handleSocialLogin("apple")}
-                    disabled={submitting}
-                    className="p-3 border border-gray-300 rounded-full shadow-sm hover:shadow-md disabled:opacity-60"
-                    aria-label="Regístrate con Apple"
-                  >
+                  <button onClick={() => handleSocialLogin("apple")} disabled={submitting} className="p-3 border border-gray-300 rounded-full shadow-sm hover:shadow-md disabled:opacity-60" aria-label="Regístrate con Apple">
                     <FaApple className="w-6 h-6" />
                   </button>
                 </div>
@@ -826,7 +1015,6 @@ const Register = () => {
         <title>Crear cuenta · MentorApp</title>
         <meta name="description" content="Regístrate para acceder a diagnósticos, mentoría y cursos." />
       </Head>
-
       <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4 sm:p-6 lg:p-8">
         <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-2xl">
           {renderStepIndicator()}

@@ -6,26 +6,21 @@ import { motion } from 'framer-motion';
 import {
   FaChartLine, FaHandshake, FaGraduationCap, FaStore, FaUsers,
   FaUserPlus, FaArrowRight, FaChevronDown, FaChevronUp,
-  FaChevronLeft, FaChevronRight, FaBrain, FaEye, FaRocket
+  FaChevronLeft, FaChevronRight, FaBrain, FaRocket
 } from 'react-icons/fa';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 
-// Particles
-import Particles from 'react-tsparticles';
-import { loadSlim } from 'tsparticles-slim';
-import type { IOptions, RecursivePartial } from 'tsparticles-engine';
-
 gsap.registerPlugin(ScrollTrigger);
 
-// Datos de los servicios actualizados
+// Datos de los servicios con colores de MENTHIA
 const servicesData = [
   {
     id: 'diagnostics',
     title: 'Diagnósticos Predictivos',
     description: 'Radiografía 360° con IA: detecta cuellos de botella y oportunidades ocultas; supervisadas por un experto humano.',
     icon: FaBrain,
-    color: 'from-blue-500 to-blue-700',
+    color: 'from-[#293A49] to-[#70B5E2]',
     details: [
       'Análisis 360° con inteligencia artificial',
       'Detección de oportunidades ocultas',
@@ -38,7 +33,7 @@ const servicesData = [
     title: 'Mentoría de Alto Impacto (Humano-IA)',
     description: 'Sesiones con asesor experto con plan de acción y métricas automáticas obtenidas con IA.',
     icon: FaHandshake,
-    color: 'from-purple-500 to-purple-700',
+    color: 'from-[#37B6FF] to-[#293A49]',
     details: [
       'Sesiones 1 a 1 con asesor experto',
       'Planes de acción personalizados',
@@ -51,7 +46,7 @@ const servicesData = [
     title: 'Cursos Especializados',
     description: 'Talleres prácticos en línea con casos de uso impartidos por los mejores asesores.',
     icon: FaGraduationCap,
-    color: 'from-green-500 to-green-700',
+    color: 'from-[#70B5E2] to-[#37B6FF]',
     details: [
       'Talleres prácticos online',
       'Casos de uso reales',
@@ -64,7 +59,7 @@ const servicesData = [
     title: 'Ecosistema Comercial',
     description: 'Marketplace integral: proveedores, clientes y alianzas recomendadas por IA.',
     icon: FaStore,
-    color: 'from-yellow-500 to-yellow-700',
+    color: 'from-[#293A49] to-[#37B6FF]',
     details: [
       'Marketplace integral',
       'Proveedores verificados',
@@ -77,7 +72,7 @@ const servicesData = [
     title: 'Comunidad Ejecutiva',
     description: 'Conecta con personas de valor con problemas y soluciones reales.',
     icon: FaUsers,
-    color: 'from-red-500 to-red-700',
+    color: 'from-[#70B5E2] to-[#293A49]',
     details: [
       'Red de ejecutivos verificados',
       'Problemas y soluciones reales',
@@ -90,45 +85,165 @@ const servicesData = [
 const Services = () => {
   const serviceRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [expandedService, setExpandedService] = useState<string | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  // tsparticles
-  const particlesInit = useCallback(async (engine: any) => {
-    await loadSlim(engine);
-  }, []);
+  // Efecto de partículas con Canvas - configuración parallax/grab
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-  // Tipado correcto de opciones para evitar el ensanchamiento de literales
-  const globalParticlesOptions = {
-    background: { color: { value: '#1a202c' } },
-    fpsLimit: 120,
-    interactivity: {
-      events: {
-        onClick: { enable: true, mode: 'push' },
-        onHover: { enable: true, mode: 'repulse' },
-        resize: true
-      },
-      modes: {
-        push: { quantity: 4 },
-        repulse: { distance: 100, duration: 0.4 }
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const particles: Array<{
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      size: number;
+      opacity: number;
+      opacityDirection: number;
+    }> = [];
+
+    const particleCount = 100;
+    const maxDistance = 150;
+    const moveSpeed = 2;
+
+    // Crear partículas
+    for (let i = 0; i < particleCount; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * moveSpeed,
+        vy: (Math.random() - 0.5) * moveSpeed,
+        size: Math.random() * 9 + 1, // entre 1 y 10
+        opacity: Math.random() * 0.4 + 0.1, // entre 0.1 y 0.5
+        opacityDirection: Math.random() > 0.5 ? 1 : -1
+      });
+    }
+
+    let mouseX = canvas.width / 2;
+    let mouseY = canvas.height / 2;
+    let targetMouseX = mouseX;
+    let targetMouseY = mouseY;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      targetMouseX = e.clientX;
+      targetMouseY = e.clientY;
+    };
+
+    const handleClick = (e: MouseEvent) => {
+      // Push mode - agregar 4 partículas en el click
+      for (let i = 0; i < 4; i++) {
+        particles.push({
+          x: e.clientX + (Math.random() - 0.5) * 30,
+          y: e.clientY + (Math.random() - 0.5) * 30,
+          vx: (Math.random() - 0.5) * moveSpeed,
+          vy: (Math.random() - 0.5) * moveSpeed,
+          size: Math.random() * 9 + 1,
+          opacity: Math.random() * 0.4 + 0.1,
+          opacityDirection: Math.random() > 0.5 ? 1 : -1
+        });
       }
-    },
-    particles: {
-      color: { value: '#00bcd4' },
-      links: { color: '#4dd0e1', distance: 150, enable: true, opacity: 0.5, width: 1 },
-      move: {
-        direction: 'none' as const,
-        enable: true,
-        outModes: { default: 'bounce' as const },
-        random: false,
-        speed: 1,
-        straight: false
-      },
-      number: { density: { enable: true, area: 800 }, value: 80 },
-      opacity: { value: 0.5 },
-      shape: { type: 'circle' },
-      size: { value: { min: 1, max: 5 } }
-    },
-    detectRetina: true
-  } satisfies RecursivePartial<IOptions>;
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('click', handleClick);
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Parallax suave (smooth: 10)
+      mouseX += (targetMouseX - mouseX) * 0.1;
+      mouseY += (targetMouseY - mouseY) * 0.1;
+
+      // Actualizar y dibujar partículas
+      particles.forEach((particle, i) => {
+        // Movimiento base
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+
+        // Rebotar en los bordes (out mode)
+        if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1;
+        if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1;
+
+        // Animación de opacidad (speed: 3)
+        particle.opacity += particle.opacityDirection * 0.03;
+        if (particle.opacity >= 0.5) {
+          particle.opacity = 0.5;
+          particle.opacityDirection = -1;
+        }
+        if (particle.opacity <= 0.1) {
+          particle.opacity = 0.1;
+          particle.opacityDirection = 1;
+        }
+
+        // Efecto parallax (force: 60, smooth: 10)
+        const dx = mouseX - particle.x;
+        const dy = mouseY - particle.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance < 400) { // grab distance
+          const force = 60 / 10000; // parallax force
+          particle.x += dx * force * (particle.size / 5); // partículas más grandes se mueven más
+          particle.y += dy * force * (particle.size / 5);
+        }
+
+        // Dibujar partícula (blanca)
+        ctx.fillStyle = `rgba(255, 255, 255, ${particle.opacity})`;
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Dibujar líneas de conexión (grab mode con hover)
+        particles.slice(i + 1).forEach(otherParticle => {
+          const dx = particle.x - otherParticle.x;
+          const dy = particle.y - otherParticle.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < maxDistance) {
+            // Líneas más visibles cerca del mouse (grab effect)
+            const mouseDistToLine = Math.sqrt(
+              Math.pow(mouseX - (particle.x + otherParticle.x) / 2, 2) +
+              Math.pow(mouseY - (particle.y + otherParticle.y) / 2, 2)
+            );
+            
+            let lineOpacity = 0.4 * (1 - distance / maxDistance);
+            if (mouseDistToLine < 400) {
+              lineOpacity = Math.min(1, lineOpacity * (1 + (400 - mouseDistToLine) / 400));
+            }
+
+            ctx.strokeStyle = `rgba(255, 255, 255, ${lineOpacity})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(particle.x, particle.y);
+            ctx.lineTo(otherParticle.x, otherParticle.y);
+            ctx.stroke();
+          }
+        });
+      });
+
+      requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    const handleResize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('click', handleClick);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   // Animaciones de entrada (hero + CTA)
   useEffect(() => {
@@ -258,7 +373,7 @@ const Services = () => {
     const scanLine = document.createElement('div');
     scanLine.style.cssText = `
       position: absolute; left: 0; top: 0; height: 2px; width: 100%;
-      background: linear-gradient(90deg, transparent, rgba(56,189,248,0.8), rgba(56,189,248,0.8), transparent);
+      background: linear-gradient(90deg, transparent, rgba(112,181,226,0.8), rgba(112,181,226,0.8), transparent);
       opacity: 0.7; z-index: 10; pointer-events: none; animation: scanAnimation 2s ease-in-out;
     `;
     const style = document.createElement('style');
@@ -277,17 +392,39 @@ const Services = () => {
     }, 2000);
   };
 
+  // Función para click en tarjeta
+  const handleCardClick = (idx: number) => {
+    if (idx !== currentIndex) {
+      moveToIndex(idx);
+    }
+  };
+
   return (
     <PrivateLayout>
-      {/* Estilos "futuristas" + carrusel */}
+      {/* Estilos con colores MENTHIA */}
       <style jsx global>{`
         :root {
-          --glow-primary: rgba(56, 189, 248, 0.7);
-          --glow-secondary: rgba(94, 234, 212, 0.6);
-          --neon-pink: rgba(236, 72, 153, 0.8);
-          --neon-blue: rgba(59, 130, 246, 0.8);
-          --neon-green: rgba(16, 185, 129, 0.8);
+          --menthia-navy: #293A49;
+          --menthia-blue: #70B5E2;
+          --menthia-light-blue: #37B6FF;
+          --menthia-white: #ffffff;
+          --glow-primary: rgba(112, 181, 226, 0.7);
+          --glow-secondary: rgba(55, 182, 255, 0.6);
         }
+        
+        /* Efecto de partículas con Canvas */
+        .particles-bg {
+          position: fixed;
+          inset: 0;
+          z-index: 0;
+        }
+        
+        .particles-canvas {
+          position: absolute;
+          inset: 0;
+          background: #293A49;
+        }
+        
         .carousel-container {
           width: 90%;
           max-width: 1100px;
@@ -297,31 +434,35 @@ const Services = () => {
           z-index: 10;
           margin: 0 auto;
         }
+        
         .carousel-track {
           display: flex;
           transition: transform 0.75s cubic-bezier(0.21, 0.61, 0.35, 1);
           transform-style: preserve-3d;
           will-change: transform;
         }
+        
         .carousel-card {
           min-width: 320px;
           max-width: 320px;
           margin: 0 25px;
-          background: linear-gradient(135deg, rgba(30,41,59,0.85), rgba(15,23,42,0.9));
+          background: linear-gradient(135deg, rgba(41,58,73,0.85), rgba(15,23,42,0.9));
           border-radius: 1.2rem;
           overflow: hidden;
           backdrop-filter: blur(10px);
-          box-shadow: 0 15px 25px rgba(0,0,0,0.5), 0 0 30px rgba(56,189,248,0.2);
+          box-shadow: 0 15px 25px rgba(0,0,0,0.5), 0 0 30px rgba(112,181,226,0.2);
           transition: all 0.6s cubic-bezier(0.21, 0.61, 0.35, 1);
           transform-origin: center center;
           position: relative;
-          border: 1px solid rgba(94,234,212,0.2);
+          border: 1px solid rgba(112,181,226,0.2);
+          cursor: pointer;
         }
+        
         .carousel-card::before {
           content: '';
           position: absolute;
           inset: -2px;
-          background: linear-gradient(45deg, transparent 0%, var(--neon-blue) 25%, var(--neon-green) 50%, var(--neon-pink) 75%, transparent 100%);
+          background: linear-gradient(45deg, transparent 0%, var(--menthia-light-blue) 25%, var(--menthia-blue) 50%, var(--menthia-light-blue) 75%, transparent 100%);
           z-index: -1;
           border-radius: 1.3rem;
           filter: blur(8px);
@@ -329,18 +470,42 @@ const Services = () => {
           transition: opacity 0.5s ease;
           animation: borderGlow 6s linear infinite;
         }
+        
         @keyframes borderGlow {
           0% { background-position: 0% 50%; opacity: 0.3; }
           50% { background-position: 100% 50%; opacity: 0.5; }
           100% { background-position: 0% 50%; opacity: 0.3; }
         }
-        .carousel-card.is-active::before { opacity: 1; background-size: 300% 300%; }
-        .carousel-card:not(.is-active) { transform: scale(0.8) rotateY(35deg) translateZ(-100px); opacity: 0.45; filter: saturate(0.6) brightness(0.7); }
-        .carousel-card.is-prev { transform-origin: right center; transform: scale(0.75) rotateY(45deg) translateX(-80px) translateZ(-150px); }
-        .carousel-card.is-next { transform-origin: left center; transform: scale(0.75) rotateY(-45deg) translateX(80px) translateZ(-150px); }
-        .carousel-card.is-active { transform: scale(1) rotateY(0) translateZ(0); opacity: 1; z-index: 20; box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 40px var(--glow-primary), inset 0 0 20px rgba(56,189,248,0.1); filter: saturate(1.2) brightness(1.1); }
+        
+        .carousel-card.is-active::before { 
+          opacity: 1; 
+          background-size: 300% 300%; 
+        }
+        
+        .carousel-card:not(.is-active) { 
+          transform: scale(0.8) rotateY(35deg) translateZ(-100px); 
+          opacity: 0.45; 
+          filter: saturate(0.6) brightness(0.7); 
+        }
+        
+        .carousel-card.is-prev { 
+          transform-origin: right center; 
+          transform: scale(0.75) rotateY(45deg) translateX(-80px) translateZ(-150px); 
+        }
+        
+        .carousel-card.is-next { 
+          transform-origin: left center; 
+          transform: scale(0.75) rotateY(-45deg) translateX(80px) translateZ(-150px); 
+        }
+        
+        .carousel-card.is-active { 
+          transform: scale(1) rotateY(0) translateZ(0); 
+          opacity: 1; 
+          z-index: 20; 
+          box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 40px var(--glow-primary), inset 0 0 20px rgba(112,181,226,0.1); 
+          filter: saturate(1.2) brightness(1.1); 
+        }
 
-        /* Header con icono */
         .card-header {
           position: relative;
           height: 180px;
@@ -349,33 +514,71 @@ const Services = () => {
           justify-content: center;
           text-align: center;
           color: white;
-          border-bottom: 1px solid rgba(94,234,212,0.25);
+          border-bottom: 1px solid rgba(112,181,226,0.25);
         }
+        
         .card-header .title {
           margin-top: .75rem;
           font-weight: 800;
           letter-spacing: .3px;
+          font-family: 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;
         }
+        
         .card-header::after {
-          content:''; position:absolute; inset:0;
-          background: linear-gradient(120deg, rgba(56,189,248,0.1), transparent 70%),
-                      radial-gradient(circle at 80% 20%, rgba(94,234,212,0.15), transparent 50%);
+          content:''; 
+          position:absolute; 
+          inset:0;
+          background: linear-gradient(120deg, rgba(112,181,226,0.1), transparent 70%),
+                      radial-gradient(circle at 80% 20%, rgba(55,182,255,0.15), transparent 50%);
           pointer-events:none;
         }
 
-        .card-content { padding: 1.5rem; color: #f1f5f9; }
-        .card-title { font-family: "Orbitron", sans-serif; margin-bottom: .5rem; letter-spacing: .6px; position: relative; display: inline-block; }
-        .card-title::after { content: attr(data-text); position: absolute; top:0; left:0; color: transparent; -webkit-text-stroke: .5px; filter: blur(3px); opacity:0; transition: opacity .3s ease; }
-        .carousel-card.is-active .card-title::after { opacity: .8; }
+        .card-content { 
+          padding: 1.5rem; 
+          color: #f1f5f9; 
+        }
+        
+        .card-title { 
+          font-family: 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif; 
+          margin-bottom: .5rem; 
+          letter-spacing: .6px; 
+          position: relative; 
+          display: inline-block; 
+        }
+        
+        .card-title::after { 
+          content: attr(data-text); 
+          position: absolute; 
+          top:0; 
+          left:0; 
+          color: transparent; 
+          -webkit-text-stroke: .5px; 
+          filter: blur(3px); 
+          opacity:0; 
+          transition: opacity .3s ease; 
+        }
+        
+        .carousel-card.is-active .card-title::after { 
+          opacity: .8; 
+        }
 
-        .card-description { font-size:.95rem; line-height:1.6; color: rgba(241,245,249,0.85); font-weight:300; }
+        .card-description { 
+          font-size:.95rem; 
+          line-height:1.6; 
+          color: rgba(241,245,249,0.85); 
+          font-weight:300; 
+        }
 
         .details {
           margin-top: 1rem;
           border-top: 1px solid rgba(255,255,255,0.08);
           padding-top: 1rem;
         }
-        .details ul { margin-top: .5rem; }
+        
+        .details ul { 
+          margin-top: .5rem; 
+        }
+        
         .details .cta {
           margin-top: 1rem;
           display: flex;
@@ -383,56 +586,123 @@ const Services = () => {
         }
 
         .carousel-button {
-          position:absolute; top:50%; transform: translateY(-50%);
-          background: rgba(12,74,110,0.3); color:#38bdf8; border:1px solid rgba(14,165,233,0.4);
-          border-radius: 9999px; width:48px; height:48px; display:flex; justify-content:center; align-items:center;
-          cursor:pointer; z-index:20; transition: all .3s ease; backdrop-filter: blur(5px); box-shadow: 0 0 15px rgba(56,189,248,0.2);
+          position:absolute; 
+          top:50%; 
+          transform: translateY(-50%);
+          background: rgba(41,58,73,0.5); 
+          color: var(--menthia-light-blue); 
+          border:1px solid rgba(112,181,226,0.4);
+          border-radius: 9999px; 
+          width:48px; 
+          height:48px; 
+          display:flex; 
+          justify-content:center; 
+          align-items:center;
+          cursor:pointer; 
+          z-index:20; 
+          transition: all .3s ease; 
+          backdrop-filter: blur(5px); 
+          box-shadow: 0 0 15px rgba(112,181,226,0.2);
         }
-        .carousel-button:hover { background: rgba(14,165,233,0.3); color:#e0f2fe; transform: translateY(-50%) scale(1.1); box-shadow: 0 0 20px rgba(56,189,248,0.4); }
-        .carousel-button:active { transform: translateY(-50%) scale(.95); }
-        .carousel-button.prev { left: -24px; }
-        .carousel-button.next { right: -24px; }
+        
+        .carousel-button:hover { 
+          background: rgba(112,181,226,0.3); 
+          color: var(--menthia-white); 
+          transform: translateY(-50%) scale(1.1); 
+          box-shadow: 0 0 20px rgba(112,181,226,0.4); 
+        }
+        
+        .carousel-button:active { 
+          transform: translateY(-50%) scale(.95); 
+        }
+        
+        .carousel-button.prev { 
+          left: -24px; 
+        }
+        
+        .carousel-button.next { 
+          right: -24px; 
+        }
 
-        .carousel-indicators { display:flex; justify-content:center; gap:10px; margin-top:2rem; }
-        .indicator { width:24px; height:4px; background: rgba(56,189,248,0.2); border-radius:2px; cursor:pointer; transition: all .3s ease; }
-        .indicator.active { background:#38bdf8; box-shadow: 0 0 10px #38bdf8; }
+        .carousel-indicators { 
+          display:flex; 
+          justify-content:center; 
+          gap:10px; 
+          margin-top:2rem; 
+        }
+        
+        .indicator { 
+          width:24px; 
+          height:4px; 
+          background: rgba(112,181,226,0.2); 
+          border-radius:2px; 
+          cursor:pointer; 
+          transition: all .3s ease; 
+        }
+        
+        .indicator.active { 
+          background: var(--menthia-light-blue); 
+          box-shadow: 0 0 10px var(--menthia-light-blue); 
+        }
 
         @media (max-width: 768px) {
-          .carousel-button { width:40px; height:40px; }
-          .carousel-button.prev { left: 5px; }
-          .carousel-button.next { right: 5px; }
-          .carousel-card { min-width: 260px; max-width: 260px; margin: 0 15px; }
-          .carousel-card:not(.is-active) { transform: scale(0.85) rotateY(25deg); }
-          .carousel-card.is-prev { transform: scale(0.8) rotateY(30deg) translateX(-40px); }
-          .carousel-card.is-next { transform: scale(0.8) rotateY(-30deg) translateX(40px); }
-          .card-header { height: 160px; }
+          .carousel-button { 
+            width:40px; 
+            height:40px; 
+          }
+          .carousel-button.prev { 
+            left: 5px; 
+          }
+          .carousel-button.next { 
+            right: 5px; 
+          }
+          .carousel-card { 
+            min-width: 260px; 
+            max-width: 260px; 
+            margin: 0 15px; 
+          }
+          .carousel-card:not(.is-active) { 
+            transform: scale(0.85) rotateY(25deg); 
+          }
+          .carousel-card.is-prev { 
+            transform: scale(0.8) rotateY(30deg) translateX(-40px); 
+          }
+          .carousel-card.is-next { 
+            transform: scale(0.8) rotateY(-30deg) translateX(40px); 
+          }
+          .card-header { 
+            height: 160px; 
+          }
         }
       `}</style>
 
-      <div className="relative min-h-screen bg-gray-900 text-gray-100 font-inter overflow-hidden">
-        <Particles id="tsparticles-global" init={particlesInit} options={globalParticlesOptions} className="absolute inset-0 z-0" />
+      <div className="relative min-h-screen bg-[#293A49] text-gray-100 overflow-hidden" style={{ fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+        {/* Canvas de partículas interactivo */}
+        <div className="particles-bg">
+          <canvas ref={canvasRef} className="particles-canvas"></canvas>
+        </div>
+        
         <div className="relative z-10">
           {/* Hero */}
-          <section className="min-h-[80vh] flex items-center justify-center text-center overflow-hidden shadow-2xl relative">
-            <div className="absolute inset-0 bg-black/60 z-0"></div>
+          <section className="min-h-[80vh] flex items-center justify-center text-center overflow-hidden relative">
             <div className="relative z-10 p-4 max-w-6xl mx-auto">
-              <h2 className="text-2xl md:text-3xl font-bold text-cyan-400 mb-4">Soluciones Integrales</h2>
+              <h2 className="text-2xl md:text-3xl font-bold text-[#70B5E2] mb-4">Soluciones Integrales</h2>
               <h1 className="hero-services-title text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6 drop-shadow-lg">
-                Mentores expertos + <span className="text-blue-400">Inteligencia Artificial</span> para escalar tu negocio en un solo lugar
+                Mentores expertos + <span className="text-[#37B6FF]">Inteligencia Artificial</span> para escalar tu negocio en un solo lugar
               </h1>
-              <p className="hero-services-description text-lg md:text-xl text-indigo-200 mb-6 max-w-4xl mx-auto">
+              <p className="hero-services-description text-lg md:text-xl text-gray-200 mb-6 max-w-4xl mx-auto">
                 Plataforma digital creada para potenciar el talento humano usando herramientas de IA que fortalecen tu negocio.
               </p>
               <p className="hero-services-subtitle text-base md:text-lg text-gray-300 mb-10 max-w-4xl mx-auto">
                 Empresa mexicana dedicada a conectar las necesidades reales de los emprendedores y empresas con asesores expertos usando como apoyo herramientas de Inteligencia Artificial (IA)
               </p>
-              <p className="text-lg md:text-xl text-yellow-300 mb-10 font-semibold">
+              <p className="text-lg md:text-xl text-[#70B5E2] mb-10 font-semibold">
                 Mentores, Patronos, Líderes de opinión.
               </p>
               <div className="hero-services-cta">
                 <Link
                   href="/register"
-                  className="inline-block bg-yellow-400 text-blue-900 font-bold py-4 px-12 rounded-full text-lg md:text-xl shadow-lg hover:bg-yellow-300 transform hover:scale-105 transition-all duration-300 ease-in-out"
+                  className="inline-block bg-[#37B6FF] text-white font-bold py-4 px-12 rounded-full text-lg md:text-xl shadow-lg hover:bg-[#70B5E2] transform hover:scale-105 transition-all duration-300 ease-in-out"
                 >
                   <FaUserPlus className="inline-block mr-3" /> Únete hoy
                 </Link>
@@ -442,7 +712,7 @@ const Services = () => {
 
           {/* Carrusel Servicios */}
           <section id="services-grid" className="py-16 md:py-24 container mx-auto relative z-10">
-            <h2 className="text-4xl md:text-5xl font-bold text-center text-blue-300 mb-10">
+            <h2 className="text-4xl md:text-5xl font-bold text-center text-[#70B5E2] mb-10">
               Servicios Inteligentes a tu Medida
             </h2>
 
@@ -450,23 +720,15 @@ const Services = () => {
               <div className="carousel-track" ref={trackRef}>
                 {servicesData.map((s, i) => {
                   const Icon = s.icon;
-                  const titleColor =
-                    s.color.includes('blue') ? 'text-cyan-200' :
-                    s.color.includes('purple') ? 'text-indigo-200' :
-                    s.color.includes('green') ? 'text-emerald-200' :
-                    s.color.includes('yellow') ? 'text-amber-200' : 'text-rose-200';
-
-                  const buttonBg =
-                    s.color.includes('blue') ? 'bg-blue-600 hover:bg-blue-700' :
-                    s.color.includes('purple') ? 'bg-purple-600 hover:bg-purple-700' :
-                    s.color.includes('green') ? 'bg-green-600 hover:bg-green-700' :
-                    s.color.includes('yellow') ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-rose-600 hover:bg-rose-700';
+                  const titleColor = 'text-[#70B5E2]';
+                  const buttonBg = 'bg-[#37B6FF] hover:bg-[#70B5E2]';
 
                   return (
                     <div
                       key={s.id}
                       className={`carousel-card ${i === 0 ? 'is-active' : ''}`}
                       ref={(el) => { if (el) cardRefs.current[i] = el; }}
+                      onClick={() => handleCardClick(i)}
                     >
                       {/* HEADER con icono y gradiente */}
                       <div className={`card-header bg-gradient-to-br ${s.color}`}>
@@ -479,7 +741,7 @@ const Services = () => {
                       {/* BODY */}
                       <div className="card-content">
                         <h3
-                          className="card-title text-lg font-bold text-cyan-400"
+                          className="card-title text-lg font-bold text-[#70B5E2]"
                           data-text={s.title}
                         >
                           {s.title}
@@ -488,7 +750,10 @@ const Services = () => {
 
                         {/* Botón Ver detalles / Probar ahora */}
                         <button
-                          onClick={() => toggleDetails(s.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleDetails(s.id);
+                          }}
                           className={`neo-btn mt-4 w-full ${buttonBg} text-white py-2.5 px-4 rounded-full font-semibold transition-colors duration-200 shadow-md flex items-center justify-center`}
                           type="button"
                         >
@@ -508,11 +773,11 @@ const Services = () => {
                             transition={{ duration: 0.3, ease: 'easeOut' }}
                             className="details"
                           >
-                            <h4 className="text-base font-semibold text-blue-300 mb-2">¿Qué incluye?</h4>
+                            <h4 className="text-base font-semibold text-[#70B5E2] mb-2">¿Qué incluye?</h4>
                             <ul className="list-disc list-inside text-gray-300 space-y-1">
                               {s.details.map((d, k) => (
                                 <li key={k} className="flex items-start">
-                                  <FaArrowRight className="text-blue-400 text-sm mr-2 mt-1 flex-shrink-0" /> {d}
+                                  <FaArrowRight className="text-[#37B6FF] text-sm mr-2 mt-1 flex-shrink-0" /> {d}
                                 </li>
                               ))}
                             </ul>
@@ -520,7 +785,8 @@ const Services = () => {
                             <div className="cta">
                               <Link
                                 href="/register"
-                                className="inline-flex items-center justify-center bg-white text-blue-900 font-bold py-2.5 px-6 rounded-full text-sm shadow-lg hover:bg-gray-100 transition-all"
+                                className="inline-flex items-center justify-center bg-white text-[#293A49] font-bold py-2.5 px-6 rounded-full text-sm shadow-lg hover:bg-gray-100 transition-all"
+                                onClick={(e) => e.stopPropagation()}
                               >
                                 <FaRocket className="mr-2" /> Probar ahora
                               </Link>
@@ -568,17 +834,17 @@ const Services = () => {
           </section>
 
           {/* CTA Final */}
-          <section className="final-cta-section py-16 md:py-24 bg-gradient-to-r from-fuchsia-700 to-purple-800 text-center shadow-inner-2xl rounded-3xl mx-4 md:mx-auto max-w-6xl mb-16 p-8 md:p-12 relative z-10">
+          <section className="final-cta-section py-16 md:py-24 bg-gradient-to-r from-[#293A49] to-[#37B6FF] text-center shadow-inner-2xl rounded-3xl mx-4 md:mx-auto max-w-6xl mb-16 p-8 md:p-12 relative z-10">
             <div className="container mx-auto px-4">
               <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-6 leading-tight">
                 ¡Impulsa tu Negocio Hoy Mismo!
               </h2>
-              <p className="text-xl md:text-2xl text-purple-100 max-w-3xl mx-auto mb-10">
+              <p className="text-xl md:text-2xl text-gray-100 max-w-3xl mx-auto mb-10">
                 Regístrate en MenthIA y comienza a transformar tus ideas en éxito con el apoyo de nuestra comunidad y expertos.
               </p>
               <Link
                 href="/register"
-                className="inline-block bg-white text-purple-800 font-bold py-4 px-12 rounded-full text-lg md:text-xl shadow-lg hover:bg-gray-100 transform hover:scale-105 transition-all duration-300 ease-in-out"
+                className="inline-block bg-white text-[#293A49] font-bold py-4 px-12 rounded-full text-lg md:text-xl shadow-lg hover:bg-gray-100 transform hover:scale-105 transition-all duration-300 ease-in-out"
               >
                 <FaUserPlus className="inline-block mr-3" /> Regístrate Ahora
               </Link>
