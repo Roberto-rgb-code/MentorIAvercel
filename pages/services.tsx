@@ -1,6 +1,5 @@
 // pages/services.tsx
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import PrivateLayout from '@/components/layout/PrivateLayout';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
@@ -400,7 +399,7 @@ const Services = () => {
   };
 
   return (
-    <PrivateLayout>
+    <>
       {/* Estilos con colores MENTHIA */}
       <style jsx global>{`
         :root {
@@ -852,7 +851,7 @@ const Services = () => {
           </section>
         </div>
       </div>
-    </PrivateLayout>
+    </>
   );
 };
 
