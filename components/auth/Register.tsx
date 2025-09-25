@@ -142,13 +142,13 @@ const Register = () => {
           (goals.includes("Otro") && !otherGoal.trim()) ||
           !previousAdvisory
         ) {
-          setError("Completa el Paso 3: Retos y Metas (si elegiste ‘Otro’, especifícalo).");
+          setError("Completa el Paso 3: Retos y Metas (si elegiste 'Otro', especifícalo).");
           return;
         }
       }
       if (step === 5) {
         if (supportAreas.length === 0 || (supportAreas.includes("Otro") && !otherSupportArea.trim())) {
-          setError("Selecciona al menos un área en el Paso 4: Áreas de Apoyo (si ‘Otro’, especifícalo).");
+          setError("Selecciona al menos un área en el Paso 4: Áreas de Apoyo (si 'Otro', especifícalo).");
           return;
         }
       }
@@ -172,7 +172,7 @@ const Register = () => {
           !experienciaMipymes ||
           !colaboracionInstitucional
         ) {
-          setError("Completa el Paso 2: Formación y Experiencia (si ‘Otro’, especifícalo).");
+          setError("Completa el Paso 2: Formación y Experiencia (si 'Otro', especifícalo).");
           return;
         }
       }
@@ -181,11 +181,11 @@ const Register = () => {
           areasExperiencia.length === 0 ||
           (areasExperiencia.includes("Otro") && !otherAreaExperiencia.trim())
         ) {
-          setError("Selecciona al menos un área de experiencia (si ‘Otro’, especifícalo).");
+          setError("Selecciona al menos un área de experiencia (si 'Otro', especifícalo).");
           return;
         }
         if (industrias.length === 0 || (industrias.includes("Otro") && !otherIndustry.trim())) {
-          setError("Selecciona al menos una industria (si ‘Otro’, especifícalo).");
+          setError("Selecciona al menos una industria (si 'Otro', especifícalo).");
           return;
         }
         if (
@@ -193,7 +193,7 @@ const Register = () => {
           !intervencionPreferida ||
           (intervencionPreferida === "Otro" && !otraIntervencion.trim())
         ) {
-          setError("Completa caso de éxito e intervención preferida (si ‘Otro’, especifícalo).");
+          setError("Completa caso de éxito e intervención preferida (si 'Otro', especifícalo).");
           return;
         }
       }
@@ -206,7 +206,7 @@ const Register = () => {
           !recursosPropios ||
           !reportesEstructurados
         ) {
-          setError("Completa el Paso 4: Estilo y Metodología (si ‘Otra’ herramienta, especifícalo).");
+          setError("Completa el Paso 4: Estilo y Metodología (si 'Otra' herramienta, especifícalo).");
           return;
         }
       }
@@ -404,13 +404,20 @@ const Register = () => {
     const current = role ? step - 1 : 0;
     if (!role || total <= 0) return null;
     return (
-      <div className="flex justify-center mb-6">
+      <div className="flex justify-center mb-8">
         {Array.from({ length: total }).map((_, i) => (
           <div
             key={i}
-            className={`w-6 h-1 mx-1 rounded-full transition-all duration-300 ${
-              current > i ? "bg-blue-600" : "bg-gray-300"
+            className={`w-8 h-2 mx-1 rounded-full transition-all duration-300 ${
+              current > i 
+                ? "shadow-lg transform scale-105" 
+                : "bg-gray-200"
             }`}
+            style={{
+              background: current > i 
+                ? 'linear-gradient(135deg, #7085E2 0%, #37B6FF 100%)' 
+                : undefined
+            }}
           />
         ))}
       </div>
@@ -422,13 +429,96 @@ const Register = () => {
     onBack,
     nextText = "Siguiente",
   }: { onNext: () => void; onBack: () => void; nextText?: string }) => (
-    <div className="flex justify-between mt-6">
-      <button onClick={onBack} className="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300">
+    <div className="flex justify-between mt-8">
+      <button 
+        onClick={onBack} 
+        className="px-8 py-3 rounded-xl font-medium transition-all duration-200 hover:scale-105 shadow-md hover:shadow-lg"
+        style={{ 
+          backgroundColor: '#f8f9fa',
+          color: '#293A49',
+          fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif'
+        }}
+      >
         Volver
       </button>
-      <button onClick={onNext} className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700">
+      <button 
+        onClick={onNext} 
+        className="px-8 py-3 text-white rounded-xl font-medium transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl"
+        style={{ 
+          background: 'linear-gradient(135deg, #7085E2 0%, #37B6FF 100%)',
+          fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif'
+        }}
+      >
         {nextText}
       </button>
+    </div>
+  );
+
+  const InputField = ({ label, placeholder, type = "text", value, onChange, className = "", ...props }: any) => (
+    <div>
+      <label className="block text-sm font-medium mb-2" style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+        {label}
+      </label>
+      <input
+        type={type}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-200 focus:outline-none ${className}`}
+        style={{
+          borderColor: '#E5E7EB',
+          color: '#293A49',
+          fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif'
+        }}
+        onFocus={(e) => e.target.style.borderColor = '#7085E2'}
+        onBlur={(e) => e.target.style.borderColor = '#E5E7EB'}
+        {...props}
+      />
+    </div>
+  );
+
+  const SelectField = ({ label, value, onChange, children, className = "", ...props }: any) => (
+    <div>
+      <label className="block text-sm font-medium mb-2" style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+        {label}
+      </label>
+      <select
+        value={value}
+        onChange={onChange}
+        className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-200 focus:outline-none bg-white ${className}`}
+        style={{
+          borderColor: '#E5E7EB',
+          color: '#293A49',
+          fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif'
+        }}
+        onFocus={(e) => e.target.style.borderColor = '#7085E2'}
+        onBlur={(e) => e.target.style.borderColor = '#E5E7EB'}
+        {...props}
+      >
+        {children}
+      </select>
+    </div>
+  );
+
+  const TextAreaField = ({ label, placeholder, value, onChange, className = "", ...props }: any) => (
+    <div>
+      <label className="block text-sm font-medium mb-2" style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+        {label}
+      </label>
+      <textarea
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-200 focus:outline-none ${className}`}
+        style={{
+          borderColor: '#E5E7EB',
+          color: '#293A49',
+          fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif'
+        }}
+        onFocus={(e) => e.target.style.borderColor = '#7085E2'}
+        onBlur={(e) => e.target.style.borderColor = '#E5E7EB'}
+        {...props}
+      />
     </div>
   );
 
@@ -437,97 +527,101 @@ const Register = () => {
       case 1:
         return (
           <div className="animate-fade-in">
-            <h2 className="text-3xl font-extrabold text-gray-900 mb-6 text-center">
-              ¿Qué te trae a MentorApp?
-            </h2>
-            <div className="mb-4">
-              <Link href="/" className="inline-flex items-center text-sm text-blue-600 hover:text-blue-700 underline">
+            <div className="text-center mb-8">
+              <h1 className="text-3xl font-medium mb-4" style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+                ¿Qué te trae a MenthIA?
+              </h1>
+              <p className="text-gray-600" style={{ fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+                Asesoría integral, humana e inteligente para tu negocio
+              </p>
+            </div>
+            
+            <div className="mb-6">
+              <Link href="/" className="inline-flex items-center text-sm transition-colors hover:underline"
+                style={{ color: '#7085E2', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
                 ← Volver al inicio
               </Link>
             </div>
+            
             <div className="space-y-4">
               {ROLES_FINAL.map((rol) => (
                 <button
                   key={rol.value}
                   onClick={() => handleRoleSelection(rol.value)}
-                  className="w-full bg-gradient-to-r from-blue-500 to-blue-700 text-white p-4 rounded-xl shadow-md hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 ease-in-out text-left"
+                  className="w-full p-6 rounded-xl shadow-md hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300 text-left"
+                  style={{ 
+                    background: 'linear-gradient(135deg, #7085E2 0%, #37B6FF 100%)',
+                    color: 'white',
+                    fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif'
+                  }}
                 >
-                  <div className="font-semibold text-lg">{rol.label}</div>
-                  <div className="text-sm opacity-90 mt-1">{rol.description}</div>
+                  <div className="font-semibold text-lg mb-2">{rol.label}</div>
+                  <div className="text-sm opacity-95">{rol.description}</div>
                 </button>
               ))}
             </div>
-            <div className="mt-6 text-center text-sm text-gray-600">
+            
+            <div className="mt-8 text-center text-sm" style={{ color: '#6B7280', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
               ¿Ya tienes cuenta?{" "}
-              <Link href="/login" className="text-blue-600 hover:underline">Inicia sesión</Link>
+              <Link href="/login" className="font-medium transition-colors hover:underline"
+                style={{ color: '#7085E2' }}>
+                Inicia sesión
+              </Link>
             </div>
           </div>
         );
 
-      // Paso 1 (Sobre ti)
       case 2:
         return (
           <div className="animate-fade-in">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">🔹 Paso 1: Sobre ti</h2>
-            <div className="space-y-4">
+            <h2 className="text-2xl font-medium text-center mb-8" style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+              Paso 1: Sobre ti
+            </h2>
+            <div className="space-y-6">
+              <InputField
+                label="Nombre completo"
+                placeholder="Tu nombre completo"
+                value={userData.fullName}
+                onChange={(e: any) => setUserData({ ...userData, fullName: e.target.value })}
+              />
+              <InputField
+                label="Correo electrónico"
+                type="email"
+                placeholder="ejemplo@correo.com"
+                value={userData.email}
+                onChange={(e: any) => setUserData({ ...userData, email: e.target.value })}
+              />
+              <InputField
+                label="Número de teléfono (+ lada internacional)"
+                type="tel"
+                placeholder="+52 55 1234 5678"
+                value={userData.phone}
+                onChange={(e: any) => setUserData({ ...userData, phone: e.target.value })}
+              />
+              <InputField
+                label="Año de nacimiento"
+                type="number"
+                placeholder="1990"
+                value={userData.birthYear}
+                onChange={(e: any) => setUserData({ ...userData, birthYear: e.target.value })}
+                min={1900}
+                max={new Date().getFullYear()}
+              />
+              <SelectField
+                label="Idioma preferido"
+                value={userData.language}
+                onChange={(e: any) => setUserData({ ...userData, language: e.target.value })}
+              >
+                <option value="">Selecciona</option>
+                <option value="Español">Español</option>
+                <option value="Inglés">Inglés</option>
+                <option value="Francés">Francés</option>
+                <option value="Alemán">Alemán</option>
+              </SelectField>
               <div>
-                <label className="block text-gray-700 font-medium mb-2">Nombre completo</label>
-                <input
-                  type="text"
-                  value={userData.fullName}
-                  onChange={(e) => setUserData({ ...userData, fullName: e.target.value })}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Tu nombre completo"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-medium mb-2">Correo electrónico</label>
-                <input
-                  type="email"
-                  value={userData.email}
-                  onChange={(e) => setUserData({ ...userData, email: e.target.value })}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="ejemplo@correo.com"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-medium mb-2">Número de teléfono (+ lada internacional)</label>
-                <input
-                  type="tel"
-                  value={userData.phone}
-                  onChange={(e) => setUserData({ ...userData, phone: e.target.value })}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="+52 55 1234 5678"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-medium mb-2">Año de nacimiento</label>
-                <input
-                  type="number"
-                  value={userData.birthYear}
-                  onChange={(e) => setUserData({ ...userData, birthYear: e.target.value })}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="1990"
-                  min={1900}
-                  max={new Date().getFullYear()}
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-medium mb-2">Idioma preferido</label>
-                <select
-                  value={userData.language}
-                  onChange={(e) => setUserData({ ...userData, language: e.target.value })}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                >
-                  <option value="">Selecciona</option>
-                  <option value="Español">Español</option>
-                  <option value="Inglés">Inglés</option>
-                  <option value="Francés">Francés</option>
-                  <option value="Alemán">Alemán</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-gray-700 font-medium mb-2">Género (opcional)</label>
+                <label className="block text-sm font-medium mb-3" style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+                  Género (opcional)
+                </label>
                 <div className="flex flex-wrap gap-4">
                   {["Mujer", "Hombre", "Prefiero no decirlo", "Otro"].map((g) => (
                     <label key={g} className="flex items-center cursor-pointer">
@@ -536,58 +630,68 @@ const Register = () => {
                         value={g}
                         checked={userData.gender === g}
                         onChange={(e) => setUserData({ ...userData, gender: e.target.value })}
-                        className="h-4 w-4 text-blue-600"
+                        className="h-4 w-4 mr-2"
+                        style={{ accentColor: '#7085E2' }}
                       />
-                      <span className="ml-2 text-gray-800">{g}</span>
+                      <span style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>{g}</span>
                     </label>
                   ))}
                 </div>
               </div>
-              <div>
-                <label className="block text-gray-700 font-medium mb-2">País</label>
-                <input
-                  type="text"
-                  value={userData.country}
-                  onChange={(e) => setUserData({ ...userData, country: e.target.value })}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Tu país de residencia"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-medium mb-2">Ciudad</label>
-                <input
-                  type="text"
-                  value={userData.city}
-                  onChange={(e) => setUserData({ ...userData, city: e.target.value })}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Tu ciudad"
-                />
-              </div>
+              <InputField
+                label="País"
+                placeholder="Tu país de residencia"
+                value={userData.country}
+                onChange={(e: any) => setUserData({ ...userData, country: e.target.value })}
+              />
+              <InputField
+                label="Ciudad"
+                placeholder="Tu ciudad"
+                value={userData.city}
+                onChange={(e: any) => setUserData({ ...userData, city: e.target.value })}
+              />
             </div>
             <PasoButtons onBack={handleBack} onNext={handleNext} />
           </div>
         );
 
-      // ===== Flujos intermedios (AQUÍ ESTABA EL HUECO) =====
-
-      // Negocio/Institución — Paso 2
       case 3:
         if (["emprendedor", "empresa", "universidad", "gobierno"].includes(role)) {
           return (
             <div className="animate-fade-in">
-              <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">🔹 Paso 2: Sobre tu Negocio/Institución</h2>
-              <div className="space-y-4">
-                <input className="w-full p-3 border rounded-lg" placeholder="Motivación principal"
-                  value={motivation} onChange={(e) => setMotivation(e.target.value)} />
-                <input className="w-full p-3 border rounded-lg" placeholder="Nombre del negocio / institución"
-                  value={businessName} onChange={(e) => setBusinessName(e.target.value)} />
-                <input className="w-full p-3 border rounded-lg" placeholder="Relación con el negocio (propietario, empleado, etc.)"
-                  value={businessRelationship} onChange={(e) => setBusinessRelationship(e.target.value)} />
-                <select className="w-full p-3 border rounded-lg bg-white"
-                  value={businessStage} onChange={(e) => setBusinessStage(e.target.value)}>
-                  <option value="">Etapa</option>
-                  <option>Idea</option><option>Arranque</option><option>Tracción</option><option>Escala</option>
-                </select>
+              <h2 className="text-2xl font-medium text-center mb-8" style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+                Paso 2: Sobre tu Negocio/Institución
+              </h2>
+              <div className="space-y-6">
+                <InputField
+                  label="Motivación principal"
+                  placeholder="¿Qué te motiva a buscar asesoría?"
+                  value={motivation}
+                  onChange={(e: any) => setMotivation(e.target.value)}
+                />
+                <InputField
+                  label="Nombre del negocio / institución"
+                  placeholder="Nombre de tu organización"
+                  value={businessName}
+                  onChange={(e: any) => setBusinessName(e.target.value)}
+                />
+                <InputField
+                  label="Relación con el negocio"
+                  placeholder="Propietario, empleado, socio, etc."
+                  value={businessRelationship}
+                  onChange={(e: any) => setBusinessRelationship(e.target.value)}
+                />
+                <SelectField
+                  label="Etapa del negocio"
+                  value={businessStage}
+                  onChange={(e: any) => setBusinessStage(e.target.value)}
+                >
+                  <option value="">Selecciona la etapa</option>
+                  <option>Idea</option>
+                  <option>Arranque</option>
+                  <option>Tracción</option>
+                  <option>Escala</option>
+                </SelectField>
               </div>
               <PasoButtons onBack={handleBack} onNext={handleNext} />
             </div>
@@ -596,69 +700,118 @@ const Register = () => {
         // Consultor — Paso 2 (Formación y experiencia)
         return (
           <div className="animate-fade-in">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">🔹 Paso 2: Formación y Experiencia</h2>
-            <div className="space-y-4">
-              <select className="w-full p-3 border rounded-lg bg-white"
-                value={ultimoGrado} onChange={(e) => setUltimoGrado(e.target.value)}>
-                <option value="">Último grado</option>
-                <option>Licenciatura</option><option>Maestría</option><option>Doctorado</option><option>Otro</option>
-              </select>
+            <h2 className="text-2xl font-medium text-center mb-8" style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+              Paso 2: Formación y Experiencia
+            </h2>
+            <div className="space-y-6">
+              <SelectField
+                label="Último grado académico"
+                value={ultimoGrado}
+                onChange={(e: any) => setUltimoGrado(e.target.value)}
+              >
+                <option value="">Selecciona tu último grado</option>
+                <option>Licenciatura</option>
+                <option>Maestría</option>
+                <option>Doctorado</option>
+                <option>Otro</option>
+              </SelectField>
               {ultimoGrado === "Otro" && (
-                <input className="w-full p-3 border rounded-lg" placeholder="Especifica tu grado"
-                  value={otroGrado} onChange={(e) => setOtroGrado(e.target.value)} />
+                <InputField
+                  label="Especifica tu grado"
+                  placeholder="Describe tu formación académica"
+                  value={otroGrado}
+                  onChange={(e: any) => setOtroGrado(e.target.value)}
+                />
               )}
-              <input className="w-full p-3 border rounded-lg" placeholder="Área de estudios"
-                value={areaEstudios} onChange={(e) => setAreaEstudios(e.target.value)} />
-              <input className="w-full p-3 border rounded-lg" placeholder="Años de experiencia"
-                value={anosExperiencia} onChange={(e) => setAnosExperiencia(e.target.value)} />
-              <select className="w-full p-3 border rounded-lg bg-white"
-                value={experienciaMipymes} onChange={(e) => setExperienciaMipymes(e.target.value)}>
-                <option value="">Experiencia con MiPyMEs</option>
-                <option>Alta</option><option>Media</option><option>Baja</option>
-              </select>
-              <select className="w-full p-3 border rounded-lg bg-white"
-                value={colaboracionInstitucional} onChange={(e) => setColaboracionInstitucional(e.target.value)}>
-                <option value="">Colaboración con instituciones</option>
-                <option>Frecuente</option><option>Ocasional</option><option>Nula</option>
-              </select>
+              <InputField
+                label="Área de estudios"
+                placeholder="Administración, Ingeniería, Psicología, etc."
+                value={areaEstudios}
+                onChange={(e: any) => setAreaEstudios(e.target.value)}
+              />
+              <InputField
+                label="Años de experiencia"
+                placeholder="Número de años de experiencia profesional"
+                value={anosExperiencia}
+                onChange={(e: any) => setAnosExperiencia(e.target.value)}
+              />
+              <SelectField
+                label="Experiencia con MiPyMEs"
+                value={experienciaMipymes}
+                onChange={(e: any) => setExperienciaMipymes(e.target.value)}
+              >
+                <option value="">Selecciona tu nivel de experiencia</option>
+                <option>Alta</option>
+                <option>Media</option>
+                <option>Baja</option>
+              </SelectField>
+              <SelectField
+                label="Colaboración con instituciones"
+                value={colaboracionInstitucional}
+                onChange={(e: any) => setColaboracionInstitucional(e.target.value)}
+              >
+                <option value="">Selecciona tu nivel de colaboración</option>
+                <option>Frecuente</option>
+                <option>Ocasional</option>
+                <option>Nula</option>
+              </SelectField>
             </div>
             <PasoButtons onBack={handleBack} onNext={handleNext} />
           </div>
         );
 
-      // Negocio/Institución — Paso 3 | Consultor — Paso 3 (áreas/industrias/caso de éxito)
       case 4:
         if (["emprendedor", "empresa", "universidad", "gobierno"].includes(role)) {
           return (
             <div className="animate-fade-in">
-              <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">🔹 Paso 3: Retos y Metas</h2>
-              <div className="space-y-4">
-                <input className="w-full p-3 border rounded-lg" placeholder="Principal reto actual"
-                  value={mainChallenge} onChange={(e) => setMainChallenge(e.target.value)} />
+              <h2 className="text-2xl font-medium text-center mb-8" style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+                Paso 3: Retos y Metas
+              </h2>
+              <div className="space-y-6">
+                <InputField
+                  label="Principal reto actual"
+                  placeholder="¿Cuál es el mayor desafío que enfrenta tu negocio?"
+                  value={mainChallenge}
+                  onChange={(e: any) => setMainChallenge(e.target.value)}
+                />
                 <div>
-                  <label className="block text-gray-700 font-medium mb-2">Metas (selecciona y/o escribe)</label>
-                  <div className="flex flex-wrap gap-3">
+                  <label className="block text-sm font-medium mb-3" style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+                    Metas principales (selecciona todas las que apliquen)
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
                     {["Ventas", "Operación", "Finanzas", "Talento", "Otro"].map((g) => (
-                      <label key={g} className="flex items-center gap-2">
+                      <label key={g} className="flex items-center gap-3 p-3 rounded-lg border transition-colors cursor-pointer"
+                        style={{ borderColor: goals.includes(g) ? '#7085E2' : '#E5E7EB', backgroundColor: goals.includes(g) ? '#F0F4FF' : 'white' }}>
                         <input
                           type="checkbox"
                           checked={goals.includes(g)}
                           onChange={() => handleCheckboxChange(setGoals, goals, g, otherGoal, setOtherGoal)}
+                          className="h-4 w-4"
+                          style={{ accentColor: '#7085E2' }}
                         />
-                        <span>{g}</span>
+                        <span style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>{g}</span>
                       </label>
                     ))}
                   </div>
                   {goals.includes("Otro") && (
-                    <input className="mt-2 w-full p-3 border rounded-lg" placeholder="Otra meta"
-                      value={otherGoal} onChange={(e) => setOtherGoal(e.target.value)} />
+                    <InputField
+                      label=""
+                      placeholder="Especifica tu otra meta"
+                      value={otherGoal}
+                      onChange={(e: any) => setOtherGoal(e.target.value)}
+                      className="mt-3"
+                    />
                   )}
                 </div>
-                <select className="w-full p-3 border rounded-lg bg-white"
-                  value={previousAdvisory} onChange={(e) => setPreviousAdvisory(e.target.value)}>
-                  <option value="">¿Has tenido asesoría previa?</option>
-                  <option>Sí</option><option>No</option>
-                </select>
+                <SelectField
+                  label="¿Has tenido asesoría previa?"
+                  value={previousAdvisory}
+                  onChange={(e: any) => setPreviousAdvisory(e.target.value)}
+                >
+                  <option value="">Selecciona una opción</option>
+                  <option>Sí</option>
+                  <option>No</option>
+                </SelectField>
               </div>
               <PasoButtons onBack={handleBack} onNext={handleNext} />
             </div>
@@ -667,89 +820,140 @@ const Register = () => {
         // Consultor
         return (
           <div className="animate-fade-in">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">🔹 Paso 3: Áreas, Industrias y Caso de éxito</h2>
-            <div className="space-y-4">
+            <h2 className="text-2xl font-medium text-center mb-8" style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+              Paso 3: Áreas, Industrias y Experiencia
+            </h2>
+            <div className="space-y-6">
               <div>
-                <label className="block text-gray-700 font-medium mb-2">Áreas de experiencia</label>
-                <div className="flex flex-wrap gap-3">
+                <label className="block text-sm font-medium mb-3" style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+                  Áreas de experiencia
+                </label>
+                <div className="grid grid-cols-2 gap-3">
                   {["Estrategia", "Finanzas", "Operaciones", "Marketing", "Talento", "Otro"].map((a) => (
-                    <label key={a} className="flex items-center gap-2">
+                    <label key={a} className="flex items-center gap-3 p-3 rounded-lg border transition-colors cursor-pointer"
+                      style={{ borderColor: areasExperiencia.includes(a) ? '#7085E2' : '#E5E7EB', backgroundColor: areasExperiencia.includes(a) ? '#F0F4FF' : 'white' }}>
                       <input
                         type="checkbox"
                         checked={areasExperiencia.includes(a)}
                         onChange={() => handleCheckboxChange(setAreasExperiencia, areasExperiencia, a, otherAreaExperiencia, setOtherAreaExperiencia)}
+                        className="h-4 w-4"
+                        style={{ accentColor: '#7085E2' }}
                       />
-                      <span>{a}</span>
+                      <span style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>{a}</span>
                     </label>
                   ))}
                 </div>
                 {areasExperiencia.includes("Otro") && (
-                  <input className="mt-2 w-full p-3 border rounded-lg" placeholder="Otra área"
-                    value={otherAreaExperiencia} onChange={(e) => setOtherAreaExperiencia(e.target.value)} />
+                  <InputField
+                    label=""
+                    placeholder="Especifica otra área"
+                    value={otherAreaExperiencia}
+                    onChange={(e: any) => setOtherAreaExperiencia(e.target.value)}
+                    className="mt-3"
+                  />
                 )}
               </div>
 
               <div>
-                <label className="block text-gray-700 font-medium mb-2">Industrias</label>
-                <div className="flex flex-wrap gap-3">
+                <label className="block text-sm font-medium mb-3" style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+                  Industrias de experiencia
+                </label>
+                <div className="grid grid-cols-2 gap-3">
                   {["Retail", "Manufactura", "Servicios", "Tecnología", "Salud", "Otro"].map((i) => (
-                    <label key={i} className="flex items-center gap-2">
+                    <label key={i} className="flex items-center gap-3 p-3 rounded-lg border transition-colors cursor-pointer"
+                      style={{ borderColor: industrias.includes(i) ? '#7085E2' : '#E5E7EB', backgroundColor: industrias.includes(i) ? '#F0F4FF' : 'white' }}>
                       <input
                         type="checkbox"
                         checked={industrias.includes(i)}
                         onChange={() => handleCheckboxChange(setIndustrias, industrias, i, otherIndustry, setOtherIndustry)}
+                        className="h-4 w-4"
+                        style={{ accentColor: '#7085E2' }}
                       />
-                      <span>{i}</span>
+                      <span style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>{i}</span>
                     </label>
                   ))}
                 </div>
                 {industrias.includes("Otro") && (
-                  <input className="mt-2 w-full p-3 border rounded-lg" placeholder="Otra industria"
-                    value={otherIndustry} onChange={(e) => setOtherIndustry(e.target.value)} />
+                  <InputField
+                    label=""
+                    placeholder="Especifica otra industria"
+                    value={otherIndustry}
+                    onChange={(e: any) => setOtherIndustry(e.target.value)}
+                    className="mt-3"
+                  />
                 )}
               </div>
 
-              <textarea className="w-full p-3 border rounded-lg" placeholder="Describe un caso de éxito brevemente"
-                value={casoExito} onChange={(e) => setCasoExito(e.target.value)} />
-              <div className="flex flex-col gap-2">
-                <select className="w-full p-3 border rounded-lg bg-white"
-                  value={intervencionPreferida} onChange={(e) => setIntervencionPreferida(e.target.value)}>
-                  <option value="">Intervención preferida</option>
-                  <option>Diagnóstico</option><option>Implementación</option><option>Acompañamiento</option><option>Otro</option>
-                </select>
-                {intervencionPreferida === "Otro" && (
-                  <input className="w-full p-3 border rounded-lg" placeholder="Especifica intervención"
-                    value={otraIntervencion} onChange={(e) => setOtraIntervencion(e.target.value)} />
-                )}
-              </div>
+              <TextAreaField
+                label="Caso de éxito"
+                placeholder="Describe brevemente un caso de éxito relevante de tu experiencia profesional"
+                value={casoExito}
+                onChange={(e: any) => setCasoExito(e.target.value)}
+                rows={4}
+              />
+              
+              <SelectField
+                label="Intervención preferida"
+                value={intervencionPreferida}
+                onChange={(e: any) => setIntervencionPreferida(e.target.value)}
+              >
+                <option value="">Selecciona tu intervención preferida</option>
+                <option>Diagnóstico</option>
+                <option>Implementación</option>
+                <option>Acompañamiento</option>
+                <option>Otro</option>
+              </SelectField>
+              
+              {intervencionPreferida === "Otro" && (
+                <InputField
+                  label=""
+                  placeholder="Especifica tu intervención preferida"
+                  value={otraIntervencion}
+                  onChange={(e: any) => setOtraIntervencion(e.target.value)}
+                />
+              )}
             </div>
             <PasoButtons onBack={handleBack} onNext={handleNext} />
           </div>
         );
 
-      // Negocio/Institución — Paso 4 | Consultor — Paso 4 (estilo y metodología)
       case 5:
         if (["emprendedor", "empresa", "universidad", "gobierno"].includes(role)) {
           return (
             <div className="animate-fade-in">
-              <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">🔹 Paso 4: Áreas de Apoyo</h2>
-              <div className="space-y-4">
-                <div className="flex flex-wrap gap-3">
-                  {["Diagnóstico", "Mentoría", "Capacitación", "Implementación", "Otro"].map((s) => (
-                    <label key={s} className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        checked={supportAreas.includes(s)}
-                        onChange={() => handleCheckboxChange(setSupportAreas, supportAreas, s, otherSupportArea, setOtherSupportArea)}
-                      />
-                      <span>{s}</span>
-                    </label>
-                  ))}
+              <h2 className="text-2xl font-medium text-center mb-8" style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+                Paso 4: Áreas de Apoyo
+              </h2>
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium mb-3" style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+                    Selecciona las áreas donde necesitas apoyo
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    {["Diagnóstico", "Mentoría", "Capacitación", "Implementación", "Otro"].map((s) => (
+                      <label key={s} className="flex items-center gap-3 p-3 rounded-lg border transition-colors cursor-pointer"
+                        style={{ borderColor: supportAreas.includes(s) ? '#7085E2' : '#E5E7EB', backgroundColor: supportAreas.includes(s) ? '#F0F4FF' : 'white' }}>
+                        <input
+                          type="checkbox"
+                          checked={supportAreas.includes(s)}
+                          onChange={() => handleCheckboxChange(setSupportAreas, supportAreas, s, otherSupportArea, setOtherSupportArea)}
+                          className="h-4 w-4"
+                          style={{ accentColor: '#7085E2' }}
+                        />
+                        <span style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>{s}</span>
+                      </label>
+                    ))}
+                  </div>
+                  {supportAreas.includes("Otro") && (
+                    <InputField
+                      label=""
+                      placeholder="Especifica otra área de apoyo"
+                      value={otherSupportArea}
+                      onChange={(e: any) => setOtherSupportArea(e.target.value)}
+                      className="mt-3"
+                    />
+                  )}
                 </div>
-                {supportAreas.includes("Otro") && (
-                  <input className="w-full p-3 border rounded-lg" placeholder="Otra área de apoyo"
-                    value={otherSupportArea} onChange={(e) => setOtherSupportArea(e.target.value)} />
-                )}
               </div>
               <PasoButtons onBack={handleBack} onNext={handleNext} />
             </div>
@@ -758,104 +962,181 @@ const Register = () => {
         // Consultor — Estilo y metodología
         return (
           <div className="animate-fade-in">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">🔹 Paso 4: Estilo y Metodología</h2>
-            <div className="space-y-4">
-              <select className="w-full p-3 border rounded-lg bg-white"
-                value={acompanamiento} onChange={(e) => setAcompanamiento(e.target.value)}>
-                <option value="">Nivel de acompañamiento</option>
-                <option>Ligero</option><option>Medio</option><option>Intensivo</option>
-              </select>
-              <select className="w-full p-3 border rounded-lg bg-white"
-                value={modalidad} onChange={(e) => setModalidad(e.target.value)}>
-                <option value="">Modalidad</option>
-                <option>Remoto</option><option>Presencial</option><option>Mixto</option>
-              </select>
+            <h2 className="text-2xl font-medium text-center mb-8" style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+              Paso 4: Estilo y Metodología
+            </h2>
+            <div className="space-y-6">
+              <SelectField
+                label="Nivel de acompañamiento"
+                value={acompanamiento}
+                onChange={(e: any) => setAcompanamiento(e.target.value)}
+              >
+                <option value="">Selecciona el nivel de acompañamiento</option>
+                <option>Ligero</option>
+                <option>Medio</option>
+                <option>Intensivo</option>
+              </SelectField>
+              
+              <SelectField
+                label="Modalidad de trabajo"
+                value={modalidad}
+                onChange={(e: any) => setModalidad(e.target.value)}
+              >
+                <option value="">Selecciona tu modalidad preferida</option>
+                <option>Remoto</option>
+                <option>Presencial</option>
+                <option>Mixto</option>
+              </SelectField>
 
               <div>
-                <label className="block text-gray-700 font-medium mb-2">Herramientas digitales</label>
-                <div className="flex flex-wrap gap-3">
+                <label className="block text-sm font-medium mb-3" style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+                  Herramientas digitales que utilizas
+                </label>
+                <div className="grid grid-cols-2 gap-3">
                   {["Drive", "Notion", "Slack", "Zoom", "Otra"].map((h) => (
-                    <label key={h} className="flex items-center gap-2">
+                    <label key={h} className="flex items-center gap-3 p-3 rounded-lg border transition-colors cursor-pointer"
+                      style={{ borderColor: herramientasDigitales.includes(h) ? '#7085E2' : '#E5E7EB', backgroundColor: herramientasDigitales.includes(h) ? '#F0F4FF' : 'white' }}>
                       <input
                         type="checkbox"
                         checked={herramientasDigitales.includes(h)}
                         onChange={() => handleCheckboxChange(setHerramientasDigitales, herramientasDigitales, h, otherDigitalTool, setOtherDigitalTool)}
+                        className="h-4 w-4"
+                        style={{ accentColor: '#7085E2' }}
                       />
-                      <span>{h}</span>
+                      <span style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>{h}</span>
                     </label>
                   ))}
                 </div>
                 {herramientasDigitales.includes("Otra") && (
-                  <input className="mt-2 w-full p-3 border rounded-lg" placeholder="Otra herramienta"
-                    value={otherDigitalTool} onChange={(e) => setOtherDigitalTool(e.target.value)} />
+                  <InputField
+                    label=""
+                    placeholder="Especifica otra herramienta"
+                    value={otherDigitalTool}
+                    onChange={(e: any) => setOtherDigitalTool(e.target.value)}
+                    className="mt-3"
+                  />
                 )}
               </div>
 
-              <input className="w-full p-3 border rounded-lg" placeholder="Recursos propios (p. ej. plantillas)"
-                value={recursosPropios} onChange={(e) => setRecursosPropios(e.target.value)} />
-              <select className="w-full p-3 border rounded-lg bg-white"
-                value={reportesEstructurados} onChange={(e) => setReportesEstructurados(e.target.value)}>
-                <option value="">¿Entregas reportes/formatos?</option>
-                <option>Sí</option><option>No</option>
-              </select>
+              <InputField
+                label="Recursos propios"
+                placeholder="Describe tus plantillas, metodologías o recursos propios"
+                value={recursosPropios}
+                onChange={(e: any) => setRecursosPropios(e.target.value)}
+              />
+              
+              <SelectField
+                label="¿Entregas reportes estructurados?"
+                value={reportesEstructurados}
+                onChange={(e: any) => setReportesEstructurados(e.target.value)}
+              >
+                <option value="">Selecciona una opción</option>
+                <option>Sí</option>
+                <option>No</option>
+              </SelectField>
             </div>
             <PasoButtons onBack={handleBack} onNext={handleNext} />
           </div>
         );
 
-      // Negocio/Institución — Paso 5: Registro final (ya lo tenías)
       case 6:
         if (["emprendedor", "empresa", "universidad", "gobierno"].includes(role)) {
           return (
             <div className="animate-fade-in">
-              <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">🔹 Paso 5: Registro Final</h2>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-gray-700 font-medium mb-2">Crea tu contraseña</label>
-                  <input
-                    type="password"
-                    value={userData.password}
-                    onChange={(e) => setUserData({ ...userData, password: e.target.value })}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Mínimo 8 caracteres"
-                  />
-                </div>
-                <div className="flex items-center">
+              <h2 className="text-2xl font-medium text-center mb-8" style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+                Paso 5: Registro Final
+              </h2>
+              <div className="space-y-6">
+                <InputField
+                  label="Crea tu contraseña"
+                  type="password"
+                  placeholder="Mínimo 8 caracteres"
+                  value={userData.password}
+                  onChange={(e: any) => setUserData({ ...userData, password: e.target.value })}
+                />
+                <div className="flex items-start gap-3">
                   <input
                     type="checkbox"
                     checked={userData.privacyConsent}
                     onChange={(e) => setUserData({ ...userData, privacyConsent: e.target.checked })}
-                    className="h-5 w-5 text-blue-600"
+                    className="h-5 w-5 mt-1"
+                    style={{ accentColor: '#7085E2' }}
                   />
-                  <label className="ml-2 text-gray-800">
+                  <label style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
                     Acepto el{" "}
-                    <Link href="/aviso-privacidad" target="_blank" className="text-blue-600 underline">Aviso de Privacidad</Link>{" "}
+                    <Link href="/aviso-privacidad" target="_blank" className="font-medium hover:underline"
+                      style={{ color: '#7085E2' }}>
+                      Aviso de Privacidad
+                    </Link>{" "}
                     y los{" "}
-                    <Link href="/terminos-uso" target="_blank" className="text-blue-600 underline">Términos de Uso</Link>.
+                    <Link href="/terminos-uso" target="_blank" className="font-medium hover:underline"
+                      style={{ color: '#7085E2' }}>
+                      Términos de Uso
+                    </Link>.
                   </label>
                 </div>
               </div>
 
-              {error && <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm text-center">{error}</div>}
+              {error && (
+                <div className="mt-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm text-center"
+                  style={{ fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+                  {error}
+                </div>
+              )}
 
-              <div className="flex justify-between mt-6">
-                <button onClick={handleBack} className="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300">Volver</button>
-                <button onClick={onFinalSubmit} disabled={submitting} className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-60">
+              <div className="flex justify-between mt-8">
+                <button 
+                  onClick={handleBack} 
+                  className="px-8 py-3 rounded-xl font-medium transition-all duration-200 hover:scale-105 shadow-md hover:shadow-lg"
+                  style={{ 
+                    backgroundColor: '#f8f9fa',
+                    color: '#293A49',
+                    fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif'
+                  }}
+                >
+                  Volver
+                </button>
+                <button 
+                  onClick={onFinalSubmit} 
+                  disabled={submitting} 
+                  className="px-8 py-3 text-white rounded-xl font-medium transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl disabled:opacity-60"
+                  style={{ 
+                    background: 'linear-gradient(135deg, #7085E2 0%, #37B6FF 100%)',
+                    fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif'
+                  }}
+                >
                   {submitting ? "Registrando..." : "Registrarme"}
                 </button>
               </div>
 
-              <div className="mt-6 text-center text-gray-600">
-                <p className="mb-4">O regístrate con:</p>
+              <div className="mt-8 text-center">
+                <p className="mb-4" style={{ color: '#6B7280', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+                  O regístrate con:
+                </p>
                 <div className="flex justify-center space-x-4">
-                  <button onClick={() => handleSocialLogin("google")} disabled={submitting} className="p-3 border border-gray-300 rounded-full shadow-sm hover:shadow-md disabled:opacity-60" aria-label="Regístrate con Google">
-                    <FaGoogle className="w-6 h-6" />
+                  <button 
+                    onClick={() => handleSocialLogin("google")} 
+                    disabled={submitting} 
+                    className="p-4 border-2 border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105 disabled:opacity-60"
+                    aria-label="Regístrate con Google"
+                  >
+                    <FaGoogle className="w-6 h-6 text-red-500" />
                   </button>
-                  <button onClick={() => handleSocialLogin("facebook")} disabled={submitting} className="p-3 border border-gray-300 rounded-full shadow-sm hover:shadow-md disabled:opacity-60" aria-label="Regístrate con Facebook">
-                    <FaFacebook className="w-6 h-6" />
+                  <button 
+                    onClick={() => handleSocialLogin("facebook")} 
+                    disabled={submitting} 
+                    className="p-4 border-2 border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105 disabled:opacity-60"
+                    aria-label="Regístrate con Facebook"
+                  >
+                    <FaFacebook className="w-6 h-6 text-blue-600" />
                   </button>
-                  <button onClick={() => handleSocialLogin("apple")} disabled={submitting} className="p-3 border border-gray-300 rounded-full shadow-sm hover:shadow-md disabled:opacity-60" aria-label="Regístrate con Apple">
-                    <FaApple className="w-6 h-6" />
+                  <button 
+                    onClick={() => handleSocialLogin("apple")} 
+                    disabled={submitting} 
+                    className="p-4 border-2 border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105 disabled:opacity-60"
+                    aria-label="Regístrate con Apple"
+                  >
+                    <FaApple className="w-6 h-6 text-black" />
                   </button>
                 </div>
               </div>
@@ -865,66 +1146,122 @@ const Register = () => {
         // Consultor — Paso 5: Disponibilidad y condiciones
         return (
           <div className="animate-fade-in">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">🔹 Paso 5: Disponibilidad y Condiciones</h2>
-            <div className="space-y-4">
-              <input className="w-full p-3 border rounded-lg" placeholder="Horas semanales disponibles"
-                value={horasSemanales} onChange={(e) => setHorasSemanales(e.target.value)} />
-              <select className="w-full p-3 border rounded-lg bg-white"
-                value={trabajoProyecto} onChange={(e) => setTrabajoProyecto(e.target.value)}>
-                <option value="">¿Aceptas trabajo por proyecto?</option>
-                <option>Sí</option><option>No</option>
-              </select>
+            <h2 className="text-2xl font-medium text-center mb-8" style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+              Paso 5: Disponibilidad y Condiciones
+            </h2>
+            <div className="space-y-6">
+              <InputField
+                label="Horas semanales disponibles"
+                placeholder="Ejemplo: 20 horas"
+                value={horasSemanales}
+                onChange={(e: any) => setHorasSemanales(e.target.value)}
+              />
+              
+              <SelectField
+                label="¿Aceptas trabajo por proyecto?"
+                value={trabajoProyecto}
+                onChange={(e: any) => setTrabajoProyecto(e.target.value)}
+              >
+                <option value="">Selecciona una opción</option>
+                <option>Sí</option>
+                <option>No</option>
+              </SelectField>
 
-              <div className="flex flex-col gap-2">
-                <select className="w-full p-3 border rounded-lg bg-white"
-                  value={tarifaTipo} onChange={(e) => setTarifaTipo(e.target.value)}>
-                  <option value="">Tipo de tarifa</option>
-                  <option>Por hora</option><option>Por paquete</option><option>A convenir</option>
-                </select>
-                {tarifaTipo === "Por hora" && (
-                  <input className="w-full p-3 border rounded-lg" placeholder="Tarifa por hora (MXN/USD)"
-                    value={tarifaHora} onChange={(e) => setTarifaHora(e.target.value)} />
-                )}
-                {tarifaTipo === "Por paquete" && (
-                  <input className="w-full p-3 border rounded-lg" placeholder="Tarifa por paquete"
-                    value={tarifaPaquete} onChange={(e) => setTarifaPaquete(e.target.value)} />
-                )}
-              </div>
+              <SelectField
+                label="Tipo de tarifa"
+                value={tarifaTipo}
+                onChange={(e: any) => setTarifaTipo(e.target.value)}
+              >
+                <option value="">Selecciona el tipo de tarifa</option>
+                <option>Por hora</option>
+                <option>Por paquete</option>
+                <option>A convenir</option>
+              </SelectField>
+              
+              {tarifaTipo === "Por hora" && (
+                <InputField
+                  label="Tarifa por hora"
+                  placeholder="Ejemplo: $500 MXN/hora o $25 USD/hora"
+                  value={tarifaHora}
+                  onChange={(e: any) => setTarifaHora(e.target.value)}
+                />
+              )}
+              
+              {tarifaTipo === "Por paquete" && (
+                <InputField
+                  label="Tarifa por paquete"
+                  placeholder="Ejemplo: $10,000 MXN por proyecto completo"
+                  value={tarifaPaquete}
+                  onChange={(e: any) => setTarifaPaquete(e.target.value)}
+                />
+              )}
 
-              <div className="flex flex-col gap-2">
-                <select className="w-full p-3 border rounded-lg bg-white"
-                  value={motivacionConsultor} onChange={(e) => setMotivacionConsultor(e.target.value)}>
-                  <option value="">Motivación principal</option>
-                  <option>Impacto</option><option>Ingresos</option><option>Marca personal</option><option>Otro</option>
-                </select>
-                {motivacionConsultor === "Otro" && (
-                  <input className="w-full p-3 border rounded-lg" placeholder="Especifica tu motivación"
-                    value={otraMotivacion} onChange={(e) => setOtraMotivacion(e.target.value)} />
-                )}
-              </div>
+              <SelectField
+                label="Motivación principal"
+                value={motivacionConsultor}
+                onChange={(e: any) => setMotivacionConsultor(e.target.value)}
+              >
+                <option value="">¿Qué te motiva principalmente?</option>
+                <option>Impacto</option>
+                <option>Ingresos</option>
+                <option>Marca personal</option>
+                <option>Otro</option>
+              </SelectField>
+              
+              {motivacionConsultor === "Otro" && (
+                <InputField
+                  label=""
+                  placeholder="Especifica tu motivación"
+                  value={otraMotivacion}
+                  onChange={(e: any) => setOtraMotivacion(e.target.value)}
+                />
+              )}
             </div>
             <PasoButtons onBack={handleBack} onNext={handleNext} />
           </div>
         );
 
-      // Consultor — Paso 6: Validaciones (CV/links/referencias)
       case 7:
         if (role === "consultor") {
           return (
             <div className="animate-fade-in">
-              <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">🔹 Paso 6: Validaciones</h2>
-              <div className="space-y-4">
-                <input className="w-full p-3 border rounded-lg" placeholder="URL a tu CV (Drive/Link)"
-                  value={curriculum} onChange={(e) => setCurriculum(e.target.value)} />
-                <input className="w-full p-3 border rounded-lg" placeholder="URL a tu portafolio (opcional)"
-                  value={portafolio} onChange={(e) => setPortafolio(e.target.value)} />
-                <input className="w-full p-3 border rounded-lg" placeholder="URL a tu LinkedIn (opcional)"
-                  value={linkedin} onChange={(e) => setLinkedin(e.target.value)} />
-                <textarea className="w-full p-3 border rounded-lg" placeholder="Referencias (nombre + contacto)"
-                  value={referencias} onChange={(e) => setReferencias(e.target.value)} />
+              <h2 className="text-2xl font-medium text-center mb-8" style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+                Paso 6: Validaciones
+              </h2>
+              <div className="space-y-6">
+                <InputField
+                  label="URL a tu CV"
+                  placeholder="Link de Google Drive, Dropbox o sitio web"
+                  value={curriculum}
+                  onChange={(e: any) => setCurriculum(e.target.value)}
+                />
+                <InputField
+                  label="URL a tu portafolio (opcional)"
+                  placeholder="Link a tu portafolio o sitio web profesional"
+                  value={portafolio}
+                  onChange={(e: any) => setPortafolio(e.target.value)}
+                />
+                <InputField
+                  label="URL a tu LinkedIn (opcional)"
+                  placeholder="https://linkedin.com/in/tu-perfil"
+                  value={linkedin}
+                  onChange={(e: any) => setLinkedin(e.target.value)}
+                />
+                <TextAreaField
+                  label="Referencias profesionales"
+                  placeholder="Proporciona nombre y contacto de al menos 2 referencias profesionales"
+                  value={referencias}
+                  onChange={(e: any) => setReferencias(e.target.value)}
+                  rows={4}
+                />
               </div>
 
-              {error && <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm text-center">{error}</div>}
+              {error && (
+                <div className="mt-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm text-center"
+                  style={{ fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+                  {error}
+                </div>
+              )}
 
               <PasoButtons onBack={handleBack} onNext={handleNext} nextText="Continuar" />
             </div>
@@ -932,70 +1269,120 @@ const Register = () => {
         }
         return null;
 
-      // Consultor — Paso 7: Registro final (tu caso 8)
       case 8:
         if (role === "consultor") {
           return (
             <div className="animate-fade-in">
-              <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">🔹 Paso 7: Registro Final</h2>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-gray-700 font-medium mb-2">Crea tu contraseña</label>
-                  <input
-                    type="password"
-                    value={userData.password}
-                    onChange={(e) => setUserData({ ...userData, password: e.target.value })}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Mínimo 8 caracteres"
-                  />
-                </div>
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={userData.privacyConsent}
-                    onChange={(e) => setUserData({ ...userData, privacyConsent: e.target.checked })}
-                    className="h-5 w-5 text-blue-600"
-                  />
-                  <label className="ml-2 text-gray-800">
-                    Acepto el{" "}
-                    <Link href="/aviso-privacidad" target="_blank" className="text-blue-600 underline">Aviso de Privacidad</Link>{" "}
-                    y los{" "}
-                    <Link href="/terminos-uso" target="_blank" className="text-blue-600 underline">Términos de Uso</Link>.
-                  </label>
-                </div>
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={confirmacionEntrevista}
-                    onChange={(e) => setConfirmacionEntrevista(e.target.checked)}
-                    className="h-5 w-5 text-blue-600"
-                  />
-                  <label className="ml-2 text-gray-800">
-                    Confirmo mi disposición a participar en una entrevista de validación.
-                  </label>
+              <h2 className="text-2xl font-medium text-center mb-8" style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+                Paso 7: Registro Final
+              </h2>
+              <div className="space-y-6">
+                <InputField
+                  label="Crea tu contraseña"
+                  type="password"
+                  placeholder="Mínimo 8 caracteres"
+                  value={userData.password}
+                  onChange={(e: any) => setUserData({ ...userData, password: e.target.value })}
+                />
+                
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <input
+                      type="checkbox"
+                      checked={userData.privacyConsent}
+                      onChange={(e) => setUserData({ ...userData, privacyConsent: e.target.checked })}
+                      className="h-5 w-5 mt-1"
+                      style={{ accentColor: '#7085E2' }}
+                    />
+                    <label style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+                      Acepto el{" "}
+                      <Link href="/aviso-privacidad" target="_blank" className="font-medium hover:underline"
+                        style={{ color: '#7085E2' }}>
+                        Aviso de Privacidad
+                      </Link>{" "}
+                      y los{" "}
+                      <Link href="/terminos-uso" target="_blank" className="font-medium hover:underline"
+                        style={{ color: '#7085E2' }}>
+                        Términos de Uso
+                      </Link>.
+                    </label>
+                  </div>
+                  
+                  <div className="flex items-start gap-3">
+                    <input
+                      type="checkbox"
+                      checked={confirmacionEntrevista}
+                      onChange={(e) => setConfirmacionEntrevista(e.target.checked)}
+                      className="h-5 w-5 mt-1"
+                      style={{ accentColor: '#7085E2' }}
+                    />
+                    <label style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+                      Confirmo mi disposición a participar en una entrevista de validación.
+                    </label>
+                  </div>
                 </div>
               </div>
 
-              {error && <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm text-center">{error}</div>}
+              {error && (
+                <div className="mt-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm text-center"
+                  style={{ fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+                  {error}
+                </div>
+              )}
 
-              <div className="flex justify-between mt-6">
-                <button onClick={handleBack} className="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300">Volver</button>
-                <button onClick={onFinalSubmit} disabled={submitting} className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-60">
+              <div className="flex justify-between mt-8">
+                <button 
+                  onClick={handleBack} 
+                  className="px-8 py-3 rounded-xl font-medium transition-all duration-200 hover:scale-105 shadow-md hover:shadow-lg"
+                  style={{ 
+                    backgroundColor: '#f8f9fa',
+                    color: '#293A49',
+                    fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif'
+                  }}
+                >
+                  Volver
+                </button>
+                <button 
+                  onClick={onFinalSubmit} 
+                  disabled={submitting} 
+                  className="px-8 py-3 text-white rounded-xl font-medium transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl disabled:opacity-60"
+                  style={{ 
+                    background: 'linear-gradient(135deg, #7085E2 0%, #37B6FF 100%)',
+                    fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif'
+                  }}
+                >
                   {submitting ? "Registrando..." : "Registrarme"}
                 </button>
               </div>
 
-              <div className="mt-6 text-center text-gray-600">
-                <p className="mb-4">O regístrate con:</p>
+              <div className="mt-8 text-center">
+                <p className="mb-4" style={{ color: '#6B7280', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+                  O regístrate con:
+                </p>
                 <div className="flex justify-center space-x-4">
-                  <button onClick={() => handleSocialLogin("google")} disabled={submitting} className="p-3 border border-gray-300 rounded-full shadow-sm hover:shadow-md disabled:opacity-60" aria-label="Regístrate con Google">
-                    <FaGoogle className="w-6 h-6" />
+                  <button 
+                    onClick={() => handleSocialLogin("google")} 
+                    disabled={submitting} 
+                    className="p-4 border-2 border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105 disabled:opacity-60"
+                    aria-label="Regístrate con Google"
+                  >
+                    <FaGoogle className="w-6 h-6 text-red-500" />
                   </button>
-                  <button onClick={() => handleSocialLogin("facebook")} disabled={submitting} className="p-3 border border-gray-300 rounded-full shadow-sm hover:shadow-md disabled:opacity-60" aria-label="Regístrate con Facebook">
-                    <FaFacebook className="w-6 h-6" />
+                  <button 
+                    onClick={() => handleSocialLogin("facebook")} 
+                    disabled={submitting} 
+                    className="p-4 border-2 border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105 disabled:opacity-60"
+                    aria-label="Regístrate con Facebook"
+                  >
+                    <FaFacebook className="w-6 h-6 text-blue-600" />
                   </button>
-                  <button onClick={() => handleSocialLogin("apple")} disabled={submitting} className="p-3 border border-gray-300 rounded-full shadow-sm hover:shadow-md disabled:opacity-60" aria-label="Regístrate con Apple">
-                    <FaApple className="w-6 h-6" />
+                  <button 
+                    onClick={() => handleSocialLogin("apple")} 
+                    disabled={submitting} 
+                    className="p-4 border-2 border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105 disabled:opacity-60"
+                    aria-label="Regístrate con Apple"
+                  >
+                    <FaApple className="w-6 h-6 text-black" />
                   </button>
                 </div>
               </div>
@@ -1012,11 +1399,45 @@ const Register = () => {
   return (
     <>
       <Head>
-        <title>Crear cuenta · MentorApp</title>
-        <meta name="description" content="Regístrate para acceder a diagnósticos, mentoría y cursos." />
+        <title>Crear cuenta · MenthIA</title>
+        <meta name="description" content="Regístrate para acceder a diagnósticos, mentoría y cursos - Asesoría integral, humana e inteligente para tu negocio" />
       </Head>
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-        <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-2xl">
+      <div 
+        className="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8 relative"
+        style={{ 
+          background: 'linear-gradient(135deg, #7085E2 0%, #37B6FF 50%, #293A49 100%)',
+          fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif'
+        }}
+      >
+        {/* Animated background blobs */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div 
+            className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-3xl animate-pulse opacity-20"
+            style={{ background: 'radial-gradient(circle, rgba(112, 133, 226, 0.3) 0%, rgba(55, 182, 255, 0.2) 100%)' }}
+          />
+          <div 
+            className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full blur-3xl animate-pulse delay-1000 opacity-20"
+            style={{ background: 'radial-gradient(circle, rgba(55, 182, 255, 0.3) 0%, rgba(41, 58, 73, 0.2) 100%)' }}
+          />
+          <div 
+            className="absolute top-1/2 right-1/3 w-64 h-64 rounded-full blur-2xl animate-pulse delay-500 opacity-15"
+            style={{ background: 'radial-gradient(circle, rgba(112, 133, 226, 0.2) 0%, rgba(55, 182, 255, 0.2) 100%)' }}
+          />
+        </div>
+
+        <div className="bg-white/95 backdrop-blur-lg p-8 rounded-2xl shadow-2xl w-full max-w-3xl relative z-10 border border-white/30">
+          {step === 1 && (
+            <div className="text-center mb-8">
+              <h1 
+                className="text-3xl font-medium cursor-pointer hover:underline transition-colors"
+                onClick={() => router.push("/")}
+                style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}
+              >
+                MenthIA
+              </h1>
+            </div>
+          )}
+          
           {renderStepIndicator()}
           {renderStep()}
         </div>
