@@ -1,6 +1,5 @@
 // pages/demo-dashboard.tsx
 import React, { useEffect, useRef } from "react";
-import PrivateLayout from "@/components/layout/PrivateLayout";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -41,7 +40,7 @@ const DemoDashboard: React.FC = () => {
   const card = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0 } };
 
   return (
-    <PrivateLayout>
+    <>
       <div className="min-h-screen bg-[#293A49]" style={{ fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
         <main className="text-white/90">
           <div className="bg-[#37B6FF]/20 border-b border-[#37B6FF]/30 backdrop-blur-sm">
@@ -182,7 +181,7 @@ const DemoDashboard: React.FC = () => {
           </footer>
         </main>
       </div>
-    </PrivateLayout>
+    </>
   );
 };
 

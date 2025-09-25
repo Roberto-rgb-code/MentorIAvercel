@@ -1,7 +1,6 @@
 // pages/community.tsx
 import React, { useEffect, useRef, useCallback, useState } from "react";
 import { useRouter } from "next/router";
-import PrivateLayout from "@/components/layout/PrivateLayout";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FaQuestionCircle,
@@ -360,7 +359,7 @@ const CommunityPage: React.FC = () => {
   ];
 
   return (
-    <PrivateLayout>
+    <>
       <style jsx global>{`
         .particles-canvas {
           position: absolute;
@@ -485,7 +484,6 @@ const CommunityPage: React.FC = () => {
                           {card.badge}
                         </span>
                       </div>
-
                       <div className={`h-2 bg-gradient-to-r ${card.color}`} />
                       
                       <div className="p-8">
@@ -642,39 +640,9 @@ const CommunityPage: React.FC = () => {
               </motion.div>
             </section>
           </main>
-
-          {/* Footer */}
-          <footer className="relative z-10 border-t border-white/20 bg-white/5 backdrop-blur-sm mt-16">
-            <div className="max-w-7xl mx-auto px-6 py-8">
-              <div className="flex flex-col md:flex-row items-center justify-between">
-                <div className="flex items-center space-x-3 mb-4 md:mb-0">
-                  <div className="w-8 h-8 bg-gradient-to-br from-[#70B5E2] to-[#37B6FF] rounded-lg flex items-center justify-center text-white font-bold">
-                    M
-                  </div>
-                  <span className="text-lg font-bold text-white">MenthIA Comunidad</span>
-                </div>
-                
-                <div className="text-sm text-gray-400 text-center md:text-left">
-                  © {new Date().getFullYear()} MenthIA. Construyendo el futuro juntos.
-                </div>
-                
-                <div className="flex items-center space-x-6 mt-4 md:mt-0">
-                  <button className="text-sm text-gray-400 hover:text-[#70B5E2] transition-colors">
-                    Privacidad
-                  </button>
-                  <button className="text-sm text-gray-400 hover:text-[#70B5E2] transition-colors">
-                    Términos
-                  </button>
-                  <button className="text-sm text-gray-400 hover:text-[#70B5E2] transition-colors">
-                    Soporte
-                  </button>
-                </div>
-              </div>
-            </div>
-          </footer>
         </div>
       </div>
-    </PrivateLayout>
+    </>
   );
 };
 

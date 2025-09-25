@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth"; // Asume que useAuth está en ../hooks/useAuth
 import { doc, getDoc, updateDoc, setDoc } from "firebase/firestore";
 import { db } from "../lib/firebase"; // Asume que db está inicializado en ../lib/firebase
-import PrivateLayout from "../components/layout/PrivateLayout"; // Asume que PrivateLayout está en ../components/layout/PrivateLayout
 import {
   FaUserCircle,
   FaEnvelope,
@@ -622,7 +621,7 @@ const Perfil = () => {
   ];
 
   return (
-    <PrivateLayout>
+    <>
       {authLoading || loadingProfile ? (
         <div className="flex flex-col items-center justify-center min-h-[calc(100vh-64px)]">
           <FaSpinner className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500" />
@@ -822,7 +821,7 @@ const Perfil = () => {
           </div>
         </div>
       )}
-    </PrivateLayout>
+    </>
   );
 };
 

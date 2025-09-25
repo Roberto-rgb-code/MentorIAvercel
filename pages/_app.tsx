@@ -14,14 +14,25 @@ import PublicLayout from '@/components/layout/PublicLayout';
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   
-  // Definir qué rutas son privadas (requieren el layout privado)
+  // Páginas que NO deben tener layout (sin navbar/footer)
+  const noLayoutRoutes = ['/login', '/register', '/reset-password'];
+  
+  // Páginas privadas (requieren el layout privado)
   const privateRoutes = ['/dashboard', '/perfil'];
+  
+  // Verificar si la ruta actual no debe tener layout
+  const shouldHaveNoLayout = noLayoutRoutes.includes(router.pathname);
   
   // Verificar si la ruta actual es privada
   const isPrivateRoute = privateRoutes.some(route => router.pathname.startsWith(route));
   
-  // Para todas las demás rutas (incluyendo '/'), usar PublicLayout
-  const Layout = isPrivateRoute ? PrivateLayout : PublicLayout;
+  // Elegir el layout apropiado
+  let Layout = PublicLayout;
+  if (shouldHaveNoLayout) {
+    Layout = ({ children }: { children: React.ReactNode }) => <>{children}</>;
+  } else if (isPrivateRoute) {
+    Layout = PrivateLayout;
+  }
 
   return (
     <>
