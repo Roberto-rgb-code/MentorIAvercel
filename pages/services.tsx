@@ -10,6 +10,7 @@ import {
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 
+
 gsap.registerPlugin(ScrollTrigger);
 
 // Datos de los servicios con colores de MENTHIA

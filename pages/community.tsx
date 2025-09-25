@@ -39,7 +39,6 @@ const CommunityPage: React.FC = () => {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
@@ -123,13 +122,11 @@ const CommunityPage: React.FC = () => {
       // Dibujar bolitas blancas de fondo moviéndose a la derecha
       backgroundParticles.forEach((particle) => {
         particle.x += particle.vx;
-
         // Si sale por la derecha, reiniciar desde la izquierda (outMode: out)
         if (particle.x > canvas.width) {
           particle.x = 0;
           particle.y = Math.random() * canvas.height;
         }
-
         ctx.fillStyle = `rgba(255, 255, 255, ${particle.opacity})`;
         ctx.beginPath();
         ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
@@ -269,7 +266,7 @@ const CommunityPage: React.FC = () => {
       accent: "border-[#70B5E2]/30",
       stats: "2,847 preguntas activas",
       badge: "Más popular",
-      badgeColor: "bg-[#70B5E2]/20 text-[#293A49]"
+      badgeColor: "bg-[#70B5E2]/20 text-[#70B5E2]"
     },
     {
       title: "Noticias & Tendencias",
@@ -280,7 +277,7 @@ const CommunityPage: React.FC = () => {
       accent: "border-[#37B6FF]/30",
       stats: "156 artículos esta semana",
       badge: "Actualizado",
-      badgeColor: "bg-[#37B6FF]/20 text-[#293A49]"
+      badgeColor: "bg-[#37B6FF]/20 text-[#37B6FF]"
     },
     {
       title: "Eventos & Networking",
@@ -291,7 +288,7 @@ const CommunityPage: React.FC = () => {
       accent: "border-[#70B5E2]/30",
       stats: "12 eventos próximos",
       badge: "Exclusivo",
-      badgeColor: "bg-[#70B5E2]/20 text-[#293A49]"
+      badgeColor: "bg-[#70B5E2]/20 text-[#70B5E2]"
     },
     {
       title: "Recompensas & Logros",
@@ -302,7 +299,7 @@ const CommunityPage: React.FC = () => {
       accent: "border-[#37B6FF]/30",
       stats: "847 miembros premiados",
       badge: "Gamificado",
-      badgeColor: "bg-[#37B6FF]/20 text-[#293A49]"
+      badgeColor: "bg-[#37B6FF]/20 text-[#37B6FF]"
     },
   ];
 
@@ -376,7 +373,7 @@ const CommunityPage: React.FC = () => {
 
         <div className="relative z-10">
           {/* Hero Section */}
-          <section className="relative z-10 pt-8 pb-8">
+          <section className="relative z-10 pt-32 pb-8">
             <div ref={heroRef} className="max-w-7xl mx-auto px-6 text-center">
               <motion.div
                 initial={{ y: 20, opacity: 0 }}
@@ -484,6 +481,7 @@ const CommunityPage: React.FC = () => {
                           {card.badge}
                         </span>
                       </div>
+
                       <div className={`h-2 bg-gradient-to-r ${card.color}`} />
                       
                       <div className="p-8">
