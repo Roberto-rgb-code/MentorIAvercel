@@ -1,14 +1,28 @@
 // pages/_app.tsx
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import '../styles/globals.css';
 import { AuthProvider } from '../contexts/AuthContext';
 import { CartProvider } from '../contexts/CartContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ChatbotWidget from '@/components/ChatbotWidget';
+import PrivateLayout from '@/components/layout/PrivateLayout';
+import PublicLayout from '@/components/layout/PublicLayout';
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const router = useRouter();
+  
+  // Definir qué rutas son privadas (requieren el layout privado)
+  const privateRoutes = ['/dashboard', '/perfil'];
+  
+  // Verificar si la ruta actual es privada
+  const isPrivateRoute = privateRoutes.some(route => router.pathname.startsWith(route));
+  
+  // Para todas las demás rutas (incluyendo '/'), usar PublicLayout
+  const Layout = isPrivateRoute ? PrivateLayout : PublicLayout;
+
   return (
     <>
       <Head>
@@ -62,7 +76,9 @@ function MyApp({ Component, pageProps }: AppProps) {
       </Head>
       <AuthProvider>
         <CartProvider>
-          <Component {...pageProps} />
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
           <ToastContainer
             position="bottom-right"
             autoClose={5000}

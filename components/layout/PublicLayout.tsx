@@ -1,13 +1,22 @@
+// components/layout/PublicLayout.tsx
+import React from 'react';
 import Navbar from '../Navbar';
+import Footer from './Footer';
 
-const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+interface PublicLayoutProps {
+  children: React.ReactNode;
+}
+
+const PublicLayout: React.FC<PublicLayoutProps> = ({ children }) => {
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 flex flex-col">
       <Navbar />
-      <main className="p-6">{children}</main>
-      <footer className="bg-gray-800 text-white p-4 text-center">
-        © 2023 MentorApp
-      </footer>
+      
+      <main className="flex-grow p-6">
+        {children}
+      </main>
+      
+      <Footer />
     </div>
   );
 };

@@ -1,13 +1,12 @@
 // pages/index.tsx
 import React, { useEffect, useRef, useCallback } from "react";
-import PrivateLayout from "@/components/layout/PrivateLayout";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   FaUsers, FaLightbulb, FaRocket, FaHandshake, FaBullseye, FaEye, FaHeart,
   FaUserPlus, FaArrowRight, FaChartLine, FaGraduationCap, FaStore, FaGem, FaBrain, FaCogs,
   FaBriefcase, FaNetworkWired, FaTools, FaShieldAlt, FaRegLightbulb, FaConnectdevelop, FaChartBar, FaGlobe, FaSearchDollar,
-  FaFacebook, FaTwitter, FaLinkedin, FaInstagram, FaPlay, FaCreditCard, FaCheck
+  FaPlay, FaCreditCard, FaCheck
 } from "react-icons/fa";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
@@ -135,7 +134,7 @@ const Home: React.FC = () => {
   }, []);
 
   return (
-    <PrivateLayout>
+    <>
       <style jsx>{`
         @keyframes float {
           0% { transform: translateY(0px); }
@@ -192,260 +191,215 @@ const Home: React.FC = () => {
       `}</style>
 
       <div className="flex flex-col min-h-screen bg-white text-gray-800 font-sans">
-        <div className="flex-grow relative z-10">
-          {/* Hero Section */}
-          <section className="min-h-[90vh] flex items-center justify-center text-center overflow-hidden relative p-4">
-            <Particles 
-              id="tsparticles-hero" 
-              init={particlesInit} 
-              options={heroParticlesOptions} 
-              className="absolute inset-0 z-0" 
-            />
-            <div className="relative z-20 p-4 max-w-6xl mx-auto">
-              <h1 className="hero-home-title text-5xl md:text-7xl font-extrabold text-gray-900 leading-tight mb-6 drop-shadow-md">
-                Mentores expertos <span className="menthia-text-gradient">+ IA</span> para <span className="menthia-text-gradient">escalar tu negocio en un solo lugar.</span>
-              </h1>
-              <p className="hero-home-description text-xl md:text-2xl text-gray-700 mb-10 max-w-4xl mx-auto">
-                Talento humano que usa tecnología que conecta datos, algoritmos <b>y experiencia para tomar decisiones más rápidas</b> y rentables.
-              </p>
-              <div className="hero-home-cta flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <Link
-                  href="/register"
-                  className="inline-block menthia-gradient font-bold py-4 px-12 rounded-full text-lg md:text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 ease-in-out animate-float"
-                  style={{ color: '#000000' }}
-                >
-                  <FaUserPlus className="inline-block mr-3" /> Potenciar mi negocio hoy
-                </Link>
-                <Link
-                  href="/demo"
-                  className="inline-block cta-secondary font-bold py-4 px-8 rounded-full text-lg md:text-xl shadow-lg transform hover:scale-105 transition-all duration-300 ease-in-out"
-                >
-                  <FaPlay className="inline-block mr-3" /> Ver cómo funciona (2 min)
-                </Link>
-              </div>
-              <div className="mt-6 text-sm text-gray-600 flex items-center justify-center gap-4">
-                <div className="flex items-center">
-                  <FaCreditCard className="mr-2 text-green-600" />
-                  <span>Facilidad de pago</span>
-                </div>
-                <div className="flex items-center">
-                  <FaCheck className="mr-2 text-green-600" />
-                  <span>Demo guiada + recomendaciones personalizadas</span>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Soluciones Estratégicas */}
-          <section
-            ref={(el) => { sectionRefs.current[0] = el; }}
-            className="py-20 md:py-32 px-4 container mx-auto text-center bg-gray-50 rounded-2xl shadow-lg my-16 border-2 border-gray-200"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold mb-12 flex items-center justify-center" style={{ color: '#293A49' }}>
-              <FaRegLightbulb className="text-5xl mr-4" style={{ color: '#37B6FF' }} /> Soluciones Estratégicas para tu Crecimiento
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
-              <motion.div className="card-custom" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
-                <h3 className="text-2xl font-semibold mb-3 flex items-center" style={{ color: '#293A49' }}>
-                  <FaChartBar className="mr-3" style={{ color: '#37B6FF' }} /> <b>Inteligencia de Mercado y Estrategia</b>
-                </h3>
-                <p className="text-gray-700 text-sm">Análisis profundo para ventajas competitivas que te posicionan por delante de la competencia.</p>
-              </motion.div>
-
-              <motion.div className="card-custom" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
-                <h3 className="text-2xl font-semibold mb-3 flex items-center" style={{ color: '#293A49' }}>
-                  <FaNetworkWired className="mr-3" style={{ color: '#70B5E2' }} /> <b>Networking y Alianzas Estratégicas</b>
-                </h3>
-                <p className="text-gray-700 text-sm">Conecta con líderes e inversionistas para forjar alianzas que impulsen tu crecimiento exponencial.</p>
-              </motion.div>
-
-              <motion.div className="card-custom" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
-                <h3 className="text-2xl font-semibold mb-3 flex items-center" style={{ color: '#293A49' }}>
-                  <FaGraduationCap className="mr-3" style={{ color: '#37B6FF' }} /> <b>Maestría en Consultoría y Liderazgo</b>
-                </h3>
-                <p className="text-gray-700 text-sm">Certificaciones y metodologías de vanguardia para dominar el arte de la consultoría estratégica.</p>
-              </motion.div>
-
-              <motion.div className="card-custom" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
-                <h3 className="text-2xl font-semibold mb-3 flex items-center" style={{ color: '#293A49' }}>
-                  <FaSearchDollar className="mr-3" style={{ color: '#70B5E2' }} /> <b>Posicionamiento y Captación de Clientes</b>
-                </h3>
-                <p className="text-gray-700 text-sm">Marketing digital y marca personal para atraer y retener clientes de alto valor de manera consistente.</p>
-              </motion.div>
-
-              <motion.div className="card-custom" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
-                <h3 className="text-2xl font-semibold mb-3 flex items-center" style={{ color: '#293A49' }}>
-                  <FaTools className="mr-3" style={{ color: '#37B6FF' }} /> <b>Herramientas y Recursos Exclusivos</b>
-                </h3>
-                <p className="text-gray-700 text-sm">Plantillas, frameworks y software especializado para optimizar tu eficiencia operativa al máximo.</p>
-              </motion.div>
-
-              <motion.div className="card-custom" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
-                <h3 className="text-2xl font-semibold mb-3 flex items-center" style={{ color: '#293A49' }}>
-                  <FaGlobe className="mr-3" style={{ color: '#70B5E2' }} /> <b>Análisis de Tendencias y Futuro del Negocio</b>
-                </h3>
-                <p className="text-gray-700 text-sm">Mantén tu empresa a la vanguardia con insights sobre disrupciones tecnológicas y tendencias emergentes.</p>
-              </motion.div>
-            </div>
-          </section>
-
-          {/* Tu Ventaja Competitiva */}
-          <section
-            ref={(el) => { sectionRefs.current[1] = el; }}
-            className="py-20 md:py-32 px-4 container mx-auto text-center"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold mb-12 flex items-center justify-center" style={{ color: '#293A49' }}>
-              <FaRocket className="text-5xl mr-4" style={{ color: '#37B6FF' }} /> Tu Ventaja Competitiva con MentHIA
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-5xl mx-auto">
-              <motion.div className="card-custom flex items-start p-8 rounded-lg shadow-lg" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
-                <FaBullseye className="text-5xl mr-6 flex-shrink-0" style={{ color: '#37B6FF' }} />
-                <div className="text-left">
-                  <h3 className="text-2xl font-semibold mb-2" style={{ color: '#293A49' }}><b>Enfoque Hiper-Especializado</b></h3>
-                  <p className="text-gray-700 text-sm">Soluciones diseñadas exclusivamente para la élite de consultores y empresarios que buscan resultados extraordinarios.</p>
-                </div>
-              </motion.div>
-
-              <motion.div className="card-custom flex items-start p-8 rounded-lg shadow-lg" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
-                <FaCogs className="text-5xl mr-6 flex-shrink-0" style={{ color: '#70B5E2' }} />
-                <div className="text-left">
-                  <h3 className="text-2xl font-semibold mb-2" style={{ color: '#293A49' }}><b>Analítica de Rendimiento Avanzada</b></h3>
-                  <p className="text-gray-700 text-sm">Dashboards y métricas que convierten datos complejos en decisiones rentables y estratégicas.</p>
-                </div>
-              </motion.div>
-
-              <motion.div className="card-custom flex items-start p-8 rounded-lg shadow-lg" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
-                <FaConnectdevelop className="text-5xl mr-6 flex-shrink-0" style={{ color: '#37B6FF' }} />
-                <div className="text-left">
-                  <h3 className="text-2xl font-semibold mb-2" style={{ color: '#293A49' }}><b>Comunidad de Liderazgo Verificado</b></h3>
-                  <p className="text-gray-700 text-sm">Aprende de un círculo selecto de líderes con casos reales y experiencias probadas en el mercado.</p>
-                </div>
-              </motion.div>
-
-              <motion.div className="card-custom flex items-start p-8 rounded-lg shadow-lg" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
-                <FaShieldAlt className="text-5xl mr-6 flex-shrink-0" style={{ color: '#70B5E2' }} />
-                <div className="text-left">
-                  <h3 className="text-2xl font-semibold mb-2" style={{ color: '#293A49' }}><b>Soporte Proactivo y Curación de Contenido</b></h3>
-                  <p className="text-gray-700 text-sm">Recursos estratégicos constantemente actualizados y curados por expertos de la industria.</p>
-                </div>
-              </motion.div>
-            </div>
-          </section>
-
-          {/* Misión, Visión, Valores */}
-          <section
-            ref={(el) => { sectionRefs.current[2] = el; }}
-            className="py-20 md:py-32 px-4 container mx-auto text-center bg-white rounded-2xl shadow-lg my-16 border-2 border-gray-200"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold mb-12 flex items-center justify-center" style={{ color: '#293A49' }}>
-              <FaEye className="text-5xl mr-4" style={{ color: '#37B6FF' }} /> Nuestra Esencia: Impulsando el Liderazgo
-            </h2>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Misión */}
-              <motion.div className="value-item p-8 rounded-lg shadow-md flex flex-col items-center" whileHover={{ scale: 1.03 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
-                <FaBullseye className="text-6xl mb-4" style={{ color: '#37B6FF' }} />
-                <h3 className="text-3xl font-bold mb-3" style={{ color: '#293A49' }}>Misión</h3>
-                <p className="text-gray-700 text-lg leading-relaxed">
-                  Empoderar a emprendedores y pequeñas empresas de América Latina a través de una plataforma híbrida que combina
-                  inteligencia artificial con la experiencia humana, ofreciendo asesoría personalizada, diagnósticos inteligentes
-                  y herramientas prácticas que impulsan la innovación, el crecimiento y la competitividad empresarial.
-                </p>
-              </motion.div>
-
-              {/* Visión */}
-              <motion.div className="value-item p-8 rounded-lg shadow-md flex flex-col items-center" whileHover={{ scale: 1.03 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
-                <FaEye className="text-6xl mb-4" style={{ color: '#70B5E2' }} />
-                <h3 className="text-3xl font-bold mb-3" style={{ color: '#293A49' }}>Visión</h3>
-                <p className="text-gray-700 text-lg leading-relaxed">
-                  Ser la plataforma líder en mentoría empresarial inteligente en América Latina, revolucionando el acceso a la consultoría
-                  mediante un modelo accesible, escalable y profundamente humano, que transforme a las PYMES en motores de desarrollo
-                  económico sostenible.
-                </p>
-              </motion.div>
-
-              {/* Valores */}
-              <motion.div className="value-item p-8 rounded-lg shadow-md flex flex-col items-center" whileHover={{ scale: 1.03 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
-                <FaHeart className="text-6xl mb-4" style={{ color: '#37B6FF' }} />
-                <h3 className="text-3xl font-bold mb-3" style={{ color: '#293A49' }}>Valores</h3>
-                <ul className="list-none text-gray-700 text-lg space-y-2 text-left">
-                  <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: '#37B6FF' }} /> Excelencia</li>
-                  <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: '#37B6FF' }} /> Colaboración</li>
-                  <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: '#37B6FF' }} /> Empatía</li>
-                  <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: '#37B6FF' }} /> Responsabilidad Social</li>
-                  <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: '#37B6FF' }} /> Humanidad</li>
-                  <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: '#37B6FF' }} /> Alta tecnología e Innovación</li>
-                </ul>
-              </motion.div>
-            </div>
-          </section>
-
-          {/* CTA final */}
-          <section
-            ref={(el) => { sectionRefs.current[3] = el; }}
-            className="py-20 md:py-32 menthia-gradient text-center shadow-2xl rounded-3xl mx-4 md:mx-auto max-w-6xl mb-16 p-8 md:p-12 relative z-10"
-          >
-            <div className="container mx-auto px-4">
-              <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-6 leading-tight">
-                ¿Listo para Escalar tu Influencia y Rentabilidad?
-              </h2>
-              <p className="text-xl md:text-2xl text-white max-w-3xl mx-auto mb-10">
-                Únete a la red de élite de MentHIA y <b>transforma tu visión en resultados tangibles y duraderos.</b>
-              </p>
+        {/* Hero Section */}
+        <section className="min-h-[90vh] flex items-center justify-center text-center overflow-hidden relative p-4">
+          <Particles 
+            id="tsparticles-hero" 
+            init={particlesInit} 
+            options={heroParticlesOptions} 
+            className="absolute inset-0 z-0" 
+          />
+          <div className="relative z-20 p-4 max-w-6xl mx-auto">
+            <h1 className="hero-home-title text-5xl md:text-7xl font-extrabold text-gray-900 leading-tight mb-6 drop-shadow-md">
+              Mentores expertos <span className="menthia-text-gradient">+ IA</span> para <span className="menthia-text-gradient">escalar tu negocio en un solo lugar.</span>
+            </h1>
+            <p className="hero-home-description text-xl md:text-2xl text-gray-700 mb-10 max-w-4xl mx-auto">
+              Talento humano que usa tecnología que conecta datos, algoritmos <b>y experiencia para tomar decisiones más rápidas</b> y rentables.
+            </p>
+            <div className="hero-home-cta flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link
                 href="/register"
-                className="inline-block bg-white font-bold py-4 px-12 rounded-full text-lg md:text-xl shadow-lg hover:bg-gray-100 transform hover:scale-105 transition-all duration-300 ease-in-out"
-                style={{ color: '#293A49' }}
+                className="inline-block menthia-gradient font-bold py-4 px-12 rounded-full text-lg md:text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 ease-in-out animate-float"
+                style={{ color: '#000000' }}
               >
-                <FaUserPlus className="inline-block mr-3" />  Registrate ahora y recibe sin costo un diagnostico de tu negocio
+                <FaUserPlus className="inline-block mr-3" /> Potenciar mi negocio hoy
+              </Link>
+              <Link
+                href="/demo"
+                className="inline-block cta-secondary font-bold py-4 px-8 rounded-full text-lg md:text-xl shadow-lg transform hover:scale-105 transition-all duration-300 ease-in-out"
+              >
+                <FaPlay className="inline-block mr-3" /> Ver cómo funciona (2 min)
               </Link>
             </div>
-          </section>
-        </div>
-
-        {/* Footer */}
-        <footer style={{ backgroundColor: '#293A49' }} className="text-gray-300 py-12">
-          <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="col-span-1">
-              <h3 className="text-xl font-bold text-white mb-4">MentHIA</h3>
-              <p className="text-sm">Plataforma de élite para consultores y empresarios que buscan resultados extraordinarios.</p>
-              <div className="flex space-x-4 mt-4">
-                <a href="#" className="text-gray-400 hover:text-white transition-colors duration-300"><FaFacebook size={24} /></a>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors duration-300"><FaTwitter size={24} /></a>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors duration-300"><FaLinkedin size={24} /></a>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors duration-300"><FaInstagram size={24} /></a>
+            <div className="mt-6 text-sm text-gray-600 flex items-center justify-center gap-4">
+              <div className="flex items-center">
+                <FaCreditCard className="mr-2 text-green-600" />
+                <span>Facilidad de pago</span>
+              </div>
+              <div className="flex items-center">
+                <FaCheck className="mr-2 text-green-600" />
+                <span>Demo guiada + recomendaciones personalizadas</span>
               </div>
             </div>
-            <div className="col-span-1">
-              <h3 className="text-lg font-semibold text-white mb-4">Explorar</h3>
-              <ul className="space-y-2">
-                <li><Link href="/features" className="hover:text-white transition-colors duration-300">Características</Link></li>
-                <li><Link href="/about" className="hover:text-white transition-colors duration-300">Sobre Nosotros</Link></li>
-                <li><Link href="/pricing" className="hover:text-white transition-colors duration-300">Precios</Link></li>
-                <li><Link href="/blog" className="hover:text-white transition-colors duration-300">Blog</Link></li>
-              </ul>
-            </div>
-            <div className="col-span-1">
-              <h3 className="text-lg font-semibold text-white mb-4">Soporte</h3>
-              <ul className="space-y-2">
-                <li><Link href="/faq" className="hover:text-white transition-colors duration-300">Preguntas Frecuentes</Link></li>
-                <li><Link href="/contact" className="hover:text-white transition-colors duration-300">Contacto</Link></li>
-                <li><Link href="/terms" className="hover:text-white transition-colors duration-300">Términos de Servicio</Link></li>
-                <li><Link href="/privacy" className="hover:text-white transition-colors duration-300">Política de Privacidad</Link></li>
-              </ul>
-            </div>
-            <div className="col-span-1">
-              <h3 className="text-lg font-semibold text-white mb-4">Contacto</h3>
-              <p className="text-sm">123 Calle Innovación, Ciudad Futura</p>
-              <p className="text-sm">info@menthia.com</p>
-              <p className="text-sm">+1 234 567 8900</p>
-            </div>
           </div>
-          <div className="mt-8 pt-8 border-t border-gray-700 text-center text-sm text-gray-500">
-            © {new Date().getFullYear()} MentHIA. Todos los derechos reservados.
+        </section>
+
+        {/* Soluciones Estratégicas */}
+        <section
+          ref={(el) => { sectionRefs.current[0] = el; }}
+          className="py-20 md:py-32 px-4 container mx-auto text-center bg-gray-50 rounded-2xl shadow-lg my-16 border-2 border-gray-200"
+        >
+          <h2 className="text-4xl md:text-5xl font-bold mb-12 flex items-center justify-center" style={{ color: '#293A49' }}>
+            <FaRegLightbulb className="text-5xl mr-4" style={{ color: '#37B6FF' }} /> Soluciones Estratégicas para tu Crecimiento
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
+            <motion.div className="card-custom" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
+              <h3 className="text-2xl font-semibold mb-3 flex items-center" style={{ color: '#293A49' }}>
+                <FaChartBar className="mr-3" style={{ color: '#37B6FF' }} /> <b>Inteligencia de Mercado y Estrategia</b>
+              </h3>
+              <p className="text-gray-700 text-sm">Análisis profundo para ventajas competitivas que te posicionan por delante de la competencia.</p>
+            </motion.div>
+
+            <motion.div className="card-custom" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
+              <h3 className="text-2xl font-semibold mb-3 flex items-center" style={{ color: '#293A49' }}>
+                <FaNetworkWired className="mr-3" style={{ color: '#70B5E2' }} /> <b>Networking y Alianzas Estratégicas</b>
+              </h3>
+              <p className="text-gray-700 text-sm">Conecta con líderes e inversionistas para forjar alianzas que impulsen tu crecimiento exponencial.</p>
+            </motion.div>
+
+            <motion.div className="card-custom" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
+              <h3 className="text-2xl font-semibold mb-3 flex items-center" style={{ color: '#293A49' }}>
+                <FaGraduationCap className="mr-3" style={{ color: '#37B6FF' }} /> <b>Maestría en Consultoría y Liderazgo</b>
+              </h3>
+              <p className="text-gray-700 text-sm">Certificaciones y metodologías de vanguardia para dominar el arte de la consultoría estratégica.</p>
+            </motion.div>
+
+            <motion.div className="card-custom" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
+              <h3 className="text-2xl font-semibold mb-3 flex items-center" style={{ color: '#293A49' }}>
+                <FaSearchDollar className="mr-3" style={{ color: '#70B5E2' }} /> <b>Posicionamiento y Captación de Clientes</b>
+              </h3>
+              <p className="text-gray-700 text-sm">Marketing digital y marca personal para atraer y retener clientes de alto valor de manera consistente.</p>
+            </motion.div>
+
+            <motion.div className="card-custom" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
+              <h3 className="text-2xl font-semibold mb-3 flex items-center" style={{ color: '#293A49' }}>
+                <FaTools className="mr-3" style={{ color: '#37B6FF' }} /> <b>Herramientas y Recursos Exclusivos</b>
+              </h3>
+              <p className="text-gray-700 text-sm">Plantillas, frameworks y software especializado para optimizar tu eficiencia operativa al máximo.</p>
+            </motion.div>
+
+            <motion.div className="card-custom" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
+              <h3 className="text-2xl font-semibold mb-3 flex items-center" style={{ color: '#293A49' }}>
+                <FaGlobe className="mr-3" style={{ color: '#70B5E2' }} /> <b>Análisis de Tendencias y Futuro del Negocio</b>
+              </h3>
+              <p className="text-gray-700 text-sm">Mantén tu empresa a la vanguardia con insights sobre disrupciones tecnológicas y tendencias emergentes.</p>
+            </motion.div>
           </div>
-        </footer>
+        </section>
+
+        {/* Tu Ventaja Competitiva */}
+        <section
+          ref={(el) => { sectionRefs.current[1] = el; }}
+          className="py-20 md:py-32 px-4 container mx-auto text-center"
+        >
+          <h2 className="text-4xl md:text-5xl font-bold mb-12 flex items-center justify-center" style={{ color: '#293A49' }}>
+            <FaRocket className="text-5xl mr-4" style={{ color: '#37B6FF' }} /> Tu Ventaja Competitiva con MentHIA
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-5xl mx-auto">
+            <motion.div className="card-custom flex items-start p-8 rounded-lg shadow-lg" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
+              <FaBullseye className="text-5xl mr-6 flex-shrink-0" style={{ color: '#37B6FF' }} />
+              <div className="text-left">
+                <h3 className="text-2xl font-semibold mb-2" style={{ color: '#293A49' }}><b>Enfoque Hiper-Especializado</b></h3>
+                <p className="text-gray-700 text-sm">Soluciones diseñadas exclusivamente para la élite de consultores y empresarios que buscan resultados extraordinarios.</p>
+              </div>
+            </motion.div>
+
+            <motion.div className="card-custom flex items-start p-8 rounded-lg shadow-lg" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
+              <FaCogs className="text-5xl mr-6 flex-shrink-0" style={{ color: '#70B5E2' }} />
+              <div className="text-left">
+                <h3 className="text-2xl font-semibold mb-2" style={{ color: '#293A49' }}><b>Analítica de Rendimiento Avanzada</b></h3>
+                <p className="text-gray-700 text-sm">Dashboards y métricas que convierten datos complejos en decisiones rentables y estratégicas.</p>
+              </div>
+            </motion.div>
+
+            <motion.div className="card-custom flex items-start p-8 rounded-lg shadow-lg" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
+              <FaConnectdevelop className="text-5xl mr-6 flex-shrink-0" style={{ color: '#37B6FF' }} />
+              <div className="text-left">
+                <h3 className="text-2xl font-semibold mb-2" style={{ color: '#293A49' }}><b>Comunidad de Liderazgo Verificado</b></h3>
+                <p className="text-gray-700 text-sm">Aprende de un círculo selecto de líderes con casos reales y experiencias probadas en el mercado.</p>
+              </div>
+            </motion.div>
+
+            <motion.div className="card-custom flex items-start p-8 rounded-lg shadow-lg" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
+              <FaShieldAlt className="text-5xl mr-6 flex-shrink-0" style={{ color: '#70B5E2' }} />
+              <div className="text-left">
+                <h3 className="text-2xl font-semibold mb-2" style={{ color: '#293A49' }}><b>Soporte Proactivo y Curación de Contenido</b></h3>
+                <p className="text-gray-700 text-sm">Recursos estratégicos constantemente actualizados y curados por expertos de la industria.</p>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Misión, Visión, Valores */}
+        <section
+          ref={(el) => { sectionRefs.current[2] = el; }}
+          className="py-20 md:py-32 px-4 container mx-auto text-center bg-white rounded-2xl shadow-lg my-16 border-2 border-gray-200"
+        >
+          <h2 className="text-4xl md:text-5xl font-bold mb-12 flex items-center justify-center" style={{ color: '#293A49' }}>
+            <FaEye className="text-5xl mr-4" style={{ color: '#37B6FF' }} /> Nuestra Esencia: Impulsando el Liderazgo
+          </h2>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Misión */}
+            <motion.div className="value-item p-8 rounded-lg shadow-md flex flex-col items-center" whileHover={{ scale: 1.03 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
+              <FaBullseye className="text-6xl mb-4" style={{ color: '#37B6FF' }} />
+              <h3 className="text-3xl font-bold mb-3" style={{ color: '#293A49' }}>Misión</h3>
+              <p className="text-gray-700 text-lg leading-relaxed">
+                Empoderar a emprendedores y pequeñas empresas de América Latina a través de una plataforma híbrida que combina
+                inteligencia artificial con la experiencia humana, ofreciendo asesoría personalizada, diagnósticos inteligentes
+                y herramientas prácticas que impulsan la innovación, el crecimiento y la competitividad empresarial.
+              </p>
+            </motion.div>
+
+            {/* Visión */}
+            <motion.div className="value-item p-8 rounded-lg shadow-md flex flex-col items-center" whileHover={{ scale: 1.03 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
+              <FaEye className="text-6xl mb-4" style={{ color: '#70B5E2' }} />
+              <h3 className="text-3xl font-bold mb-3" style={{ color: '#293A49' }}>Visión</h3>
+              <p className="text-gray-700 text-lg leading-relaxed">
+                Ser la plataforma líder en mentoría empresarial inteligente en América Latina, revolucionando el acceso a la consultoría
+                mediante un modelo accesible, escalable y profundamente humano, que transforme a las PYMES en motores de desarrollo
+                económico sostenible.
+              </p>
+            </motion.div>
+
+            {/* Valores */}
+            <motion.div className="value-item p-8 rounded-lg shadow-md flex flex-col items-center" whileHover={{ scale: 1.03 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
+              <FaHeart className="text-6xl mb-4" style={{ color: '#37B6FF' }} />
+              <h3 className="text-3xl font-bold mb-3" style={{ color: '#293A49' }}>Valores</h3>
+              <ul className="list-none text-gray-700 text-lg space-y-2 text-left">
+                <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: '#37B6FF' }} /> Excelencia</li>
+                <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: '#37B6FF' }} /> Colaboración</li>
+                <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: '#37B6FF' }} /> Empatía</li>
+                <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: '#37B6FF' }} /> Responsabilidad Social</li>
+                <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: '#37B6FF' }} /> Humanidad</li>
+                <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: '#37B6FF' }} /> Alta tecnología e Innovación</li>
+              </ul>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* CTA final */}
+        <section
+          ref={(el) => { sectionRefs.current[3] = el; }}
+          className="py-20 md:py-32 menthia-gradient text-center shadow-2xl rounded-3xl mx-4 md:mx-auto max-w-6xl mb-16 p-8 md:p-12 relative z-10"
+        >
+          <div className="container mx-auto px-4">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-6 leading-tight">
+              ¿Listo para Escalar tu Influencia y Rentabilidad?
+            </h2>
+            <p className="text-xl md:text-2xl text-white max-w-3xl mx-auto mb-10">
+              Únete a la red de élite de MentHIA y <b>transforma tu visión en resultados tangibles y duraderos.</b>
+            </p>
+            <Link
+              href="/register"
+              className="inline-block bg-white font-bold py-4 px-12 rounded-full text-lg md:text-xl shadow-lg hover:bg-gray-100 transform hover:scale-105 transition-all duration-300 ease-in-out"
+              style={{ color: '#293A49' }}
+            >
+              <FaUserPlus className="inline-block mr-3" />  Registrate ahora y recibe sin costo un diagnostico de tu negocio
+            </Link>
+          </div>
+        </section>
       </div>
-    </PrivateLayout>
+    </>
   );
 };
 
