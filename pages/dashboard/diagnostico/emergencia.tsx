@@ -2,7 +2,6 @@
 import React, { useState, useEffect, ChangeEvent, useRef } from "react";
 import { useRouter } from "next/router";
 import { useAuth } from "../../../contexts/AuthContext";
-import PrivateLayout from "../../../components/layout/PrivateLayout";
 import "animate.css";
 import { ArrowRightIcon } from "@heroicons/react/24/solid";
 
@@ -537,7 +536,7 @@ const DiagnosticoEmergencia: React.FC = () => {
   };
 
   return (
-    <PrivateLayout>
+    <>
       <div className="min-h-screen bg-gray-100 flex flex-col items-center py-10 px-4 sm:px-6 lg:px-8">
         <div className="max-w-5xl w-full bg-white p-8 rounded-xl shadow-lg animate__animated animate__fadeInDown border border-red-200">
           <h1 className="text-4xl font-extrabold text-center text-red-800 mb-4">
@@ -576,7 +575,7 @@ const DiagnosticoEmergencia: React.FC = () => {
           )}
         </div>
       </div>
-    </PrivateLayout>
+    </>
   );
 };
 

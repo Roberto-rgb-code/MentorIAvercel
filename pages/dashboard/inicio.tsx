@@ -1,9 +1,7 @@
 // pages/dashboard/inicio.tsx
 "use client";
-
 import React, { useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
-import PrivateLayout from "@/components/layout/PrivateLayout";
 import { motion } from "framer-motion";
 import {
   FaHeartbeat,
@@ -19,7 +17,6 @@ import {
 } from "react-icons/fa";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
-
 // Partículas
 import Particles from "react-tsparticles";
 import { loadSlim } from "tsparticles-slim";
@@ -96,10 +93,10 @@ const InicioDashboard: React.FC = () => {
   const card = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0 } };
 
   return (
-    <PrivateLayout>
+    <>
       {/* Fondo partículas */}
       <Particles id="tsparticles-dashboard" init={particlesInit} options={particlesOptions as any} className="fixed inset-0 -z-10" />
-
+      
       <main className="min-h-screen bg-transparent text-white" style={{ fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
         {/* HERO */}
         <section className="relative pt-10 md:pt-14 pb-6">
@@ -111,7 +108,6 @@ const InicioDashboard: React.FC = () => {
               <p className="dash-hero-sub mt-2 text-gray-200 md:text-lg">
                 Centraliza tu operación: inicia diagnósticos, gestiona mentorías, sube cursos y ofrece servicios en el marketplace.
               </p>
-
               {/* accesos rápidos */}
               <div className="dash-hero-cta mt-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
                 <Link
@@ -128,7 +124,6 @@ const InicioDashboard: React.FC = () => {
                     </div>
                   </div>
                 </Link>
-
                 <Link
                   href="/dashboard/mentoria"
                   className="group rounded-xl border border-[#37B6FF]/30 bg-[#293A49]/80 backdrop-blur-sm p-3 hover:bg-[#293A49] hover:shadow-lg transition"
@@ -143,7 +138,6 @@ const InicioDashboard: React.FC = () => {
                     </div>
                   </div>
                 </Link>
-
                 <Link
                   href="/dashboard/cursos"
                   className="group rounded-xl border border-[#70B5E2]/30 bg-[#293A49]/80 backdrop-blur-sm p-3 hover:bg-[#293A49] hover:shadow-lg transition"
@@ -158,7 +152,6 @@ const InicioDashboard: React.FC = () => {
                     </div>
                   </div>
                 </Link>
-
                 <Link
                   href="/dashboard/marketplace"
                   className="group rounded-xl border border-[#37B6FF]/30 bg-[#293A49]/80 backdrop-blur-sm p-3 hover:bg-[#293A49] hover:shadow-lg transition"
@@ -173,7 +166,6 @@ const InicioDashboard: React.FC = () => {
                     </div>
                   </div>
                 </Link>
-
                 <Link
                   href="/dashboard/ayuda"
                   className="group rounded-xl border border-[#70B5E2]/30 bg-[#293A49]/80 backdrop-blur-sm p-3 hover:bg-[#293A49] hover:shadow-lg transition"
@@ -188,7 +180,6 @@ const InicioDashboard: React.FC = () => {
                     </div>
                   </div>
                 </Link>
-
                 <Link
                   href="/dashboard/pagos"
                   className="group rounded-xl border border-[#37B6FF]/30 bg-[#293A49]/80 backdrop-blur-sm p-3 hover:bg-[#293A49] hover:shadow-lg transition"
@@ -322,7 +313,6 @@ const InicioDashboard: React.FC = () => {
                   </Link>
                 </div>
               </div>
-
               {/* Cursos & Marketplace */}
               <div className="rounded-2xl border border-[#70B5E2]/30 bg-[#293A49]/90 backdrop-blur-sm p-6 shadow-xl">
                 <div className="flex items-center gap-3 mb-3">
@@ -406,17 +396,8 @@ const InicioDashboard: React.FC = () => {
             </div>
           </div>
         </section>
-
-        {/* Footer corto */}
-        <section className="pb-10">
-          <div className="mx-auto max-w-7xl px-4">
-            <div className="text-xs text-gray-300 text-center">
-              © {new Date().getFullYear()} MenthIA — Plataforma para diagnóstico, mentoría y cursos.
-            </div>
-          </div>
-        </section>
       </main>
-    </PrivateLayout>
+    </>
   );
 };
 

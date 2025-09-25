@@ -1,6 +1,5 @@
 // pages/dashboard/diagnostico.tsx
 import { useRouter } from 'next/router';
-import PrivateLayout from '../../components/layout/PrivateLayout';
 import {
   FaUserTie,
   FaBuilding,
@@ -344,7 +343,7 @@ const Diagnostico: React.FC = () => {
   ];
 
   return (
-    <PrivateLayout>
+    <>
       {/* Fondo de partículas */}
       <EnhancedParticlesBackground />
 
@@ -433,7 +432,7 @@ const Diagnostico: React.FC = () => {
           </div>
         </div>
       </div>
-    </PrivateLayout>
+    </>
   );
 };
 

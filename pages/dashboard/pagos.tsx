@@ -2,7 +2,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import PrivateLayout from "../../components/layout/PrivateLayout";
 
 type CartItem = {
   sku: string;
@@ -191,7 +190,7 @@ const PagosPage: React.FC = () => {
   }
 
   return (
-    <PrivateLayout>
+    <>
       <div className="min-h-screen bg-gray-100">
         {/* Header */}
         <div className="bg-white border-b">
@@ -501,7 +500,7 @@ const PagosPage: React.FC = () => {
           </aside>
         </div>
       </div>
-    </PrivateLayout>
+    </>
   );
 };
 

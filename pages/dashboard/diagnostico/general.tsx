@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { useAuth } from "../../../contexts/AuthContext";
-import PrivateLayout from "../../../components/layout/PrivateLayout";
 import "animate.css";
 
 import {
@@ -397,7 +396,7 @@ const DiagnosticoGeneralChatbot = () => {
   const currentQuestion = questions[currentQuestionIndex];
 
   return (
-    <PrivateLayout>
+    <>
       <div className="min-h-screen bg-gray-100 flex flex-col items-center py-10 px-4 sm:px-6 lg:px-8">
         {isLoading && (
           <div className="fixed inset-0 bg-gray-900 bg-opacity-70 flex flex-col items-center justify-center z-50 animate__animated animate__fadeIn">
@@ -599,7 +598,7 @@ const DiagnosticoGeneralChatbot = () => {
           </div>
         </div>
       </div>
-    </PrivateLayout>
+    </>
   );
 };
 

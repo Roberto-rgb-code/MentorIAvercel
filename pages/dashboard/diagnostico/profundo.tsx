@@ -1,7 +1,6 @@
 // pages/dashboard/diagnostico/profundo.tsx
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import PrivateLayout from "../../../components/layout/PrivateLayout";
 import { useAuth } from "../../../contexts/AuthContext";
 
 // ===== Tipos =====
@@ -856,7 +855,7 @@ const ChatbotDiagnostico: React.FC = () => {
   const priOrder: Record<string, number> = { P1: 0, P2: 1, P3: 2 };
 
   return (
-    <PrivateLayout>
+    <>
       {/* Overlay loading */}
       {loading && (
         <>
@@ -1177,7 +1176,7 @@ const ChatbotDiagnostico: React.FC = () => {
           </button>
         </div>
       </div>
-    </PrivateLayout>
+    </>
   );
 };
 

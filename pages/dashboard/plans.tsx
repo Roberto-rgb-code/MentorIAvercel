@@ -2,7 +2,6 @@
 import React from "react";
 import Link from "next/link";
 import Head from "next/head";
-import PrivateLayout from "@/components/layout/PrivateLayout";
 
 // Puedes gestionar estas features como datos para mantener el JSX limpio
 const planFeatures = {
@@ -27,7 +26,7 @@ const planFeatures = {
 
 const Plans: React.FC = () => {
   return (
-    <PrivateLayout>
+    <>
       <Head>
         <title>Planes y Paquetes · MenthIA</title>
         <meta name="description" content="Elige el plan ideal para tu empresa y escala con mentoría, cursos y herramientas." />
@@ -193,7 +192,7 @@ const Plans: React.FC = () => {
           </div>
         </div>
       </section>
-    </PrivateLayout>
+    </>
   );
 };
 

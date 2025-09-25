@@ -1,7 +1,6 @@
 // pages/dashboard/cursos.tsx
 import React, { useMemo, useState } from "react";
 import Link from "next/link";
-import PrivateLayout from "../../components/layout/PrivateLayout";
 
 type Course = {
   id: string;
@@ -268,7 +267,7 @@ const CursosPage: React.FC = () => {
   }, [q, category, level, sort]);
 
   return (
-    <PrivateLayout>
+    <>
       <div className="min-h-screen bg-gray-100">
         {/* Header */}
         <div className="bg-white border-b">
@@ -404,7 +403,7 @@ const CursosPage: React.FC = () => {
           </div>
         </div>
       </div>
-    </PrivateLayout>
+    </>
   );
 };
 

@@ -1,7 +1,6 @@
 // pages/dashboard/marketplace.tsx
 import React, { useMemo, useState } from "react";
 import Link from "next/link";
-import PrivateLayout from "../../components/layout/PrivateLayout";
 
 type Item = {
   id: string;
@@ -205,7 +204,7 @@ const MarketplacePage: React.FC = () => {
   };
 
   return (
-    <PrivateLayout>
+    <>
       <div className="min-h-screen bg-gray-100">
         <div className="bg-white border-b">
           <div className="max-w-6xl mx-auto px-4 py-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -291,7 +290,7 @@ const MarketplacePage: React.FC = () => {
           </div>
         </div>
       </div>
-    </PrivateLayout>
+    </>
   );
 };
 
