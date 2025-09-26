@@ -1,4 +1,3 @@
-// components/layout/PublicLayout.tsx
 import React from 'react';
 import Navbar from '../Navbar';
 import Footer from './Footer';
@@ -12,7 +11,8 @@ const PublicLayout: React.FC<PublicLayoutProps> = ({ children }) => {
     <div className="min-h-screen bg-gray-100 flex flex-col">
       <Navbar />
       
-      <main className="flex-grow p-6">
+      {/* Dejamos espacio arriba para el navbar fijo */}
+      <main className="flex-grow p-6 pt-[64px] md:pt-[72px]">
         {children}
       </main>
       

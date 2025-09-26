@@ -73,7 +73,7 @@ function NotificationBell({ renderTrigger }: NotificationBellProps) {
 }
 
 // -----------------------------------------------------------------------------
-// Navbar con diseño MentHIA
+// Navbar con diseño MentHIA + ocultamiento por scroll
 // -----------------------------------------------------------------------------
 const Navbar = () => {
   const { user, logout, loading } = useAuth?.() ?? { user: null, logout: async () => {}, loading: false };
@@ -96,6 +96,7 @@ const Navbar = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
 
+  // --- Cerrar overlays al hacer click fuera ---
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -111,6 +112,45 @@ const Navbar = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [mobileMenuOpen]);
+
+  // --- Lógica de ocultamiento al hacer scroll ---
+  const NAV_HEIGHT = 64; // px (h-16)
+  const [scrollDir, setScrollDir] = useState<"up" | "down">("up");
+  const lastYRef = useRef(0);
+
+  useEffect(() => {
+    // SSR guard
+    if (typeof window === "undefined") return;
+
+    lastYRef.current = window.scrollY;
+    let ticking = false;
+
+    const onScroll = () => {
+      const y = window.scrollY;
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const delta = y - lastYRef.current;
+          // Umbral para evitar jitter
+          if (Math.abs(delta) > 6) {
+            setScrollDir(delta > 0 ? "down" : "up");
+            lastYRef.current = y;
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // No ocultar si estás arriba (<=100) o si el menú móvil está abierto
+  const shouldHide =
+    typeof window !== "undefined" &&
+    scrollDir === "down" &&
+    window.scrollY > 100 &&
+    !mobileMenuOpen;
 
   const handleLogout = async () => {
     setDropdownOpen(false);
@@ -147,18 +187,28 @@ const Navbar = () => {
   if (loading) return null;
 
   return (
-    <nav className="shadow-xl relative z-50 font-sans" style={{ background: 'linear-gradient(135deg, #293A49 0%, #37B6FF 100%)' }}>
-      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6">
+    <nav
+      className={[
+        "fixed top-0 left-0 right-0 z-50 font-sans shadow-xl",
+        "transform transition-transform duration-300 will-change-transform",
+        shouldHide ? "-translate-y-full" : "translate-y-0",
+      ].join(" ")}
+      style={{
+        background: "linear-gradient(135deg, #293A49 0%, #37B6FF 100%)",
+        height: NAV_HEIGHT,
+      }}
+    >
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 h-full">
         {/* TOPBAR */}
         <div className="flex justify-between h-16 items-center">
           {/* Brand */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-3">
               <div className="flex-shrink-0">
-                <Image 
-                  src="/favicon.png" 
-                  alt="MentHIA Logo" 
-                  width={40} 
+                <Image
+                  src="/favicon.png"
+                  alt="MentHIA Logo"
+                  width={40}
                   height={40}
                   className="w-10 h-10"
                 />
@@ -437,7 +487,7 @@ const Navbar = () => {
       {mobileMenuOpen && (
         <div
           ref={mobileMenuRef}
-          className="md:hidden absolute top-0 left-0 w-full h-screen flex flex-col items-center justify-center space-y-8 z-40"
+          className="md:hidden fixed top-0 left-0 w-full h-screen flex flex-col items-center justify-center space-y-8 z-40"
           style={{ background: 'linear-gradient(135deg, #293A49 0%, #37B6FF 100%)', opacity: 0.98 }}
         >
           <button
