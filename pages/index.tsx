@@ -535,46 +535,71 @@ const Home: React.FC = () => {
           ref={(el) => { sectionRefs.current[3] = el; }}
           className="py-20 md:py-32 px-4 container mx-auto text-center bg-white rounded-2xl shadow-lg my-16 border-2 border-gray-200"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-12 flex items-center justify-center" style={{ color: '#293A49' }}>
-            <FaEye className="text-5xl mr-4" style={{ color: '#37B6FF' }} /> Nuestra Esencia: Impulsando el Liderazgo
+          <h2 className="text-4xl md:text-5xl font-bold mb-12" style={{ color: '#37B6FF' }}>
+            Nuestra esencia, tu éxito
           </h2>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Misión */}
-            <motion.div className="value-item p-8 rounded-lg shadow-md flex flex-col items-center" whileHover={{ scale: 1.03 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
+            <motion.div 
+              className="value-item p-8 rounded-lg shadow-md flex flex-col items-center" 
+              whileHover={{ scale: 1.03 }} 
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+            >
               <FaBullseye className="text-6xl mb-4" style={{ color: '#37B6FF' }} />
-              <h3 className="text-3xl font-bold mb-3" style={{ color: '#293A49' }}>Misión</h3>
+              <h3 className="text-3xl font-bold mb-3 text-black">Misión</h3>
               <p className="text-gray-700 text-lg leading-relaxed">
-                Empoderar a emprendedores y pequeñas empresas de América Latina a través de una plataforma híbrida que combina
-                inteligencia artificial con la experiencia humana, ofreciendo asesoría personalizada, diagnósticos inteligentes
-                y herramientas prácticas que impulsan la innovación, el crecimiento y la competitividad empresarial.
+                Empoderar a emprendedores y pequeñas empresas de América Latina a través de una plataforma híbrida que combina inteligencia artificial con la experiencia humana, impulsando la innovación, el crecimiento y la competitividad empresarial.
               </p>
             </motion.div>
 
             {/* Visión */}
-            <motion.div className="value-item p-8 rounded-lg shadow-md flex flex-col items-center" whileHover={{ scale: 1.03 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
+            <motion.div 
+              className="value-item p-8 rounded-lg shadow-md flex flex-col items-center" 
+              whileHover={{ scale: 1.03 }} 
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+            >
               <FaEye className="text-6xl mb-4" style={{ color: '#70B5E2' }} />
-              <h3 className="text-3xl font-bold mb-3" style={{ color: '#293A49' }}>Visión</h3>
+              <h3 className="text-3xl font-bold mb-3 text-black">Visión</h3>
               <p className="text-gray-700 text-lg leading-relaxed">
-                Ser la plataforma líder en mentoría empresarial inteligente en América Latina, revolucionando el acceso a la consultoría
-                mediante un modelo accesible, escalable y profundamente humano, que transforme a las PYMES en motores de desarrollo
-                económico sostenible.
+                Ser la plataforma líder en mentoría empresarial inteligente en América Latina, revolucionando el acceso a la consultoría mediante un modelo accesible, escalable y profundamente humano, que transforme a las PYMES en motores de desarrollo económico sostenible.
               </p>
             </motion.div>
 
             {/* Valores */}
-            <motion.div className="value-item p-8 rounded-lg shadow-md flex flex-col items-center" whileHover={{ scale: 1.03 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
+            <motion.div 
+              className="value-item p-8 rounded-lg shadow-md flex flex-col items-center" 
+              whileHover={{ scale: 1.03 }} 
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+            >
               <FaHeart className="text-6xl mb-4" style={{ color: '#37B6FF' }} />
-              <h3 className="text-3xl font-bold mb-3" style={{ color: '#293A49' }}>Valores</h3>
+              <h3 className="text-3xl font-bold mb-3 text-black">Valores</h3>
               <ul className="list-none text-gray-700 text-lg space-y-2 text-left">
                 <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: '#37B6FF' }} /> Excelencia</li>
+                <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: '#37B6FF' }} /> Innovación y tecnología</li>
                 <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: '#37B6FF' }} /> Colaboración</li>
-                <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: '#37B6FF' }} /> Empatía</li>
-                <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: '#37B6FF' }} /> Responsabilidad Social</li>
+                <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: '#37B6FF' }} /> Integridad y confianza</li>
+                <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: '#37B6FF' }} /> Liderazgo</li>
                 <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: '#37B6FF' }} /> Humanidad</li>
-                <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: '#37B6FF' }} /> Alta tecnología e Innovación</li>
+                <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: '#37B6FF' }} /> Confidencialidad</li>
               </ul>
             </motion.div>
           </div>
+
+          <motion.div
+            className="mt-12 text-center"
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            viewport={{ once: true }}
+          >
+            <Link
+              href="/register"
+              className="inline-block font-bold py-4 px-12 rounded-full text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 ease-in-out"
+              style={{ backgroundColor: '#37B6FF', color: '#ffffff' }}
+            >
+              <FaUserPlus className="inline-block mr-3" /> Empieza hoy mismo
+            </Link>
+          </motion.div>
         </section>
 
         {/* CTA final */}
