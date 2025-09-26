@@ -403,42 +403,131 @@ const Home: React.FC = () => {
           ref={(el) => { sectionRefs.current[2] = el; }}
           className="py-20 md:py-32 px-4 container mx-auto text-center"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-12 flex items-center justify-center" style={{ color: '#293A49' }}>
-            <FaRocket className="text-5xl mr-4" style={{ color: '#37B6FF' }} /> Tu Ventaja Competitiva con MentHIA
+          <h2 className="text-4xl md:text-5xl font-bold mb-12" style={{ color: '#37B6FF' }}>
+            Tu Ventaja Competitiva como ASESOR
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-5xl mx-auto">
-            <motion.div className="card-custom flex items-start p-8 rounded-lg shadow-lg" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
-              <FaBullseye className="text-5xl mr-6 flex-shrink-0" style={{ color: '#37B6FF' }} />
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-6xl mx-auto">
+            <motion.div 
+              className="card-custom flex items-start p-8 rounded-lg shadow-lg" 
+              whileHover={{ scale: 1.02 }} 
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+            >
+              <FaChartLine className="text-5xl mr-6 flex-shrink-0" style={{ color: '#37B6FF' }} />
               <div className="text-left">
-                <h3 className="text-2xl font-semibold mb-2" style={{ color: '#293A49' }}><b>Enfoque Hiper-Especializado</b></h3>
-                <p className="text-gray-700 text-sm">Soluciones diseñadas exclusivamente para la élite de consultores y empresarios que buscan resultados extraordinarios.</p>
+                <h3 className="text-2xl font-bold mb-3 text-black">
+                  Acceso a un Mercado Amplio y en Crecimiento
+                </h3>
+                <ul className="text-gray-700 space-y-2">
+                  <li>• Acceder a miles de PYMES y emprendedores</li>
+                  <li>• Flujo constante de clientes</li>
+                  <li>• Expandir tu base de clientes</li>
+                </ul>
               </div>
             </motion.div>
 
-            <motion.div className="card-custom flex items-start p-8 rounded-lg shadow-lg" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
-              <FaCogs className="text-5xl mr-6 flex-shrink-0" style={{ color: '#70B5E2' }} />
+            <motion.div 
+              className="card-custom flex items-start p-8 rounded-lg shadow-lg" 
+              whileHover={{ scale: 1.02 }} 
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+            >
+              <FaGlobe className="text-5xl mr-6 flex-shrink-0" style={{ color: '#70B5E2' }} />
               <div className="text-left">
-                <h3 className="text-2xl font-semibold mb-2" style={{ color: '#293A49' }}><b>Analítica de Rendimiento Avanzada</b></h3>
-                <p className="text-gray-700 text-sm">Dashboards y métricas que convierten datos complejos en decisiones rentables y estratégicas.</p>
+                <h3 className="text-2xl font-bold mb-3 text-black">
+                  Flexibilidad y Control sobre tu Horario de Trabajo
+                </h3>
+                <ul className="text-gray-700 space-y-2">
+                  <li>• Elegir tu carga de trabajo</li>
+                  <li>• Optimizar tu tiempo</li>
+                  <li>• Asesorar desde cualquier lugar del mundo</li>
+                </ul>
               </div>
             </motion.div>
 
-            <motion.div className="card-custom flex items-start p-8 rounded-lg shadow-lg" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
-              <FaConnectdevelop className="text-5xl mr-6 flex-shrink-0" style={{ color: '#37B6FF' }} />
+            <motion.div 
+              className="card-custom flex items-start p-8 rounded-lg shadow-lg" 
+              whileHover={{ scale: 1.02 }} 
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+            >
+              <FaSearchDollar className="text-5xl mr-6 flex-shrink-0" style={{ color: '#37B6FF' }} />
               <div className="text-left">
-                <h3 className="text-2xl font-semibold mb-2" style={{ color: '#293A49' }}><b>Comunidad de Liderazgo Verificado</b></h3>
-                <p className="text-gray-700 text-sm">Aprende de un círculo selecto de líderes con casos reales y experiencias probadas en el mercado.</p>
+                <h3 className="text-2xl font-bold mb-3 text-black">
+                  Ingresos Escalables y Modelos de Remuneración Flexibles
+                </h3>
+                <ul className="text-gray-700 space-y-2">
+                  <li>• Ingresos adicionales escalables</li>
+                  <li>• Pago por proyectos o por horas</li>
+                  <li>• Esquema de recompensas</li>
+                </ul>
               </div>
             </motion.div>
 
-            <motion.div className="card-custom flex items-start p-8 rounded-lg shadow-lg" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
-              <FaShieldAlt className="text-5xl mr-6 flex-shrink-0" style={{ color: '#70B5E2' }} />
+            <motion.div 
+              className="card-custom flex items-start p-8 rounded-lg shadow-lg" 
+              whileHover={{ scale: 1.02 }} 
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+            >
+              <FaTools className="text-5xl mr-6 flex-shrink-0" style={{ color: '#70B5E2' }} />
               <div className="text-left">
-                <h3 className="text-2xl font-semibold mb-2" style={{ color: '#293A49' }}><b>Soporte Proactivo y Curación de Contenido</b></h3>
-                <p className="text-gray-700 text-sm">Recursos estratégicos constantemente actualizados y curados por expertos de la industria.</p>
+                <h3 className="text-2xl font-bold mb-3 text-black">
+                  Herramientas y Recursos para el Éxito Profesional
+                </h3>
+                <p className="text-gray-700">
+                  Accede a herramientas especializadas y recursos exclusivos que potenciarán tu trabajo como asesor profesional.
+                </p>
+              </div>
+            </motion.div>
+
+            <motion.div 
+              className="card-custom flex items-start p-8 rounded-lg shadow-lg" 
+              whileHover={{ scale: 1.02 }} 
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+            >
+              <FaGem className="text-5xl mr-6 flex-shrink-0" style={{ color: '#37B6FF' }} />
+              <div className="text-left">
+                <h3 className="text-2xl font-bold mb-3 text-black">
+                  Desarrollo de Marca Personal y Reputación
+                </h3>
+                <ul className="text-gray-700 space-y-2">
+                  <li>• Construir tu marca personal</li>
+                  <li>• Acceder a oportunidades de visibilidad</li>
+                </ul>
+              </div>
+            </motion.div>
+
+            <motion.div 
+              className="card-custom flex items-start p-8 rounded-lg shadow-lg" 
+              whileHover={{ scale: 1.02 }} 
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+            >
+              <FaNetworkWired className="text-5xl mr-6 flex-shrink-0" style={{ color: '#70B5E2' }} />
+              <div className="text-left">
+                <h3 className="text-2xl font-bold mb-3 text-black">
+                  Comunidad de Expertos y Networking
+                </h3>
+                <ul className="text-gray-700 space-y-2">
+                  <li>• Oportunidad de conectar</li>
+                  <li>• Accederás a eventos</li>
+                </ul>
               </div>
             </motion.div>
           </div>
+
+          <motion.div
+            className="mt-12 text-center"
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            viewport={{ once: true }}
+          >
+            <Link
+              href="/register"
+              className="inline-block font-bold py-4 px-12 rounded-full text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 ease-in-out"
+              style={{ backgroundColor: '#37B6FF', color: '#ffffff' }}
+            >
+              <FaUserPlus className="inline-block mr-3" /> Regístrate y empieza a recibir los beneficios como Asesor
+            </Link>
+          </motion.div>
         </section>
 
         {/* Misión, Visión, Valores */}
