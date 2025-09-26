@@ -20,7 +20,12 @@ import {
   FaChevronRight,
   FaPlay,
   FaCheckCircle,
-  FaBolt
+  FaBolt,
+  FaBrain,
+  FaChartLine,
+  FaGraduationCap,
+  FaBuilding,
+  FaUserTie
 } from "react-icons/fa";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
@@ -304,30 +309,37 @@ const CommunityPage: React.FC = () => {
   ];
 
   const communityStats = [
-    { icon: <FaUsers />, number: "12,847", label: "Miembros activos", color: "text-[#70B5E2]" },
-    { icon: <FaComments />, number: "45,623", label: "Conversaciones", color: "text-[#37B6FF]" },
-    { icon: <FaTrophy />, number: "1,284", label: "Expertos verificados", color: "text-[#70B5E2]" },
-    { icon: <FaFire />, number: "98%", label: "Satisfacción", color: "text-[#37B6FF]" },
+    { icon: <FaBrain />, number: "2,547", label: "Diagnósticos", color: "text-[#70B5E2]" },
+    { icon: <FaComments />, number: "8,923", label: "Asesorías 1:1", color: "text-[#37B6FF]" },
+    { icon: <FaGraduationCap />, number: "1,245", label: "Cursos tomados", color: "text-[#70B5E2]" },
+    { icon: <FaUsers />, number: "12,847", label: "Miembros activos", color: "text-[#37B6FF]" },
+    { icon: <FaTrophy />, number: "98%", label: "Satisfacción", color: "text-[#70B5E2]" },
   ];
 
   const benefits = [
     {
-      icon: <FaStar />,
-      title: "Mentoría de Élite",
-      desc: "Acceso directo a emprendedores exitosos y expertos de la industria con experiencia comprobada.",
+      icon: <FaUsers />,
+      title: "Conviven consultores expertos y empresas que buscan desarrollo",
+      desc: "Un espacio donde la experiencia de consultores se encuentra con las necesidades reales de las empresas, creando sinergias únicas.",
       color: "text-[#70B5E2]"
     },
     {
       icon: <FaBolt />,
-      title: "Respuestas Rápidas",
-      desc: "Obtén feedback en tiempo real de una comunidad activa disponible 24/7.",
+      title: "Encuentras información valiosa para tu negocio",
+      desc: "Accede a insights, tendencias y conocimiento especializado que impulsa el crecimiento de tu empresa.",
       color: "text-[#37B6FF]"
     },
     {
       icon: <FaCheckCircle />,
-      title: "Contenido Verificado",
-      desc: "Información curada y verificada por expertos para garantizar calidad y precisión.",
+      title: "Accedes a beneficios reales",
+      desc: "Obtén ventajas tangibles como descuentos exclusivos, acceso prioritario y herramientas premium.",
       color: "text-[#70B5E2]"
+    },
+    {
+      icon: <FaStar />,
+      title: "Participas en eventos de alto valor",
+      desc: "Asiste a conferencias, workshops y networking exclusivos diseñados para potenciar tu crecimiento profesional.",
+      color: "text-[#37B6FF]"
     },
   ];
 
@@ -375,27 +387,16 @@ const CommunityPage: React.FC = () => {
           {/* Hero Section */}
           <section className="relative z-10 pt-32 pb-8">
             <div ref={heroRef} className="max-w-7xl mx-auto px-6 text-center">
-              <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.8 }}
-                className="inline-flex items-center space-x-2 bg-[#70B5E2]/20 backdrop-blur-sm text-[#70B5E2] px-4 py-2 rounded-full text-sm font-semibold mb-6 border border-[#70B5E2]/30"
-              >
-                <FaFire className="text-[#37B6FF]" />
-                <span>Comunidad más activa de LATAM</span>
-              </motion.div>
-              
               <motion.h1
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.1 }}
                 className="text-4xl md:text-6xl font-bold text-white leading-tight mb-6"
               >
-                Comunidad de{" "}
+                Únete a Nuestra Comunidad{" "}
                 <span className="text-[#70B5E2]">
-                  Emprendedores
+                  MentHIA
                 </span>
-                {" "}& Creadores
               </motion.h1>
               
               <motion.p
@@ -404,8 +405,7 @@ const CommunityPage: React.FC = () => {
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="text-lg md:text-xl text-gray-200 max-w-3xl mx-auto leading-relaxed mb-8"
               >
-                Conecta con más de <strong className="text-[#37B6FF]">12,000 emprendedores</strong>, accede a mentoría de élite 
-                y participa en eventos exclusivos. Tu próximo gran breakthrough está a una conversación de distancia.
+                Conecta con líderes y otros empresarios. Aprende de expertos y escala tu negocio en un espacio colaborativo y dinámico.
               </motion.p>
 
               <motion.div
@@ -414,41 +414,80 @@ const CommunityPage: React.FC = () => {
                 transition={{ duration: 0.8, delay: 0.3 }}
                 className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
               >
-                <button
-                  onClick={() => router.push("/community/qna")}
-                  className="group bg-[#37B6FF] text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center space-x-2"
-                >
-                  <span>Unirse a la Comunidad</span>
-                  <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
-                </button>
-                
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <button
+                    onClick={() => router.push("/register?type=empresa")}
+                    className="group bg-[#37B6FF] text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center space-x-2"
+                  >
+                    <FaBuilding />
+                    <span>Acceso Empresa</span>
+                    <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
+                  </button>
+                  
+                  <button
+                    onClick={() => router.push("/register?type=consultor")}
+                    className="group bg-[#70B5E2] text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center space-x-2"
+                  >
+                    <FaUserTie />
+                    <span>Acceso Consultor</span>
+                    <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+                className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
+              >
                 <button
                   onClick={() => router.push("/community/events")}
                   className="group bg-white/10 backdrop-blur-sm text-white px-8 py-3 rounded-xl font-semibold border border-white/20 hover:bg-white/20 transition-all duration-200 flex items-center space-x-2"
                 >
-                  <FaPlay />
-                  <span>Ver Eventos</span>
+                  <FaCalendarAlt />
+                  <span>Desglosar el tipo de evento</span>
                 </button>
 
-                <button
-                  onClick={() => router.push("/demo-dashboard")}
-                  className="group bg-white/10 backdrop-blur-sm text-white px-8 py-3 rounded-xl font-semibold border border-white/20 hover:bg-white/20 transition-all duration-200 flex items-center space-x-2"
-                >
-                  <FaEye />
-                  <span>Explorar Dashboard</span>
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => router.push("/demo-dashboard-empresa")}
+                    className="group bg-white/10 backdrop-blur-sm text-white px-6 py-3 rounded-xl font-semibold border border-white/20 hover:bg-white/20 transition-all duration-200 flex items-center space-x-2"
+                  >
+                    <FaBuilding />
+                    <span>Dashboard Empresa</span>
+                  </button>
+
+                  <button
+                    onClick={() => router.push("/demo-dashboard-consultor")}
+                    className="group bg-white/10 backdrop-blur-sm text-white px-6 py-3 rounded-xl font-semibold border border-white/20 hover:bg-white/20 transition-all duration-200 flex items-center space-x-2"
+                  >
+                    <FaUserTie />
+                    <span>Dashboard Consultor</span>
+                  </button>
+                </div>
               </motion.div>
             </div>
 
-            {/* Stats */}
+            {/* KPIs de MentHIA */}
             <div ref={statsRef} className="max-w-6xl mx-auto px-6">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+                className="text-center mb-8"
+              >
+                <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">
+                  KPIs de MentHIA
+                </h3>
+              </motion.div>
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
                 {communityStats.map((stat, i) => (
                   <motion.div
                     key={i}
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: 0.4 + i * 0.1 }}
+                    transition={{ delay: 0.6 + i * 0.1 }}
                     className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/20 shadow-lg hover:shadow-xl transition-all duration-300 group"
                   >
                     <div className={`${stat.color} text-3xl mb-3 group-hover:scale-110 transition-transform`}>
@@ -531,12 +570,9 @@ const CommunityPage: React.FC = () => {
                 <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
                   ¿Por qué elegir nuestra comunidad?
                 </h2>
-                <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-                  Más que una red social, somos un ecosistema diseñado para acelerar tu crecimiento profesional
-                </p>
               </motion.div>
 
-              <div className="benefits-container grid md:grid-cols-3 gap-8">
+              <div className="benefits-container grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                 {benefits.map((benefit, i) => (
                   <motion.div
                     key={i}
@@ -546,8 +582,8 @@ const CommunityPage: React.FC = () => {
                     <div className={`${benefit.color} text-4xl mb-6 group-hover:scale-110 transition-transform duration-300`}>
                       {benefit.icon}
                     </div>
-                    <h4 className="text-xl font-bold text-white mb-4">{benefit.title}</h4>
-                    <p className="text-gray-300 leading-relaxed">{benefit.desc}</p>
+                    <h4 className="text-lg font-bold text-white mb-4">{benefit.title}</h4>
+                    <p className="text-gray-300 leading-relaxed text-sm">{benefit.desc}</p>
                   </motion.div>
                 ))}
               </div>
@@ -626,11 +662,11 @@ const CommunityPage: React.FC = () => {
                   
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                     <button
-                      onClick={() => router.push("/community/qna")}
+                      onClick={() => router.push("/register")}
                       className="group bg-white text-[#293A49] px-8 py-4 rounded-xl font-bold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center space-x-2"
                     >
-                      <FaComments />
-                      <span>Ir a Q&A</span>
+                      <FaUserPlus />
+                      <span>Regístrate Ahora</span>
                       <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
                     </button>
                   </div>
