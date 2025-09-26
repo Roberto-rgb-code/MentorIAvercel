@@ -609,17 +609,17 @@ const Home: React.FC = () => {
         >
           <div className="container mx-auto px-4">
             <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-6 leading-tight">
-              ¿Listo para Escalar tu Influencia y Rentabilidad?
+              ¡Listo para escalar tu negocio?
             </h2>
             <p className="text-xl md:text-2xl text-white max-w-3xl mx-auto mb-10">
-              Únete a la red de élite de MentHIA y <b>transforma tu visión en resultados tangibles y duraderos.</b>
+              Únete a la red de elite de Menthia y <b>transforma tu visión en realidad.</b>
             </p>
             <Link
               href="/register"
               className="inline-block bg-white font-bold py-4 px-12 rounded-full text-lg md:text-xl shadow-lg hover:bg-gray-100 transform hover:scale-105 transition-all duration-300 ease-in-out"
               style={{ color: '#293A49' }}
             >
-              <FaUserPlus className="inline-block mr-3" />  Registrate ahora y recibe sin costo un diagnostico de tu negocio
+              <FaUserPlus className="inline-block mr-3" />  REGÍSTRATE AHORA Y RECIBE SIN COSTO UN DIAGNÓSTICO DE TU NEGOCIO
             </Link>
           </div>
         </section>
