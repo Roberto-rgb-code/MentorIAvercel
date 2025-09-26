@@ -6,7 +6,7 @@ import {
   FaUsers, FaLightbulb, FaRocket, FaHandshake, FaBullseye, FaEye, FaHeart,
   FaUserPlus, FaArrowRight, FaChartLine, FaGraduationCap, FaStore, FaGem, FaBrain, FaCogs,
   FaBriefcase, FaNetworkWired, FaTools, FaShieldAlt, FaRegLightbulb, FaConnectdevelop, FaChartBar, FaGlobe, FaSearchDollar,
-  FaPlay, FaCreditCard, FaCheck
+  FaPlay, FaCreditCard, FaCheck, FaMapMarkerAlt, FaHandHoldingHeart
 } from "react-icons/fa";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
@@ -188,6 +188,10 @@ const Home: React.FC = () => {
           -webkit-text-fill-color: transparent;
           background-clip: text;
         }
+        .about-menthia-section {
+          background: linear-gradient(135deg, rgba(55, 182, 255, 0.05) 0%, rgba(112, 181, 226, 0.05) 100%);
+          border: 2px solid #70B5E2;
+        }
       `}</style>
 
       <div className="flex flex-col min-h-screen bg-white text-gray-800 font-sans">
@@ -234,9 +238,61 @@ const Home: React.FC = () => {
           </div>
         </section>
 
-        {/* Soluciones Estratégicas */}
+        {/* Qué es MentHIA Section */}
         <section
           ref={(el) => { sectionRefs.current[0] = el; }}
+          className="py-20 md:py-32 px-4 container mx-auto text-center about-menthia-section rounded-2xl shadow-lg my-16"
+        >
+          <h2 className="text-4xl md:text-5xl font-bold mb-12" style={{ color: '#37B6FF' }}>
+            Qué es MentHIA: Tu socio estratégico
+          </h2>
+          
+          <div className="max-w-5xl mx-auto space-y-8">
+            <motion.div 
+              className="text-center"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              viewport={{ once: true }}
+            >
+              <p className="text-xl font-bold text-black leading-relaxed mb-8">
+                MenTHIA se fundó en Guadalajara, Jalisco por un equipo interdisciplinario con talento experto mexicano, con el fin de abordar la necesidad de asesoría especializada en el ecosistema emprendedor latinoamericano.
+              </p>
+            </motion.div>
+
+            <motion.div 
+              className="text-center"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+              viewport={{ once: true }}
+            >
+              <p className="text-xl font-bold text-black leading-relaxed mb-8">
+                Es una Plataforma digital innovadora que conecta a PYMEs y Emprendedores en Mexico y Latinoamérica, con mentores especializados utilizando inteligencia artificial avanzada, ofreciendo soluciones personalizadas, accesibles y flexibles
+              </p>
+            </motion.div>
+
+            <motion.div
+              className="mt-10"
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
+              viewport={{ once: true }}
+            >
+              <Link
+                href="/register"
+                className="inline-block font-bold py-4 px-12 rounded-full text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 ease-in-out"
+                style={{ backgroundColor: '#37B6FF', color: '#ffffff' }}
+              >
+                <FaUserPlus className="inline-block mr-3" /> Regístrate AQUÍ
+              </Link>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Soluciones Estratégicas */}
+        <section
+          ref={(el) => { sectionRefs.current[1] = el; }}
           className="py-20 md:py-32 px-4 container mx-auto text-center bg-gray-50 rounded-2xl shadow-lg my-16 border-2 border-gray-200"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-12 flex items-center justify-center" style={{ color: '#293A49' }}>
@@ -289,7 +345,7 @@ const Home: React.FC = () => {
 
         {/* Tu Ventaja Competitiva */}
         <section
-          ref={(el) => { sectionRefs.current[1] = el; }}
+          ref={(el) => { sectionRefs.current[2] = el; }}
           className="py-20 md:py-32 px-4 container mx-auto text-center"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-12 flex items-center justify-center" style={{ color: '#293A49' }}>
@@ -332,7 +388,7 @@ const Home: React.FC = () => {
 
         {/* Misión, Visión, Valores */}
         <section
-          ref={(el) => { sectionRefs.current[2] = el; }}
+          ref={(el) => { sectionRefs.current[3] = el; }}
           className="py-20 md:py-32 px-4 container mx-auto text-center bg-white rounded-2xl shadow-lg my-16 border-2 border-gray-200"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-12 flex items-center justify-center" style={{ color: '#293A49' }}>
@@ -379,7 +435,7 @@ const Home: React.FC = () => {
 
         {/* CTA final */}
         <section
-          ref={(el) => { sectionRefs.current[3] = el; }}
+          ref={(el) => { sectionRefs.current[4] = el; }}
           className="py-20 md:py-32 menthia-gradient text-center shadow-2xl rounded-3xl mx-4 md:mx-auto max-w-6xl mb-16 p-8 md:p-12 relative z-10"
         >
           <div className="container mx-auto px-4">
