@@ -18,40 +18,38 @@ const servicesData = [
   {
     id: 'diagnostics',
     title: 'Diagnósticos Predictivos',
-    description: 'Radiografía 360° con IA: detecta cuellos de botella y oportunidades ocultas; supervisadas por un experto humano.',
+    description: 'Radiografía 360° con IA: detecta cuellos de botella y oportunidades ocultas; supervisadas por un experto humano, con reportes ejecutivos.',
     icon: FaBrain,
     color: 'from-[#293A49] to-[#70B5E2]',
     details: [
-      'Análisis 360° con inteligencia artificial',
-      'Detección de oportunidades ocultas',
-      'Supervisión de experto humano',
-      'Reportes predictivos personalizados',
+      'Diagnóstico general básico (sin costo al registrarte)',
+      'Diagnóstico de emergencia (para casos que requieren solución rápida, incluye 1:1)',
+      'Diagnóstico Avanzado (Parte de lo general a un problema específico, incluye 1:1)',
     ]
   },
   {
     id: 'mentoring',
-    title: 'Mentoría de Alto Impacto (Humano-IA)',
-    description: 'Sesiones con asesor experto con plan de acción y métricas automáticas obtenidas con IA.',
+    title: 'Mentoría personalizada de Alto Impacto (Humano-IA)',
+    description: 'Sesiones virtuales con asesor experto asistido por diagnósticos IA, con plan de acción y métricas automáticas.',
     icon: FaHandshake,
     color: 'from-[#37B6FF] to-[#293A49]',
     details: [
-      'Sesiones 1 a 1 con asesor experto',
-      'Planes de acción personalizados',
-      'Métricas automáticas con IA',
-      'Seguimiento continuo y resultados',
+      'Asesorías virtuales por hora 1:1',
+      'Diversidad de asesores especializados',
+      'Diferentes niveles expertos',
     ]
   },
   {
     id: 'courses',
     title: 'Cursos Especializados',
-    description: 'Talleres prácticos en línea con casos de uso impartidos por los mejores asesores.',
+    description: 'Talleres prácticos en línea con casos de uso impartidos por asesores de la red.',
     icon: FaGraduationCap,
     color: 'from-[#70B5E2] to-[#37B6FF]',
     details: [
+      'Cápsulas gratuitas',
+      'Cursos desarrollados por expertos',
       'Talleres prácticos online',
-      'Casos de uso reales',
-      'Impartidos por mejores asesores',
-      'Certificaciones especializadas',
+      'Certificaciones (si aplica)',
     ]
   },
   {
@@ -61,9 +59,8 @@ const servicesData = [
     icon: FaStore,
     color: 'from-[#293A49] to-[#37B6FF]',
     details: [
-      'Marketplace integral',
       'Proveedores verificados',
-      'Clientes potenciales',
+      'Precios especiales para la comunidad',
       'Alianzas recomendadas por IA',
     ]
   },
@@ -74,10 +71,11 @@ const servicesData = [
     icon: FaUsers,
     color: 'from-[#70B5E2] to-[#293A49]',
     details: [
-      'Red de ejecutivos verificados',
-      'Problemas y soluciones reales',
-      'Networking estratégico',
+      'Red de contactos',
+      'Networking',
       'Eventos exclusivos',
+      'Contenidos de valor',
+      'Programa de referidos',
     ]
   },
 ];
@@ -686,18 +684,11 @@ const Services = () => {
           {/* Hero */}
           <section className="min-h-[80vh] flex items-center justify-center text-center overflow-hidden relative">
             <div className="relative z-10 p-4 max-w-6xl mx-auto">
-              <h2 className="text-2xl md:text-3xl font-bold text-[#70B5E2] mb-4">Soluciones Integrales</h2>
               <h1 className="hero-services-title text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6 drop-shadow-lg">
-                Mentores expertos + <span className="text-[#37B6FF]">Inteligencia Artificial</span> para escalar tu negocio en un solo lugar
+                Soluciones Integrales <span className="text-[#37B6FF]">a tu medida</span>
               </h1>
-              <p className="hero-services-description text-lg md:text-xl text-gray-200 mb-6 max-w-4xl mx-auto">
+              <p className="hero-services-description text-lg md:text-xl text-gray-200 mb-10 max-w-4xl mx-auto">
                 Plataforma digital creada para potenciar el talento humano usando herramientas de IA que fortalecen tu negocio.
-              </p>
-              <p className="hero-services-subtitle text-base md:text-lg text-gray-300 mb-10 max-w-4xl mx-auto">
-                Empresa mexicana dedicada a conectar las necesidades reales de los emprendedores y empresas con asesores expertos usando como apoyo herramientas de Inteligencia Artificial (IA)
-              </p>
-              <p className="text-lg md:text-xl text-[#70B5E2] mb-10 font-semibold">
-                Mentores, Patronos, Líderes de opinión.
               </p>
               <div className="hero-services-cta">
                 <Link
@@ -712,8 +703,8 @@ const Services = () => {
 
           {/* Carrusel Servicios */}
           <section id="services-grid" className="py-16 md:py-24 container mx-auto relative z-10">
-            <h2 className="text-4xl md:text-5xl font-bold text-center text-[#70B5E2] mb-10">
-              Servicios Inteligentes a tu Medida
+            <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-10">
+              Servicios inteligentes a tu Medida
             </h2>
 
             <div className="carousel-container" ref={containerRef}>
@@ -846,7 +837,7 @@ const Services = () => {
                 href="/register"
                 className="inline-block bg-white text-[#293A49] font-bold py-4 px-12 rounded-full text-lg md:text-xl shadow-lg hover:bg-gray-100 transform hover:scale-105 transition-all duration-300 ease-in-out"
               >
-                <FaUserPlus className="inline-block mr-3" /> Regístrate Ahora
+                <FaUserPlus className="inline-block mr-3" /> REGÍSTRATE AHORA Y RECIBE SIN COSTO UN DIAGNÓSTICO DE TU NEGOCIO
               </Link>
             </div>
           </section>
