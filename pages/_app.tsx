@@ -14,8 +14,8 @@ import PublicLayout from '@/components/layout/PublicLayout';
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   
-  // Páginas que NO deben tener layout (sin navbar/footer)
-  const noLayoutRoutes = ['/login', '/register', '/reset-password'];
+  // Páginas que NO deben tener layout (sin navbar/footer) - REMOVIDO login y register
+  const noLayoutRoutes: string[] = [];
   
   // Páginas privadas (requieren el layout privado)
   const privateRoutes = ['/dashboard', '/perfil'];
