@@ -5,11 +5,10 @@ import { motion } from 'framer-motion';
 import {
   FaChartLine, FaHandshake, FaGraduationCap, FaStore, FaUsers,
   FaUserPlus, FaArrowRight, FaChevronDown, FaChevronUp,
-  FaChevronLeft, FaChevronRight, FaBrain, FaRocket
+  FaChevronLeft, FaChevronRight, FaBrain, FaRocket, FaShareAlt, FaGift
 } from 'react-icons/fa';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
-
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -17,7 +16,7 @@ gsap.registerPlugin(ScrollTrigger);
 const servicesData = [
   {
     id: 'diagnostics',
-    title: 'Diagnósticos Predictivos',
+    title: 'Diagnósticos Empresariales',
     description: 'Radiografía 360° con IA: detecta cuellos de botella y oportunidades ocultas; supervisadas por un experto humano, con reportes ejecutivos.',
     icon: FaBrain,
     color: 'from-[#293A49] to-[#70B5E2]',
@@ -75,7 +74,7 @@ const servicesData = [
       'Networking',
       'Eventos exclusivos',
       'Contenidos de valor',
-      'Programa de referidos',
+      'PROGRAMA DE REFERIDOS',
     ]
   },
 ];
@@ -117,8 +116,8 @@ const Services = () => {
         y: Math.random() * canvas.height,
         vx: (Math.random() - 0.5) * moveSpeed,
         vy: (Math.random() - 0.5) * moveSpeed,
-        size: Math.random() * 9 + 1, // entre 1 y 10
-        opacity: Math.random() * 0.4 + 0.1, // entre 0.1 y 0.5
+        size: Math.random() * 9 + 1,
+        opacity: Math.random() * 0.4 + 0.1,
         opacityDirection: Math.random() > 0.5 ? 1 : -1
       });
     }
@@ -134,7 +133,6 @@ const Services = () => {
     };
 
     const handleClick = (e: MouseEvent) => {
-      // Push mode - agregar 4 partículas en el click
       for (let i = 0; i < 4; i++) {
         particles.push({
           x: e.clientX + (Math.random() - 0.5) * 30,
@@ -154,21 +152,16 @@ const Services = () => {
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Parallax suave (smooth: 10)
       mouseX += (targetMouseX - mouseX) * 0.1;
       mouseY += (targetMouseY - mouseY) * 0.1;
 
-      // Actualizar y dibujar partículas
       particles.forEach((particle, i) => {
-        // Movimiento base
         particle.x += particle.vx;
         particle.y += particle.vy;
 
-        // Rebotar en los bordes (out mode)
         if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1;
         if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1;
 
-        // Animación de opacidad (speed: 3)
         particle.opacity += particle.opacityDirection * 0.03;
         if (particle.opacity >= 0.5) {
           particle.opacity = 0.5;
@@ -179,31 +172,27 @@ const Services = () => {
           particle.opacityDirection = 1;
         }
 
-        // Efecto parallax (force: 60, smooth: 10)
         const dx = mouseX - particle.x;
         const dy = mouseY - particle.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
         
-        if (distance < 400) { // grab distance
-          const force = 60 / 10000; // parallax force
-          particle.x += dx * force * (particle.size / 5); // partículas más grandes se mueven más
+        if (distance < 400) {
+          const force = 60 / 10000;
+          particle.x += dx * force * (particle.size / 5);
           particle.y += dy * force * (particle.size / 5);
         }
 
-        // Dibujar partícula (blanca)
         ctx.fillStyle = `rgba(255, 255, 255, ${particle.opacity})`;
         ctx.beginPath();
         ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
         ctx.fill();
 
-        // Dibujar líneas de conexión (grab mode con hover)
         particles.slice(i + 1).forEach(otherParticle => {
           const dx = particle.x - otherParticle.x;
           const dy = particle.y - otherParticle.y;
           const distance = Math.sqrt(dx * dx + dy * dy);
 
           if (distance < maxDistance) {
-            // Líneas más visibles cerca del mouse (grab effect)
             const mouseDistToLine = Math.sqrt(
               Math.pow(mouseX - (particle.x + otherParticle.x) / 2, 2) +
               Math.pow(mouseY - (particle.y + otherParticle.y) / 2, 2)
@@ -243,11 +232,10 @@ const Services = () => {
     };
   }, []);
 
-  // Animaciones de entrada (hero + CTA)
+  // Animaciones de entrada
   useEffect(() => {
     gsap.fromTo('.hero-services-title', { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1.4, ease: 'power3.out' });
     gsap.fromTo('.hero-services-description', { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1.4, delay: 0.4, ease: 'power3.out' });
-    gsap.fromTo('.hero-services-subtitle', { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1.4, delay: 0.6, ease: 'power3.out' });
     gsap.fromTo('.hero-services-cta', { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 1.2, delay: 0.8, ease: 'elastic.out(1, 0.8)' });
 
     serviceRefs.current.forEach((el) => {
@@ -268,6 +256,12 @@ const Services = () => {
     });
 
     gsap.fromTo(
+      '.referral-section',
+      { opacity: 0, y: 50 },
+      { opacity: 1, y: 0, duration: 1.2, ease: 'power3.out', scrollTrigger: { trigger: '.referral-section', start: 'top 85%', toggleActions: 'play none none reverse' } },
+    );
+
+    gsap.fromTo(
       '.final-cta-section',
       { opacity: 0, y: 50 },
       { opacity: 1, y: 0, duration: 1.2, ease: 'power3.out', scrollTrigger: { trigger: '.final-cta-section', start: 'top 85%', toggleActions: 'play none none reverse' } },
@@ -276,12 +270,18 @@ const Services = () => {
 
   const toggleDetails = (id: string) => setExpandedService(expandedService === id ? null : id);
 
-  // ------------------ CAROUSEL (adaptado a React) ------------------
+  // Carousel con arrastre del mouse
   const containerRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
   const cardRefs = useRef<HTMLDivElement[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const indicatorsRef = useRef<HTMLDivElement | null>(null);
+
+  // Variables para el arrastre
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [currentTranslate, setCurrentTranslate] = useState(0);
+  const [prevTranslate, setPrevTranslate] = useState(0);
 
   const debounce = (fn: (...args: any[]) => void, delay = 250) => {
     let t: any;
@@ -323,14 +323,24 @@ const Services = () => {
     return targetTranslateX;
   }, []);
 
-  const moveToIndex = useCallback((idx: number) => {
+  const moveToIndex = useCallback((idx: number, withTransition = true) => {
     const track = trackRef.current;
     if (!track) return;
     const clamped = Math.max(0, Math.min(idx, servicesData.length - 1));
     const tx = computeTranslateX(clamped);
+    
+    if (withTransition) {
+      track.style.transition = 'transform 0.75s cubic-bezier(0.21, 0.61, 0.35, 1)';
+    } else {
+      track.style.transition = 'none';
+    }
+    
     track.style.transform = `translateX(${tx}px)`;
     setCurrentIndex(clamped);
     updateClasses(clamped);
+    setPrevTranslate(tx);
+    setCurrentTranslate(tx);
+    
     requestAnimationFrame(() => {
       animateActiveCard();
     });
@@ -348,8 +358,84 @@ const Services = () => {
     }, 250);
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Funciones para arrastre
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true);
+    setStartX(e.clientX);
+    const track = trackRef.current;
+    if (track) {
+      track.style.transition = 'none';
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging) return;
+    const currentX = e.clientX;
+    const diff = currentX - startX;
+    const newTranslate = prevTranslate + diff;
+    setCurrentTranslate(newTranslate);
+    
+    const track = trackRef.current;
+    if (track) {
+      track.style.transform = `translateX(${newTranslate}px)`;
+    }
+  };
+
+  const handleMouseUp = () => {
+    if (!isDragging) return;
+    setIsDragging(false);
+    
+    const movedBy = currentTranslate - prevTranslate;
+    const threshold = 100;
+    
+    if (movedBy < -threshold && currentIndex < servicesData.length - 1) {
+      moveToIndex(currentIndex + 1);
+    } else if (movedBy > threshold && currentIndex > 0) {
+      moveToIndex(currentIndex - 1);
+    } else {
+      moveToIndex(currentIndex);
+    }
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setIsDragging(true);
+    setStartX(e.touches[0].clientX);
+    const track = trackRef.current;
+    if (track) {
+      track.style.transition = 'none';
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging) return;
+    const currentX = e.touches[0].clientX;
+    const diff = currentX - startX;
+    const newTranslate = prevTranslate + diff;
+    setCurrentTranslate(newTranslate);
+    
+    const track = trackRef.current;
+    if (track) {
+      track.style.transform = `translateX(${newTranslate}px)`;
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (!isDragging) return;
+    setIsDragging(false);
+    
+    const movedBy = currentTranslate - prevTranslate;
+    const threshold = 100;
+    
+    if (movedBy < -threshold && currentIndex < servicesData.length - 1) {
+      moveToIndex(currentIndex + 1);
+    } else if (movedBy > threshold && currentIndex > 0) {
+      moveToIndex(currentIndex - 1);
+    } else {
+      moveToIndex(currentIndex);
+    }
+  };
 
   const next = () => {
     if (currentIndex < servicesData.length - 1) moveToIndex(currentIndex + 1);
@@ -361,7 +447,6 @@ const Services = () => {
   const canPrev = currentIndex > 0;
   const canNext = currentIndex < servicesData.length - 1;
 
-  // ---- Efectos "HUD" de la tarjeta activa (scan line) ----
   const animateActiveCard = () => {
     const active = cardRefs.current[currentIndex];
     if (!active) return;
@@ -390,16 +475,14 @@ const Services = () => {
     }, 2000);
   };
 
-  // Función para click en tarjeta
   const handleCardClick = (idx: number) => {
-    if (idx !== currentIndex) {
+    if (idx !== currentIndex && !isDragging) {
       moveToIndex(idx);
     }
   };
 
   return (
     <>
-      {/* Estilos con colores MENTHIA */}
       <style jsx global>{`
         :root {
           --menthia-navy: #293A49;
@@ -410,7 +493,6 @@ const Services = () => {
           --glow-secondary: rgba(55, 182, 255, 0.6);
         }
         
-        /* Efecto de partículas con Canvas */
         .particles-bg {
           position: fixed;
           inset: 0;
@@ -431,6 +513,7 @@ const Services = () => {
           padding: 3rem 0;
           z-index: 10;
           margin: 0 auto;
+          user-select: none;
         }
         
         .carousel-track {
@@ -438,6 +521,11 @@ const Services = () => {
           transition: transform 0.75s cubic-bezier(0.21, 0.61, 0.35, 1);
           transform-style: preserve-3d;
           will-change: transform;
+          cursor: grab;
+        }
+        
+        .carousel-track:active {
+          cursor: grabbing;
         }
         
         .carousel-card {
@@ -520,6 +608,7 @@ const Services = () => {
           font-weight: 800;
           letter-spacing: .3px;
           font-family: 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;
+          color: white;
         }
         
         .card-header::after {
@@ -536,35 +625,12 @@ const Services = () => {
           color: #f1f5f9; 
         }
         
-        .card-title { 
-          font-family: 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif; 
-          margin-bottom: .5rem; 
-          letter-spacing: .6px; 
-          position: relative; 
-          display: inline-block; 
-        }
-        
-        .card-title::after { 
-          content: attr(data-text); 
-          position: absolute; 
-          top:0; 
-          left:0; 
-          color: transparent; 
-          -webkit-text-stroke: .5px; 
-          filter: blur(3px); 
-          opacity:0; 
-          transition: opacity .3s ease; 
-        }
-        
-        .carousel-card.is-active .card-title::after { 
-          opacity: .8; 
-        }
-
         .card-description { 
           font-size:.95rem; 
           line-height:1.6; 
           color: rgba(241,245,249,0.85); 
           font-weight:300; 
+          margin-bottom: 1rem;
         }
 
         .details {
@@ -588,8 +654,8 @@ const Services = () => {
           top:50%; 
           transform: translateY(-50%);
           background: rgba(41,58,73,0.5); 
-          color: var(--menthia-light-blue); 
-          border:1px solid rgba(112,181,226,0.4);
+          color: white;
+          border:1px solid rgba(255,255,255,0.4);
           border-radius: 9999px; 
           width:48px; 
           height:48px; 
@@ -600,14 +666,14 @@ const Services = () => {
           z-index:20; 
           transition: all .3s ease; 
           backdrop-filter: blur(5px); 
-          box-shadow: 0 0 15px rgba(112,181,226,0.2);
+          box-shadow: 0 0 15px rgba(255,255,255,0.2);
         }
         
         .carousel-button:hover { 
           background: rgba(112,181,226,0.3); 
-          color: var(--menthia-white); 
+          color: white;
           transform: translateY(-50%) scale(1.1); 
-          box-shadow: 0 0 20px rgba(112,181,226,0.4); 
+          box-shadow: 0 0 20px rgba(255,255,255,0.4); 
         }
         
         .carousel-button:active { 
@@ -675,7 +741,6 @@ const Services = () => {
       `}</style>
 
       <div className="relative min-h-screen bg-[#293A49] text-gray-100 overflow-hidden" style={{ fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
-        {/* Canvas de partículas interactivo */}
         <div className="particles-bg">
           <canvas ref={canvasRef} className="particles-canvas"></canvas>
         </div>
@@ -685,7 +750,8 @@ const Services = () => {
           <section className="min-h-[80vh] flex items-center justify-center text-center overflow-hidden relative">
             <div className="relative z-10 p-4 max-w-6xl mx-auto">
               <h1 className="hero-services-title text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6 drop-shadow-lg">
-                Soluciones Integrales <span className="text-[#37B6FF]">a tu medida</span>
+                Soluciones Integrales<br />
+                <span className="text-[#37B6FF]">a tu medida</span>
               </h1>
               <p className="hero-services-description text-lg md:text-xl text-gray-200 mb-10 max-w-4xl mx-auto">
                 Plataforma digital creada para potenciar el talento humano usando herramientas de IA que fortalecen tu negocio.
@@ -707,11 +773,20 @@ const Services = () => {
               Servicios inteligentes a tu Medida
             </h2>
 
-            <div className="carousel-container" ref={containerRef}>
+            <div 
+              className="carousel-container" 
+              ref={containerRef}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+            >
               <div className="carousel-track" ref={trackRef}>
                 {servicesData.map((s, i) => {
                   const Icon = s.icon;
-                  const titleColor = 'text-[#70B5E2]';
                   const buttonBg = 'bg-[#37B6FF] hover:bg-[#70B5E2]';
 
                   return (
@@ -721,25 +796,16 @@ const Services = () => {
                       ref={(el) => { if (el) cardRefs.current[i] = el; }}
                       onClick={() => handleCardClick(i)}
                     >
-                      {/* HEADER con icono y gradiente */}
                       <div className={`card-header bg-gradient-to-br ${s.color}`}>
                         <div className="flex flex-col items-center justify-center">
                           <Icon className="text-white drop-shadow-lg" size={64} />
-                          <div className={`title ${titleColor} text-xl`}>{s.title}</div>
+                          <div className="title text-xl text-white">{s.title}</div>
                         </div>
                       </div>
 
-                      {/* BODY */}
                       <div className="card-content">
-                        <h3
-                          className="card-title text-lg font-bold text-[#70B5E2]"
-                          data-text={s.title}
-                        >
-                          {s.title}
-                        </h3>
                         <p className="card-description">{s.description}</p>
 
-                        {/* Botón Ver detalles / Probar ahora */}
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
@@ -755,7 +821,6 @@ const Services = () => {
                           )}
                         </button>
 
-                        {/* Detalles desplegables + CTA a Registro */}
                         {expandedService === s.id && (
                           <motion.div
                             initial={{ opacity: 0, height: 0 }}
@@ -775,7 +840,7 @@ const Services = () => {
 
                             <div className="cta">
                               <Link
-                                href="/register"
+                                href="/demo"
                                 className="inline-flex items-center justify-center bg-white text-[#293A49] font-bold py-2.5 px-6 rounded-full text-sm shadow-lg hover:bg-gray-100 transition-all"
                                 onClick={(e) => e.stopPropagation()}
                               >
@@ -790,7 +855,6 @@ const Services = () => {
                 })}
               </div>
 
-              {/* Botones */}
               <button
                 className="carousel-button prev"
                 onClick={prev}
@@ -810,7 +874,6 @@ const Services = () => {
                 <FaChevronRight />
               </button>
 
-              {/* Indicadores */}
               <div className="carousel-indicators" ref={indicatorsRef}>
                 {servicesData.map((_, idx) => (
                   <div
@@ -824,6 +887,94 @@ const Services = () => {
             </div>
           </section>
 
+          {/* Programa de Referidos */}
+          <section className="referral-section py-16 md:py-24 container mx-auto relative z-10 px-4">
+            <div className="max-w-5xl mx-auto bg-gradient-to-br from-[#37B6FF] to-[#70B5E2] rounded-3xl shadow-2xl p-8 md:p-12 text-center">
+              <div className="flex justify-center mb-6">
+                <FaShareAlt className="text-white text-6xl drop-shadow-lg" />
+              </div>
+              <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-6 leading-tight">
+                Programa de Referidos
+              </h2>
+              <p className="text-xl md:text-2xl text-white mb-8 max-w-3xl mx-auto leading-relaxed">
+                Comparte MentHIA con tu red de contactos y <b>gana recompensas exclusivas</b> por cada persona que se registre a través de tu enlace único. 
+              </p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 text-white">
+                <motion.div 
+                  className="bg-white/20 backdrop-blur-sm rounded-xl p-6 border border-white/30"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <FaGift className="text-5xl mx-auto mb-4" />
+                  <h3 className="text-xl font-bold mb-2">Beneficios Inmediatos</h3>
+                  <p className="text-sm">Recibe bonificaciones por cada referido que complete su registro</p>
+                </motion.div>
+
+                <motion.div 
+                  className="bg-white/20 backdrop-blur-sm rounded-xl p-6 border border-white/30"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <FaUsers className="text-5xl mx-auto mb-4" />
+                  <h3 className="text-xl font-bold mb-2">Crece tu Red</h3>
+                  <p className="text-sm">Amplía tu comunidad empresarial mientras generas ingresos pasivos</p>
+                </motion.div>
+
+                <motion.div 
+                  className="bg-white/20 backdrop-blur-sm rounded-xl p-6 border border-white/30"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <FaRocket className="text-5xl mx-auto mb-4" />
+                  <h3 className="text-xl font-bold mb-2">Acceso Exclusivo</h3>
+                  <p className="text-sm">Desbloquea funcionalidades premium al alcanzar metas de referidos</p>
+                </motion.div>
+              </div>
+
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-8 border border-white/30">
+                <h3 className="text-2xl font-bold text-white mb-4">¿Cómo funciona?</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-white text-left">
+                  <div className="flex items-start">
+                    <div className="bg-white text-[#37B6FF] rounded-full w-10 h-10 flex items-center justify-center font-bold mr-4 flex-shrink-0">1</div>
+                    <div>
+                      <h4 className="font-bold mb-1">Regístrate</h4>
+                      <p className="text-sm">Crea tu cuenta y obtén tu enlace único de referido</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start">
+                    <div className="bg-white text-[#37B6FF] rounded-full w-10 h-10 flex items-center justify-center font-bold mr-4 flex-shrink-0">2</div>
+                    <div>
+                      <h4 className="font-bold mb-1">Comparte</h4>
+                      <p className="text-sm">Invita a emprendedores y empresarios a unirse a MentHIA</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start">
+                    <div className="bg-white text-[#37B6FF] rounded-full w-10 h-10 flex items-center justify-center font-bold mr-4 flex-shrink-0">3</div>
+                    <div>
+                      <h4 className="font-bold mb-1">Gana</h4>
+                      <p className="text-sm">Recibe recompensas por cada referido exitoso</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                viewport={{ once: true }}
+              >
+                <Link
+                  href="/register"
+                  className="inline-block bg-white text-[#37B6FF] font-bold py-4 px-12 rounded-full text-lg md:text-xl shadow-lg hover:bg-gray-100 transform hover:scale-105 transition-all duration-300 ease-in-out"
+                >
+                  <FaUserPlus className="inline-block mr-3" /> Regístrate para gozar de los beneficios
+                </Link>
+              </motion.div>
+            </div>
+          </section>
+
           {/* CTA Final */}
           <section className="final-cta-section py-16 md:py-24 bg-gradient-to-r from-[#293A49] to-[#37B6FF] text-center shadow-inner-2xl rounded-3xl mx-4 md:mx-auto max-w-6xl mb-16 p-8 md:p-12 relative z-10">
             <div className="container mx-auto px-4">
@@ -831,13 +982,13 @@ const Services = () => {
                 ¡Impulsa tu Negocio Hoy Mismo!
               </h2>
               <p className="text-xl md:text-2xl text-gray-100 max-w-3xl mx-auto mb-10">
-                Regístrate en MenthIA y comienza a transformar tus ideas en éxito con el apoyo de nuestra comunidad y expertos.
+                Regístrate en MentHIA y comienza a transformar tus ideas en éxito con el apoyo de nuestra comunidad y expertos.
               </p>
               <Link
                 href="/register"
                 className="inline-block bg-white text-[#293A49] font-bold py-4 px-12 rounded-full text-lg md:text-xl shadow-lg hover:bg-gray-100 transform hover:scale-105 transition-all duration-300 ease-in-out"
               >
-                <FaUserPlus className="inline-block mr-3" /> REGÍSTRATE AHORA Y RECIBE SIN COSTO UN DIAGNÓSTICO DE TU NEGOCIO
+                <FaUserPlus className="inline-block mr-3" /> REGÍSTRATE AHORA Y RECIBE SIN COSTO UN DIAGNÓSTICO
               </Link>
             </div>
           </section>
