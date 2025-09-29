@@ -3,6 +3,7 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import Image from "next/image";
 import {
   createUserWithEmailAndPassword,
   signInWithPopup,
@@ -13,7 +14,7 @@ import {
 } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
-import { FaGoogle, FaFacebook, FaApple } from "react-icons/fa";
+import { FaGoogle, FaFacebook, FaApple, FaArrowLeft } from "react-icons/fa";
 
 const ROLES_FINAL = [
   { value: "emprendedor", label: "PyME / Emprendedor", description: "Acceso freemium/premium, diagnóstico, cursos y comunidad." },
@@ -38,7 +39,6 @@ const INITIAL_USER_DATA = {
 
 const Register = () => {
   const router = useRouter();
-
   const [step, setStep] = useState(1);
   const [role, setRole] = useState("");
   const [userData, setUserData] = useState({ ...INITIAL_USER_DATA });
@@ -121,7 +121,6 @@ const Register = () => {
 
   const handleNext = () => {
     setError("");
-
     if (step === 2) {
       const { fullName, email, phone, language, country, city, birthYear } = userData;
       if (!fullName || !email || !phone || !language || !country || !city || !birthYear) {
@@ -250,7 +249,6 @@ const Register = () => {
   const saveUserData = async (user: User) => {
     const userRef = doc(db, "users", user.uid);
     const snap = await getDoc(userRef);
-
     const baseData: any = {
       uid: user.uid,
       email: user.email || userData.email,
@@ -334,8 +332,10 @@ const Register = () => {
       setError("Completa todos los pasos antes de registrarte.");
       return;
     }
+
     setError("");
     setSubmitting(true);
+
     try {
       const cred = await createUserWithEmailAndPassword(auth, userData.email, userData.password);
       if (cred?.user) {
@@ -365,6 +365,7 @@ const Register = () => {
   const handleSocialLogin = async (providerName: "google" | "facebook" | "apple") => {
     setError("");
     setSubmitting(true);
+
     try {
       let provider;
       if (providerName === "google") provider = new GoogleAuthProvider();
@@ -374,6 +375,7 @@ const Register = () => {
         provider.addScope("email");
         provider.addScope("name");
       }
+
       const cred = await signInWithPopup(auth, provider as any);
       if (cred?.user) {
         await saveUserData(cred.user);
@@ -403,6 +405,7 @@ const Register = () => {
     const total = getMaxSteps - 1;
     const current = role ? step - 1 : 0;
     if (!role || total <= 0) return null;
+
     return (
       <div className="flex justify-center mb-8">
         {Array.from({ length: total }).map((_, i) => (
@@ -415,7 +418,7 @@ const Register = () => {
             }`}
             style={{
               background: current > i 
-                ? 'linear-gradient(135deg, #7085E2 0%, #37B6FF 100%)' 
+                ? 'linear-gradient(135deg, #70B5E2 0%, #37B6FF 100%)' 
                 : undefined
             }}
           />
@@ -445,7 +448,7 @@ const Register = () => {
         onClick={onNext} 
         className="px-8 py-3 text-white rounded-xl font-medium transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl"
         style={{ 
-          background: 'linear-gradient(135deg, #7085E2 0%, #37B6FF 100%)',
+          background: 'linear-gradient(135deg, #70B5E2 0%, #37B6FF 100%)',
           fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif'
         }}
       >
@@ -470,7 +473,7 @@ const Register = () => {
           color: '#293A49',
           fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif'
         }}
-        onFocus={(e) => e.target.style.borderColor = '#7085E2'}
+        onFocus={(e) => e.target.style.borderColor = '#70B5E2'}
         onBlur={(e) => e.target.style.borderColor = '#E5E7EB'}
         {...props}
       />
@@ -491,7 +494,7 @@ const Register = () => {
           color: '#293A49',
           fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif'
         }}
-        onFocus={(e) => e.target.style.borderColor = '#7085E2'}
+        onFocus={(e) => e.target.style.borderColor = '#70B5E2'}
         onBlur={(e) => e.target.style.borderColor = '#E5E7EB'}
         {...props}
       >
@@ -515,7 +518,7 @@ const Register = () => {
           color: '#293A49',
           fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif'
         }}
-        onFocus={(e) => e.target.style.borderColor = '#7085E2'}
+        onFocus={(e) => e.target.style.borderColor = '#70B5E2'}
         onBlur={(e) => e.target.style.borderColor = '#E5E7EB'}
         {...props}
       />
@@ -527,19 +530,35 @@ const Register = () => {
       case 1:
         return (
           <div className="animate-fade-in">
-            <div className="text-center mb-8">
-              <h1 className="text-3xl font-medium mb-4" style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
-                ¿Qué te trae a MenthIA?
+            <div className="text-center mb-12">
+              <div className="flex justify-center mb-8">
+                <Image
+                  src="/logo_register.png"
+                  alt="MentHIA Logo"
+                  width={180}
+                  height={180}
+                  className="w-45 h-45"
+                  priority
+                />
+              </div>
+              <h1 className="text-4xl font-bold mb-4" style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+                Únete a MentHIA
               </h1>
-              <p className="text-gray-600" style={{ fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+              <p className="text-lg text-gray-600 leading-relaxed" style={{ fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
                 Asesoría integral, humana e inteligente para tu negocio
               </p>
             </div>
             
-            <div className="mb-6">
-              <Link href="/" className="inline-flex items-center text-sm transition-colors hover:underline"
-                style={{ color: '#7085E2', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
-                ← Volver al inicio
+            <div className="mb-10">
+              <Link href="/" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all duration-200 hover:scale-105 shadow-sm hover:shadow-md group border-2"
+                style={{ 
+                  color: '#70B5E2',
+                  borderColor: '#70B5E2',
+                  backgroundColor: 'white',
+                  fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif'
+                }}>
+                <FaArrowLeft className="group-hover:-translate-x-1 transition-transform duration-200" />
+                Volver al inicio
               </Link>
             </div>
             
@@ -548,24 +567,24 @@ const Register = () => {
                 <button
                   key={rol.value}
                   onClick={() => handleRoleSelection(rol.value)}
-                  className="w-full p-6 rounded-xl shadow-md hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300 text-left"
+                  className="w-full p-6 rounded-xl shadow-md hover:shadow-2xl transform hover:scale-[1.02] transition-all duration-300 text-left border-2 border-transparent"
                   style={{ 
-                    background: 'linear-gradient(135deg, #7085E2 0%, #37B6FF 100%)',
+                    background: 'linear-gradient(135deg, #70B5E2 0%, #37B6FF 100%)',
                     color: 'white',
                     fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif'
                   }}
                 >
-                  <div className="font-semibold text-lg mb-2">{rol.label}</div>
-                  <div className="text-sm opacity-95">{rol.description}</div>
+                  <div className="font-bold text-xl mb-2">{rol.label}</div>
+                  <div className="text-sm opacity-95 leading-relaxed">{rol.description}</div>
                 </button>
               ))}
             </div>
             
-            <div className="mt-8 text-center text-sm" style={{ color: '#6B7280', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
+            <div className="mt-10 text-center text-sm border-t border-gray-200 pt-6" style={{ color: '#6B7280', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
               ¿Ya tienes cuenta?{" "}
-              <Link href="/login" className="font-medium transition-colors hover:underline"
-                style={{ color: '#7085E2' }}>
-                Inicia sesión
+              <Link href="/login" className="font-semibold transition-colors hover:underline"
+                style={{ color: '#70B5E2' }}>
+                Inicia sesión aquí
               </Link>
             </div>
           </div>
@@ -631,7 +650,7 @@ const Register = () => {
                         checked={userData.gender === g}
                         onChange={(e) => setUserData({ ...userData, gender: e.target.value })}
                         className="h-4 w-4 mr-2"
-                        style={{ accentColor: '#7085E2' }}
+                        style={{ accentColor: '#70B5E2' }}
                       />
                       <span style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>{g}</span>
                     </label>
@@ -668,8 +687,7 @@ const Register = () => {
                   placeholder="¿Qué te motiva a buscar asesoría?"
                   value={motivation}
                   onChange={(e: any) => setMotivation(e.target.value)}
-                />
-                <InputField
+                /><InputField
                   label="Nombre del negocio / institución"
                   placeholder="Nombre de tu organización"
                   value={businessName}
@@ -697,7 +715,6 @@ const Register = () => {
             </div>
           );
         }
-        // Consultor — Paso 2 (Formación y experiencia)
         return (
           <div className="animate-fade-in">
             <h2 className="text-2xl font-medium text-center mb-8" style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
@@ -781,13 +798,13 @@ const Register = () => {
                   <div className="grid grid-cols-2 gap-3">
                     {["Ventas", "Operación", "Finanzas", "Talento", "Otro"].map((g) => (
                       <label key={g} className="flex items-center gap-3 p-3 rounded-lg border transition-colors cursor-pointer"
-                        style={{ borderColor: goals.includes(g) ? '#7085E2' : '#E5E7EB', backgroundColor: goals.includes(g) ? '#F0F4FF' : 'white' }}>
+                        style={{ borderColor: goals.includes(g) ? '#70B5E2' : '#E5E7EB', backgroundColor: goals.includes(g) ? '#F0F4FF' : 'white' }}>
                         <input
                           type="checkbox"
                           checked={goals.includes(g)}
                           onChange={() => handleCheckboxChange(setGoals, goals, g, otherGoal, setOtherGoal)}
                           className="h-4 w-4"
-                          style={{ accentColor: '#7085E2' }}
+                          style={{ accentColor: '#70B5E2' }}
                         />
                         <span style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>{g}</span>
                       </label>
@@ -817,7 +834,6 @@ const Register = () => {
             </div>
           );
         }
-        // Consultor
         return (
           <div className="animate-fade-in">
             <h2 className="text-2xl font-medium text-center mb-8" style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
@@ -831,13 +847,13 @@ const Register = () => {
                 <div className="grid grid-cols-2 gap-3">
                   {["Estrategia", "Finanzas", "Operaciones", "Marketing", "Talento", "Otro"].map((a) => (
                     <label key={a} className="flex items-center gap-3 p-3 rounded-lg border transition-colors cursor-pointer"
-                      style={{ borderColor: areasExperiencia.includes(a) ? '#7085E2' : '#E5E7EB', backgroundColor: areasExperiencia.includes(a) ? '#F0F4FF' : 'white' }}>
+                      style={{ borderColor: areasExperiencia.includes(a) ? '#70B5E2' : '#E5E7EB', backgroundColor: areasExperiencia.includes(a) ? '#F0F4FF' : 'white' }}>
                       <input
                         type="checkbox"
                         checked={areasExperiencia.includes(a)}
                         onChange={() => handleCheckboxChange(setAreasExperiencia, areasExperiencia, a, otherAreaExperiencia, setOtherAreaExperiencia)}
                         className="h-4 w-4"
-                        style={{ accentColor: '#7085E2' }}
+                        style={{ accentColor: '#70B5E2' }}
                       />
                       <span style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>{a}</span>
                     </label>
@@ -853,7 +869,6 @@ const Register = () => {
                   />
                 )}
               </div>
-
               <div>
                 <label className="block text-sm font-medium mb-3" style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
                   Industrias de experiencia
@@ -861,13 +876,13 @@ const Register = () => {
                 <div className="grid grid-cols-2 gap-3">
                   {["Retail", "Manufactura", "Servicios", "Tecnología", "Salud", "Otro"].map((i) => (
                     <label key={i} className="flex items-center gap-3 p-3 rounded-lg border transition-colors cursor-pointer"
-                      style={{ borderColor: industrias.includes(i) ? '#7085E2' : '#E5E7EB', backgroundColor: industrias.includes(i) ? '#F0F4FF' : 'white' }}>
+                      style={{ borderColor: industrias.includes(i) ? '#70B5E2' : '#E5E7EB', backgroundColor: industrias.includes(i) ? '#F0F4FF' : 'white' }}>
                       <input
                         type="checkbox"
                         checked={industrias.includes(i)}
                         onChange={() => handleCheckboxChange(setIndustrias, industrias, i, otherIndustry, setOtherIndustry)}
                         className="h-4 w-4"
-                        style={{ accentColor: '#7085E2' }}
+                        style={{ accentColor: '#70B5E2' }}
                       />
                       <span style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>{i}</span>
                     </label>
@@ -883,7 +898,6 @@ const Register = () => {
                   />
                 )}
               </div>
-
               <TextAreaField
                 label="Caso de éxito"
                 placeholder="Describe brevemente un caso de éxito relevante de tu experiencia profesional"
@@ -891,7 +905,6 @@ const Register = () => {
                 onChange={(e: any) => setCasoExito(e.target.value)}
                 rows={4}
               />
-              
               <SelectField
                 label="Intervención preferida"
                 value={intervencionPreferida}
@@ -903,7 +916,6 @@ const Register = () => {
                 <option>Acompañamiento</option>
                 <option>Otro</option>
               </SelectField>
-              
               {intervencionPreferida === "Otro" && (
                 <InputField
                   label=""
@@ -932,13 +944,13 @@ const Register = () => {
                   <div className="grid grid-cols-2 gap-3">
                     {["Diagnóstico", "Mentoría", "Capacitación", "Implementación", "Otro"].map((s) => (
                       <label key={s} className="flex items-center gap-3 p-3 rounded-lg border transition-colors cursor-pointer"
-                        style={{ borderColor: supportAreas.includes(s) ? '#7085E2' : '#E5E7EB', backgroundColor: supportAreas.includes(s) ? '#F0F4FF' : 'white' }}>
+                        style={{ borderColor: supportAreas.includes(s) ? '#70B5E2' : '#E5E7EB', backgroundColor: supportAreas.includes(s) ? '#F0F4FF' : 'white' }}>
                         <input
                           type="checkbox"
                           checked={supportAreas.includes(s)}
                           onChange={() => handleCheckboxChange(setSupportAreas, supportAreas, s, otherSupportArea, setOtherSupportArea)}
                           className="h-4 w-4"
-                          style={{ accentColor: '#7085E2' }}
+                          style={{ accentColor: '#70B5E2' }}
                         />
                         <span style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>{s}</span>
                       </label>
@@ -959,7 +971,6 @@ const Register = () => {
             </div>
           );
         }
-        // Consultor — Estilo y metodología
         return (
           <div className="animate-fade-in">
             <h2 className="text-2xl font-medium text-center mb-8" style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
@@ -976,7 +987,6 @@ const Register = () => {
                 <option>Medio</option>
                 <option>Intensivo</option>
               </SelectField>
-              
               <SelectField
                 label="Modalidad de trabajo"
                 value={modalidad}
@@ -987,7 +997,6 @@ const Register = () => {
                 <option>Presencial</option>
                 <option>Mixto</option>
               </SelectField>
-
               <div>
                 <label className="block text-sm font-medium mb-3" style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
                   Herramientas digitales que utilizas
@@ -995,13 +1004,13 @@ const Register = () => {
                 <div className="grid grid-cols-2 gap-3">
                   {["Drive", "Notion", "Slack", "Zoom", "Otra"].map((h) => (
                     <label key={h} className="flex items-center gap-3 p-3 rounded-lg border transition-colors cursor-pointer"
-                      style={{ borderColor: herramientasDigitales.includes(h) ? '#7085E2' : '#E5E7EB', backgroundColor: herramientasDigitales.includes(h) ? '#F0F4FF' : 'white' }}>
+                      style={{ borderColor: herramientasDigitales.includes(h) ? '#70B5E2' : '#E5E7EB', backgroundColor: herramientasDigitales.includes(h) ? '#F0F4FF' : 'white' }}>
                       <input
                         type="checkbox"
                         checked={herramientasDigitales.includes(h)}
                         onChange={() => handleCheckboxChange(setHerramientasDigitales, herramientasDigitales, h, otherDigitalTool, setOtherDigitalTool)}
                         className="h-4 w-4"
-                        style={{ accentColor: '#7085E2' }}
+                        style={{ accentColor: '#70B5E2' }}
                       />
                       <span style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>{h}</span>
                     </label>
@@ -1017,14 +1026,12 @@ const Register = () => {
                   />
                 )}
               </div>
-
               <InputField
                 label="Recursos propios"
                 placeholder="Describe tus plantillas, metodologías o recursos propios"
                 value={recursosPropios}
                 onChange={(e: any) => setRecursosPropios(e.target.value)}
               />
-              
               <SelectField
                 label="¿Entregas reportes estructurados?"
                 value={reportesEstructurados}
@@ -1060,30 +1067,37 @@ const Register = () => {
                     checked={userData.privacyConsent}
                     onChange={(e) => setUserData({ ...userData, privacyConsent: e.target.checked })}
                     className="h-5 w-5 mt-1"
-                    style={{ accentColor: '#7085E2' }}
+                    style={{ accentColor: '#70B5E2' }}
                   />
                   <label style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
                     Acepto el{" "}
                     <Link href="/aviso-privacidad" target="_blank" className="font-medium hover:underline"
-                      style={{ color: '#7085E2' }}>
+                      style={{ color: '#70B5E2' }}>
                       Aviso de Privacidad
                     </Link>{" "}
                     y los{" "}
                     <Link href="/terminos-uso" target="_blank" className="font-medium hover:underline"
-                      style={{ color: '#7085E2' }}>
+                      style={{ color: '#70B5E2' }}>
                       Términos de Uso
                     </Link>.
                   </label>
                 </div>
               </div>
-
               {error && (
-                <div className="mt-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm text-center"
+                <div className="mt-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-lg text-sm"
                   style={{ fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
-                  {error}
+                  <div className="flex">
+                    <div className="flex-shrink-0">
+                      <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <div className="ml-3">
+                      <p className="text-sm font-medium">{error}</p>
+                    </div>
+                  </div>
                 </div>
               )}
-
               <div className="flex justify-between mt-8">
                 <button 
                   onClick={handleBack} 
@@ -1101,14 +1115,13 @@ const Register = () => {
                   disabled={submitting} 
                   className="px-8 py-3 text-white rounded-xl font-medium transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl disabled:opacity-60"
                   style={{ 
-                    background: 'linear-gradient(135deg, #7085E2 0%, #37B6FF 100%)',
+                    background: 'linear-gradient(135deg, #70B5E2 0%, #37B6FF 100%)',
                     fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif'
                   }}
                 >
                   {submitting ? "Registrando..." : "Registrarme"}
                 </button>
               </div>
-
               <div className="mt-8 text-center">
                 <p className="mb-4" style={{ color: '#6B7280', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
                   O regístrate con:
@@ -1143,7 +1156,6 @@ const Register = () => {
             </div>
           );
         }
-        // Consultor — Paso 5: Disponibilidad y condiciones
         return (
           <div className="animate-fade-in">
             <h2 className="text-2xl font-medium text-center mb-8" style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
@@ -1156,7 +1168,6 @@ const Register = () => {
                 value={horasSemanales}
                 onChange={(e: any) => setHorasSemanales(e.target.value)}
               />
-              
               <SelectField
                 label="¿Aceptas trabajo por proyecto?"
                 value={trabajoProyecto}
@@ -1166,7 +1177,6 @@ const Register = () => {
                 <option>Sí</option>
                 <option>No</option>
               </SelectField>
-
               <SelectField
                 label="Tipo de tarifa"
                 value={tarifaTipo}
@@ -1177,7 +1187,6 @@ const Register = () => {
                 <option>Por paquete</option>
                 <option>A convenir</option>
               </SelectField>
-              
               {tarifaTipo === "Por hora" && (
                 <InputField
                   label="Tarifa por hora"
@@ -1186,7 +1195,6 @@ const Register = () => {
                   onChange={(e: any) => setTarifaHora(e.target.value)}
                 />
               )}
-              
               {tarifaTipo === "Por paquete" && (
                 <InputField
                   label="Tarifa por paquete"
@@ -1195,7 +1203,6 @@ const Register = () => {
                   onChange={(e: any) => setTarifaPaquete(e.target.value)}
                 />
               )}
-
               <SelectField
                 label="Motivación principal"
                 value={motivacionConsultor}
@@ -1207,7 +1214,6 @@ const Register = () => {
                 <option>Marca personal</option>
                 <option>Otro</option>
               </SelectField>
-              
               {motivacionConsultor === "Otro" && (
                 <InputField
                   label=""
@@ -1255,14 +1261,6 @@ const Register = () => {
                   rows={4}
                 />
               </div>
-
-              {error && (
-                <div className="mt-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm text-center"
-                  style={{ fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
-                  {error}
-                </div>
-              )}
-
               <PasoButtons onBack={handleBack} onNext={handleNext} nextText="Continuar" />
             </div>
           );
@@ -1284,7 +1282,6 @@ const Register = () => {
                   value={userData.password}
                   onChange={(e: any) => setUserData({ ...userData, password: e.target.value })}
                 />
-                
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
                     <input
@@ -1292,29 +1289,28 @@ const Register = () => {
                       checked={userData.privacyConsent}
                       onChange={(e) => setUserData({ ...userData, privacyConsent: e.target.checked })}
                       className="h-5 w-5 mt-1"
-                      style={{ accentColor: '#7085E2' }}
+                      style={{ accentColor: '#70B5E2' }}
                     />
                     <label style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
                       Acepto el{" "}
                       <Link href="/aviso-privacidad" target="_blank" className="font-medium hover:underline"
-                        style={{ color: '#7085E2' }}>
+                        style={{ color: '#70B5E2' }}>
                         Aviso de Privacidad
                       </Link>{" "}
                       y los{" "}
                       <Link href="/terminos-uso" target="_blank" className="font-medium hover:underline"
-                        style={{ color: '#7085E2' }}>
+                        style={{ color: '#70B5E2' }}>
                         Términos de Uso
                       </Link>.
                     </label>
                   </div>
-                  
                   <div className="flex items-start gap-3">
                     <input
                       type="checkbox"
                       checked={confirmacionEntrevista}
                       onChange={(e) => setConfirmacionEntrevista(e.target.checked)}
                       className="h-5 w-5 mt-1"
-                      style={{ accentColor: '#7085E2' }}
+                      style={{ accentColor: '#70B5E2' }}
                     />
                     <label style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
                       Confirmo mi disposición a participar en una entrevista de validación.
@@ -1322,14 +1318,21 @@ const Register = () => {
                   </div>
                 </div>
               </div>
-
               {error && (
-                <div className="mt-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm text-center"
+                <div className="mt-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-lg text-sm"
                   style={{ fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
-                  {error}
+                  <div className="flex">
+                    <div className="flex-shrink-0">
+                      <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <div className="ml-3">
+                      <p className="text-sm font-medium">{error}</p>
+                    </div>
+                  </div>
                 </div>
               )}
-
               <div className="flex justify-between mt-8">
                 <button 
                   onClick={handleBack} 
@@ -1347,14 +1350,13 @@ const Register = () => {
                   disabled={submitting} 
                   className="px-8 py-3 text-white rounded-xl font-medium transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl disabled:opacity-60"
                   style={{ 
-                    background: 'linear-gradient(135deg, #7085E2 0%, #37B6FF 100%)',
+                    background: 'linear-gradient(135deg, #70B5E2 0%, #37B6FF 100%)',
                     fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif'
                   }}
                 >
                   {submitting ? "Registrando..." : "Registrarme"}
                 </button>
               </div>
-
               <div className="mt-8 text-center">
                 <p className="mb-4" style={{ color: '#6B7280', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}>
                   O regístrate con:
@@ -1399,21 +1401,20 @@ const Register = () => {
   return (
     <>
       <Head>
-        <title>Crear cuenta · MenthIA</title>
+        <title>Crear cuenta · MentHIA</title>
         <meta name="description" content="Regístrate para acceder a diagnósticos, mentoría y cursos - Asesoría integral, humana e inteligente para tu negocio" />
       </Head>
       <div 
         className="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8 relative"
         style={{ 
-          background: 'linear-gradient(135deg, #7085E2 0%, #37B6FF 50%, #293A49 100%)',
+          background: 'linear-gradient(135deg, #70B5E2 0%, #37B6FF 50%, #293A49 100%)',
           fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif'
         }}
       >
-        {/* Animated background blobs */}
         <div className="absolute inset-0 overflow-hidden">
           <div 
             className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-3xl animate-pulse opacity-20"
-            style={{ background: 'radial-gradient(circle, rgba(112, 133, 226, 0.3) 0%, rgba(55, 182, 255, 0.2) 100%)' }}
+            style={{ background: 'radial-gradient(circle, rgba(112, 181, 226, 0.3) 0%, rgba(55, 182, 255, 0.2) 100%)' }}
           />
           <div 
             className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full blur-3xl animate-pulse delay-1000 opacity-20"
@@ -1421,23 +1422,11 @@ const Register = () => {
           />
           <div 
             className="absolute top-1/2 right-1/3 w-64 h-64 rounded-full blur-2xl animate-pulse delay-500 opacity-15"
-            style={{ background: 'radial-gradient(circle, rgba(112, 133, 226, 0.2) 0%, rgba(55, 182, 255, 0.2) 100%)' }}
+            style={{ background: 'radial-gradient(circle, rgba(112, 181, 226, 0.2) 0%, rgba(55, 182, 255, 0.2) 100%)' }}
           />
         </div>
 
         <div className="bg-white/95 backdrop-blur-lg p-8 rounded-2xl shadow-2xl w-full max-w-3xl relative z-10 border border-white/30">
-          {step === 1 && (
-            <div className="text-center mb-8">
-              <h1 
-                className="text-3xl font-medium cursor-pointer hover:underline transition-colors"
-                onClick={() => router.push("/")}
-                style={{ color: '#293A49', fontFamily: 'Avenir, -apple-system, BlinkMacSystemFont, sans-serif' }}
-              >
-                MenthIA
-              </h1>
-            </div>
-          )}
-          
           {renderStepIndicator()}
           {renderStep()}
         </div>
