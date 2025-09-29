@@ -6,7 +6,7 @@ import {
   FaUsers, FaLightbulb, FaRocket, FaHandshake, FaBullseye, FaEye, FaHeart,
   FaUserPlus, FaArrowRight, FaChartLine, FaGraduationCap, FaStore, FaGem, FaBrain, FaCogs,
   FaBriefcase, FaNetworkWired, FaTools, FaShieldAlt, FaRegLightbulb, FaConnectdevelop, FaChartBar, FaGlobe, FaSearchDollar,
-  FaPlay, FaCreditCard, FaCheck, FaMapMarkerAlt, FaHandHoldingHeart
+  FaPlay, FaCreditCard, FaCheck, FaMapMarkerAlt, FaHandHoldingHeart, FaQuestionCircle, FaShareAlt
 } from "react-icons/fa";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
@@ -17,7 +17,7 @@ import type { ISourceOptions } from "tsparticles-engine";
 gsap.registerPlugin(ScrollTrigger);
 
 const Home: React.FC = () => {
-  const sectionRefs = useRef<(HTMLElement | null)[]>([]);
+  const sectionRefs = useRef<Array<HTMLElement | null>>([]);
 
   const particlesInit = useCallback(async (engine: any) => {
     await loadSlim(engine);
@@ -60,27 +60,27 @@ const Home: React.FC = () => {
         speed: 1.5,
         straight: false,
       },
-      number: { 
-        density: { enable: true, area: 800 }, 
-        value: 80 
+      number: {
+        density: { enable: true, area: 800 },
+        value: 80
       },
       opacity: {
         value: { min: 0.3, max: 0.7 },
-        animation: { 
-          enable: true, 
-          speed: 1, 
-          minimumValue: 0.2, 
-          sync: false 
+        animation: {
+          enable: true,
+          speed: 1,
+          minimumValue: 0.2,
+          sync: false
         },
       },
       shape: { type: "circle" },
       size: {
         value: { min: 2, max: 5 },
-        animation: { 
-          enable: true, 
-          speed: 2, 
-          minimumValue: 1, 
-          sync: false 
+        animation: {
+          enable: true,
+          speed: 2,
+          minimumValue: 1,
+          sync: false
         },
       },
     },
@@ -142,42 +142,48 @@ const Home: React.FC = () => {
           100% { transform: translateY(0px); }
         }
         .animate-float { animation: float 2.5s ease-in-out infinite; }
-        .card-custom {
-          background-color: #ffffff; 
-          padding: 1.5rem; 
-          border-radius: 1rem; 
+        .card-simple {
+          background-color: transparent;
+          padding: 1.5rem;
+          border-radius: 1rem;
           color: #293A49;
-          border: 2px solid #70B5E2; 
           transition: all 0.3s ease-in-out;
-          box-shadow: 0 4px 12px rgba(55, 182, 255, 0.15);
         }
-        .card-custom:hover { 
-          transform: translateY(-5px) scale(1.03); 
-          box-shadow: 0 10px 25px rgba(55, 182, 255, 0.3);
-          border-color: #37B6FF;
+        .card-simple:hover {
+          transform: translateY(-5px) scale(1.03);
         }
         .value-item {
           transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-          background-color: #ffffff; 
-          border: 2px solid #70B5E2; 
+          background-color: #ffffff;
+          border: 2px solid #70B5E2;
           color: #293A49;
           box-shadow: 0 4px 12px rgba(112, 181, 226, 0.15);
         }
-        .value-item:hover { 
-          background-color: rgba(55, 182, 255, 0.1); 
-          transform: translateY(-5px) scale(1.03); 
+        .value-item:hover {
+          background-color: rgba(55, 182, 255, 0.1);
+          transform: translateY(-5px) scale(1.03);
           box-shadow: 0 10px 25px rgba(55, 182, 255, 0.35);
           border-color: #37B6FF;
         }
         .cta-secondary {
-          background-color: transparent; 
-          border: 2px solid #293A49; 
+          background-color: transparent;
+          border: 2px solid #293A49;
           color: #293A49;
           transition: all 0.3s ease-in-out;
         }
-        .cta-secondary:hover { 
-          background-color: #293A49; 
-          color: white; 
+        .cta-secondary:hover {
+          background-color: #293A49;
+          color: white;
+        }
+        .cta-tertiary {
+          background-color: transparent;
+          border: 2px solid #70B5E2;
+          color: #293A49;
+          transition: all 0.3s ease-in-out;
+        }
+        .cta-tertiary:hover {
+          background-color: #70B5E2;
+          color: white;
         }
         .menthia-gradient {
           background: linear-gradient(135deg, #293A49 0%, #37B6FF 100%);
@@ -197,11 +203,11 @@ const Home: React.FC = () => {
       <div className="flex flex-col min-h-screen bg-white text-gray-800 font-sans">
         {/* Hero Section */}
         <section className="min-h-[90vh] flex items-center justify-center text-center overflow-hidden relative p-4">
-          <Particles 
-            id="tsparticles-hero" 
-            init={particlesInit} 
-            options={heroParticlesOptions} 
-            className="absolute inset-0 z-0" 
+          <Particles
+            id="tsparticles-hero"
+            init={particlesInit}
+            options={heroParticlesOptions}
+            className="absolute inset-0 z-0"
           />
           <div className="relative z-20 p-4 max-w-6xl mx-auto">
             <h1 className="hero-home-title text-5xl md:text-7xl font-extrabold text-gray-900 leading-tight mb-6 drop-shadow-md">
@@ -214,9 +220,9 @@ const Home: React.FC = () => {
               <Link
                 href="/register"
                 className="inline-block menthia-gradient font-bold py-4 px-12 rounded-full text-lg md:text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 ease-in-out animate-float"
-                style={{ color: '#000000' }}
+                style={{ color: "#000000" }}
               >
-                <FaUserPlus className="inline-block mr-3" /> Potenciar mi negocio hoy
+                <FaUserPlus className="inline-block mr-3" /> Regístrate y obtén sin costo un diagnóstico de tu negocio
               </Link>
               <Link
                 href="/demo"
@@ -225,15 +231,19 @@ const Home: React.FC = () => {
                 <FaPlay className="inline-block mr-3" /> Ver cómo funciona (2 min)
               </Link>
             </div>
-            <div className="mt-6 text-sm text-gray-600 flex items-center justify-center gap-4">
-              <div className="flex items-center">
-                <FaCreditCard className="mr-2 text-green-600" />
-                <span>Facilidad de pago</span>
-              </div>
-              <div className="flex items-center">
-                <FaCheck className="mr-2 text-green-600" />
-                <span>Demo guiada + recomendaciones personalizadas</span>
-              </div>
+            <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Link
+                href="/referidos"
+                className="inline-block cta-tertiary font-semibold py-3 px-8 rounded-full text-base md:text-lg shadow-md transform hover:scale-105 transition-all duration-300 ease-in-out"
+              >
+                <FaShareAlt className="inline-block mr-2" /> Programa de referidos
+              </Link>
+              <Link
+                href="/faqs"
+                className="inline-block cta-tertiary font-semibold py-3 px-8 rounded-full text-base md:text-lg shadow-md transform hover:scale-105 transition-all duration-300 ease-in-out"
+              >
+                <FaQuestionCircle className="inline-block mr-2" /> FAQs
+              </Link>
             </div>
           </div>
         </section>
@@ -243,12 +253,12 @@ const Home: React.FC = () => {
           ref={(el) => { sectionRefs.current[0] = el; }}
           className="py-20 md:py-32 px-4 container mx-auto text-center about-menthia-section rounded-2xl shadow-lg my-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-12" style={{ color: '#37B6FF' }}>
+          <h2 className="text-4xl md:text-5xl font-bold mb-12" style={{ color: "#37B6FF" }}>
             Qué es MentHIA: Tu socio estratégico
           </h2>
-          
+
           <div className="max-w-5xl mx-auto space-y-8">
-            <motion.div 
+            <motion.div
               className="text-center"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -256,11 +266,10 @@ const Home: React.FC = () => {
               viewport={{ once: true }}
             >
               <p className="text-xl font-bold text-black leading-relaxed mb-8">
-                MenTHIA se fundó en Guadalajara, Jalisco por un equipo interdisciplinario con talento experto mexicano, con el fin de abordar la necesidad de asesoría especializada en el ecosistema emprendedor latinoamericano.
+                MentHIA se fundó en Guadalajara, Jalisco por un equipo interdisciplinario con talento experto mexicano, con el fin de abordar la necesidad de asesoría especializada en el ecosistema emprendedor latinoamericano.
               </p>
             </motion.div>
-
-            <motion.div 
+            <motion.div
               className="text-center"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -268,10 +277,9 @@ const Home: React.FC = () => {
               viewport={{ once: true }}
             >
               <p className="text-xl font-bold text-black leading-relaxed mb-8">
-                Es una Plataforma digital innovadora que conecta a PYMEs y Emprendedores en Mexico y Latinoamérica, con mentores especializados utilizando inteligencia artificial avanzada, ofreciendo soluciones personalizadas, accesibles y flexibles
+                Es una Plataforma digital innovadora que conecta a PYMEs y Emprendedores en México y Latinoamérica, con mentores especializados utilizando inteligencia artificial avanzada, ofreciendo soluciones personalizadas, accesibles y flexibles
               </p>
             </motion.div>
-
             <motion.div
               className="mt-10"
               initial={{ opacity: 0, scale: 0.9 }}
@@ -282,7 +290,7 @@ const Home: React.FC = () => {
               <Link
                 href="/register"
                 className="inline-block font-bold py-4 px-12 rounded-full text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 ease-in-out"
-                style={{ backgroundColor: '#37B6FF', color: '#ffffff' }}
+                style={{ backgroundColor: "#37B6FF", color: "#ffffff" }}
               >
                 <FaUserPlus className="inline-block mr-3" /> Regístrate AQUÍ
               </Link>
@@ -290,23 +298,23 @@ const Home: React.FC = () => {
           </div>
         </section>
 
-        {/* Soluciones Estratégicas */}
+        {/* MentHIA: Tu Ventaja Competitiva para Pymes */}
         <section
           ref={(el) => { sectionRefs.current[1] = el; }}
-          className="py-20 md:py-32 px-4 container mx-auto text-center bg-gray-50 rounded-2xl shadow-lg my-16 border-2 border-gray-200"
+          className="py-20 md:py-32 px-4 container mx-auto text-center my-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-12" style={{ color: '#37B6FF' }}>
+          <h2 className="text-4xl md:text-5xl font-bold mb-12" style={{ color: "#37B6FF" }}>
             MentHIA: Tu Ventaja Competitiva para Pymes y emprendedores
           </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
-            <motion.div 
-              className="card-custom flex items-start p-8"
-              whileHover={{ scale: 1.02 }} 
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <motion.div
+              className="card-simple flex flex-col items-start p-8"
+              whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
             >
-              <FaBrain className="text-5xl mr-6 flex-shrink-0" style={{ color: '#37B6FF' }} />
-              <div>
+              <FaBrain className="text-5xl mb-4" style={{ color: "#37B6FF" }} />
+              <div className="text-left">
                 <h3 className="text-2xl font-bold mb-3 text-black">
                   Diagnósticos empresariales personalizados
                 </h3>
@@ -316,45 +324,45 @@ const Home: React.FC = () => {
               </div>
             </motion.div>
 
-            <motion.div 
-              className="card-custom flex items-start p-8"
-              whileHover={{ scale: 1.02 }} 
+            <motion.div
+              className="card-simple flex flex-col items-start p-8"
+              whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
             >
-              <FaUsers className="text-5xl mr-6 flex-shrink-0" style={{ color: '#70B5E2' }} />
-              <div>
+              <FaUsers className="text-5xl mb-4" style={{ color: "#70B5E2" }} />
+              <div className="text-left">
                 <h3 className="text-2xl font-bold mb-3 text-black">
                   Asesoría especializada flexible a distancia por expertos
                 </h3>
                 <p className="text-gray-700">
-                  Contamos con una base de asesores que usan la información obtenida de la inteligencia artificial de tu negocio, para brindarte recomendaciones específicas y reales.
+                  Contamos con una base de asesores, que de acuerdo a tu diagnóstico se apoyan en tecnología IA para brindarte recomendaciones específicas y reales.
                 </p>
               </div>
             </motion.div>
 
-            <motion.div 
-              className="card-custom flex items-start p-8"
-              whileHover={{ scale: 1.02 }} 
+            <motion.div
+              className="card-simple flex flex-col items-start p-8"
+              whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
             >
-              <FaCreditCard className="text-5xl mr-6 flex-shrink-0" style={{ color: '#37B6FF' }} />
-              <div>
+              <FaCreditCard className="text-5xl mb-4" style={{ color: "#37B6FF" }} />
+              <div className="text-left">
                 <h3 className="text-2xl font-bold mb-3 text-black">
                   Costo asequible
                 </h3>
                 <p className="text-gray-700">
-                  Consolidamos asesores, cursos, inteligencia artificial, membresias y más en un solo espacio trabajando para ti y tu negocio todo de forma virtual
+                  Consolidamos en un solo espacio asesorías, cursos, membresías, inteligencia artificial y más, trabajando para ti y tu negocio, todo de forma virtual
                 </p>
               </div>
             </motion.div>
 
-            <motion.div 
-              className="card-custom flex items-start p-8"
-              whileHover={{ scale: 1.02 }} 
+            <motion.div
+              className="card-simple flex flex-col items-start p-8"
+              whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
             >
-              <FaTools className="text-5xl mr-6 flex-shrink-0" style={{ color: '#70B5E2' }} />
-              <div>
+              <FaTools className="text-5xl mb-4" style={{ color: "#70B5E2" }} />
+              <div className="text-left">
                 <h3 className="text-2xl font-bold mb-3 text-black">
                   Recursos Educativos y Herramientas Digitales a la medida
                 </h3>
@@ -364,18 +372,18 @@ const Home: React.FC = () => {
               </div>
             </motion.div>
 
-            <motion.div 
-              className="card-custom flex items-start p-8"
-              whileHover={{ scale: 1.02 }} 
+            <motion.div
+              className="card-simple flex flex-col items-start p-8"
+              whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
             >
-              <FaHandshake className="text-5xl mr-6 flex-shrink-0" style={{ color: '#37B6FF' }} />
-              <div>
+              <FaHandshake className="text-5xl mb-4" style={{ color: "#37B6FF" }} />
+              <div className="text-left">
                 <h3 className="text-2xl font-bold mb-3 text-black">
                   Comunidad
                 </h3>
                 <p className="text-gray-700">
-                  Nuestra comunidad crea alianzas estratégicas entre empresarios y asesores creando un enlace perfecto
+                  Nuestra comunidad crea alianzas estratégicas entre empresarios, asesores y proveedores creando un enlace perfecto
                 </p>
               </div>
             </motion.div>
@@ -391,47 +399,47 @@ const Home: React.FC = () => {
             <Link
               href="/register"
               className="inline-block font-bold py-4 px-12 rounded-full text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 ease-in-out"
-              style={{ backgroundColor: '#37B6FF', color: '#ffffff' }}
+              style={{ backgroundColor: "#37B6FF", color: "#ffffff" }}
             >
               <FaUserPlus className="inline-block mr-3" /> Regístrate y recibe un diagnóstico sin costo para tu negocio
             </Link>
           </motion.div>
         </section>
 
-        {/* Tu Ventaja Competitiva */}
+        {/* Tu Ventaja Competitiva como ASESOR */}
         <section
           ref={(el) => { sectionRefs.current[2] = el; }}
-          className="py-20 md:py-32 px-4 container mx-auto text-center"
+          className="py-20 md:py-32 px-4 container mx-auto"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-12" style={{ color: '#37B6FF' }}>
+          <h2 className="text-4xl md:text-5xl font-bold mb-12 text-center" style={{ color: "#37B6FF" }}>
             Tu Ventaja Competitiva como ASESOR
           </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-6xl mx-auto">
-            <motion.div 
-              className="card-custom flex items-start p-8 rounded-lg shadow-lg" 
-              whileHover={{ scale: 1.02 }} 
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <motion.div
+              className="card-simple flex flex-col items-start p-8"
+              whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
             >
-              <FaChartLine className="text-5xl mr-6 flex-shrink-0" style={{ color: '#37B6FF' }} />
+              <FaChartLine className="text-5xl mb-4" style={{ color: "#37B6FF" }} />
               <div className="text-left">
                 <h3 className="text-2xl font-bold mb-3 text-black">
                   Acceso a un Mercado Amplio y en Crecimiento
                 </h3>
                 <ul className="text-gray-700 space-y-2">
-                  <li>• Acceder a miles de PYMES y emprendedores</li>
+                  <li>• Acceso a un amplio mercado de PYMES y emprendedores</li>
                   <li>• Flujo constante de clientes</li>
                   <li>• Expandir tu base de clientes</li>
                 </ul>
               </div>
             </motion.div>
 
-            <motion.div 
-              className="card-custom flex items-start p-8 rounded-lg shadow-lg" 
-              whileHover={{ scale: 1.02 }} 
+            <motion.div
+              className="card-simple flex flex-col items-start p-8"
+              whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
             >
-              <FaGlobe className="text-5xl mr-6 flex-shrink-0" style={{ color: '#70B5E2' }} />
+              <FaGlobe className="text-5xl mb-4" style={{ color: "#70B5E2" }} />
               <div className="text-left">
                 <h3 className="text-2xl font-bold mb-3 text-black">
                   Flexibilidad y Control sobre tu Horario de Trabajo
@@ -444,12 +452,12 @@ const Home: React.FC = () => {
               </div>
             </motion.div>
 
-            <motion.div 
-              className="card-custom flex items-start p-8 rounded-lg shadow-lg" 
-              whileHover={{ scale: 1.02 }} 
+            <motion.div
+              className="card-simple flex flex-col items-start p-8"
+              whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
             >
-              <FaSearchDollar className="text-5xl mr-6 flex-shrink-0" style={{ color: '#37B6FF' }} />
+              <FaSearchDollar className="text-5xl mb-4" style={{ color: "#37B6FF" }} />
               <div className="text-left">
                 <h3 className="text-2xl font-bold mb-3 text-black">
                   Ingresos Escalables y Modelos de Remuneración Flexibles
@@ -462,12 +470,12 @@ const Home: React.FC = () => {
               </div>
             </motion.div>
 
-            <motion.div 
-              className="card-custom flex items-start p-8 rounded-lg shadow-lg" 
-              whileHover={{ scale: 1.02 }} 
+            <motion.div
+              className="card-simple flex flex-col items-start p-8"
+              whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
             >
-              <FaTools className="text-5xl mr-6 flex-shrink-0" style={{ color: '#70B5E2' }} />
+              <FaTools className="text-5xl mb-4" style={{ color: "#70B5E2" }} />
               <div className="text-left">
                 <h3 className="text-2xl font-bold mb-3 text-black">
                   Herramientas y Recursos para el Éxito Profesional
@@ -478,12 +486,12 @@ const Home: React.FC = () => {
               </div>
             </motion.div>
 
-            <motion.div 
-              className="card-custom flex items-start p-8 rounded-lg shadow-lg" 
-              whileHover={{ scale: 1.02 }} 
+            <motion.div
+              className="card-simple flex flex-col items-start p-8"
+              whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
             >
-              <FaGem className="text-5xl mr-6 flex-shrink-0" style={{ color: '#37B6FF' }} />
+              <FaGem className="text-5xl mb-4" style={{ color: "#37B6FF" }} />
               <div className="text-left">
                 <h3 className="text-2xl font-bold mb-3 text-black">
                   Desarrollo de Marca Personal y Reputación
@@ -495,12 +503,12 @@ const Home: React.FC = () => {
               </div>
             </motion.div>
 
-            <motion.div 
-              className="card-custom flex items-start p-8 rounded-lg shadow-lg" 
-              whileHover={{ scale: 1.02 }} 
+            <motion.div
+              className="card-simple flex flex-col items-start p-8"
+              whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
             >
-              <FaNetworkWired className="text-5xl mr-6 flex-shrink-0" style={{ color: '#70B5E2' }} />
+              <FaNetworkWired className="text-5xl mb-4" style={{ color: "#70B5E2" }} />
               <div className="text-left">
                 <h3 className="text-2xl font-bold mb-3 text-black">
                   Comunidad de Expertos y Networking
@@ -523,7 +531,7 @@ const Home: React.FC = () => {
             <Link
               href="/register"
               className="inline-block font-bold py-4 px-12 rounded-full text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 ease-in-out"
-              style={{ backgroundColor: '#37B6FF', color: '#ffffff' }}
+              style={{ backgroundColor: "#37B6FF", color: "#ffffff" }}
             >
               <FaUserPlus className="inline-block mr-3" /> Regístrate y empieza a recibir los beneficios como Asesor
             </Link>
@@ -533,54 +541,52 @@ const Home: React.FC = () => {
         {/* Misión, Visión, Valores */}
         <section
           ref={(el) => { sectionRefs.current[3] = el; }}
-          className="py-20 md:py-32 px-4 container mx-auto text-center bg-white rounded-2xl shadow-lg my-16 border-2 border-gray-200"
+          className="py-20 md:py-32 px-4 container mx-auto text-center my-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-12" style={{ color: '#37B6FF' }}>
+          <h2 className="text-4xl md:text-5xl font-bold mb-12" style={{ color: "#37B6FF" }}>
             Nuestra esencia, tu éxito
           </h2>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Misión */}
-            <motion.div 
-              className="value-item p-8 rounded-lg shadow-md flex flex-col items-center" 
-              whileHover={{ scale: 1.03 }} 
+            <motion.div
+              className="value-item p-8 rounded-lg shadow-md flex flex-col items-center"
+              whileHover={{ scale: 1.03 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
             >
-              <FaBullseye className="text-6xl mb-4" style={{ color: '#37B6FF' }} />
+              <FaBullseye className="text-6xl mb-4" style={{ color: "#37B6FF" }} />
               <h3 className="text-3xl font-bold mb-3 text-black">Misión</h3>
               <p className="text-gray-700 text-lg leading-relaxed">
-                Empoderar a emprendedores y pequeñas empresas de América Latina a través de una plataforma híbrida que combina inteligencia artificial con la experiencia humana, impulsando la innovación, el crecimiento y la competitividad empresarial.
+                Empoderar a emprendedores y pequeñas empresas de América Latina a través de una plataforma híbrida que combina experiencia humana con inteligencia artificial, impulsando la innovación, el crecimiento y la competitividad empresarial.
               </p>
             </motion.div>
-
             {/* Visión */}
-            <motion.div 
-              className="value-item p-8 rounded-lg shadow-md flex flex-col items-center" 
-              whileHover={{ scale: 1.03 }} 
+            <motion.div
+              className="value-item p-8 rounded-lg shadow-md flex flex-col items-center"
+              whileHover={{ scale: 1.03 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
             >
-              <FaEye className="text-6xl mb-4" style={{ color: '#70B5E2' }} />
+              <FaEye className="text-6xl mb-4" style={{ color: "#70B5E2" }} />
               <h3 className="text-3xl font-bold mb-3 text-black">Visión</h3>
               <p className="text-gray-700 text-lg leading-relaxed">
                 Ser la plataforma líder en mentoría empresarial inteligente en América Latina, revolucionando el acceso a la consultoría mediante un modelo accesible, escalable y profundamente humano, que transforme a las PYMES en motores de desarrollo económico sostenible.
               </p>
             </motion.div>
-
             {/* Valores */}
-            <motion.div 
-              className="value-item p-8 rounded-lg shadow-md flex flex-col items-center" 
-              whileHover={{ scale: 1.03 }} 
+            <motion.div
+              className="value-item p-8 rounded-lg shadow-md flex flex-col items-center"
+              whileHover={{ scale: 1.03 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
             >
-              <FaHeart className="text-6xl mb-4" style={{ color: '#37B6FF' }} />
+              <FaHeart className="text-6xl mb-4" style={{ color: "#37B6FF" }} />
               <h3 className="text-3xl font-bold mb-3 text-black">Valores</h3>
               <ul className="list-none text-gray-700 text-lg space-y-2 text-left">
-                <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: '#37B6FF' }} /> Excelencia</li>
-                <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: '#37B6FF' }} /> Innovación y tecnología</li>
-                <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: '#37B6FF' }} /> Colaboración</li>
-                <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: '#37B6FF' }} /> Integridad y confianza</li>
-                <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: '#37B6FF' }} /> Liderazgo</li>
-                <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: '#37B6FF' }} /> Humanidad</li>
-                <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: '#37B6FF' }} /> Confidencialidad</li>
+                <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: "#37B6FF" }} /> Excelencia</li>
+                <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: "#37B6FF" }} /> Innovación y tecnología</li>
+                <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: "#37B6FF" }} /> Colaboración</li>
+                <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: "#37B6FF" }} /> Integridad y confianza</li>
+                <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: "#37B6FF" }} /> Liderazgo</li>
+                <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: "#37B6FF" }} /> Humanidad</li>
+                <li className="flex items-center"><FaArrowRight className="mr-2" style={{ color: "#37B6FF" }} /> Confidencialidad</li>
               </ul>
             </motion.div>
           </div>
@@ -595,7 +601,7 @@ const Home: React.FC = () => {
             <Link
               href="/register"
               className="inline-block font-bold py-4 px-12 rounded-full text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 ease-in-out"
-              style={{ backgroundColor: '#37B6FF', color: '#ffffff' }}
+              style={{ backgroundColor: "#37B6FF", color: "#ffffff" }}
             >
               <FaUserPlus className="inline-block mr-3" /> Empieza hoy mismo
             </Link>
@@ -612,14 +618,14 @@ const Home: React.FC = () => {
               ¡Listo para escalar tu negocio?
             </h2>
             <p className="text-xl md:text-2xl text-white max-w-3xl mx-auto mb-10">
-              Únete a la red de elite de Menthia y <b>transforma tu visión en realidad.</b>
+              Únete a la red de elite de MentHIA y <b>transforma tu visión en realidad.</b>
             </p>
             <Link
               href="/register"
               className="inline-block bg-white font-bold py-4 px-12 rounded-full text-lg md:text-xl shadow-lg hover:bg-gray-100 transform hover:scale-105 transition-all duration-300 ease-in-out"
-              style={{ color: '#293A49' }}
+              style={{ color: "#293A49" }}
             >
-              <FaUserPlus className="inline-block mr-3" />  REGÍSTRATE AHORA Y RECIBE SIN COSTO UN DIAGNÓSTICO DE TU NEGOCIO
+              <FaUserPlus className="inline-block mr-3" /> REGÍSTRATE AHORA Y RECIBE SIN COSTO UN DIAGNÓSTICO DE TU NEGOCIO
             </Link>
           </div>
         </section>
