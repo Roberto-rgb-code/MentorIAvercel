@@ -656,8 +656,7 @@ const CommunityPage: React.FC = () => {
                     ¿Listo para dar el siguiente paso?
                   </h3>
                   <p className="text-xl text-gray-200 mb-8 max-w-2xl mx-auto">
-                    Únete a miles de emprendedores que ya están construyendo el futuro. 
-                    Tu próxima gran oportunidad te está esperando.
+                    Únete a Emprendedores y Consultores que ya están construyendo el futuro. Tu próxima oportunidad te está esperando
                   </p>
                   
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -666,7 +665,7 @@ const CommunityPage: React.FC = () => {
                       className="group bg-white text-[#293A49] px-8 py-4 rounded-xl font-bold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center space-x-2"
                     >
                       <FaUserPlus />
-                      <span>Regístrate Ahora</span>
+                      <span>Regístrate</span>
                       <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
                     </button>
                   </div>
