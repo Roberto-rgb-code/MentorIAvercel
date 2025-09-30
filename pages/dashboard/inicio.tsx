@@ -34,7 +34,6 @@ const Pie                  = dynamic(() => import("recharts").then(m => m.Pie), 
 const Cell                 = dynamic(() => import("recharts").then(m => m.Cell),                { ssr: false });
 const AreaChart            = dynamic(() => import("recharts").then(m => m.AreaChart),           { ssr: false });
 const Area                 = dynamic(() => import("recharts").then(m => m.Area),                { ssr: false });
-const Legend               = dynamic(() => import("recharts").then(m => m.Legend),              { ssr: false });
 
 // ==== CONFIG ====
 const BRAND = {
@@ -60,7 +59,7 @@ type BaseMetrics = {
   courseProgress?: { course: string; completion: number }[];
 };
 
-// ==== MOCK DATA LAYER (reemplaza por Firestore cuando quieras) ====
+// ==== MOCK DATA (sustituye por Firestore) ====
 async function getDashboardMetrics(uid: string, role: UserRole): Promise<BaseMetrics> {
   const weeks = ["W-7","W-6","W-5","W-4","W-3","W-2","W-1","W"];
   const rnd = (min:number,max:number)=> Math.floor(Math.random()*(max-min+1))+min;
@@ -279,7 +278,6 @@ const EntrepreneurDashboard: React.FC<{ metrics: BaseMetrics }>
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Tooltip contentStyle={{ background: "#17202A", border: "1px solid #253244", color: "#fff" }} />
-                <Legend wrapperStyle={{ color: BRAND.axis }} />
                 <Pie data={metrics.revenueByProduct} dataKey="value" nameKey="name" innerRadius={50} outerRadius={80} paddingAngle={3}>
                   {metrics.revenueByProduct?.map((_, i) => (<Cell key={i} fill={SERIES[i % SERIES.length]} />))}
                 </Pie>
@@ -404,7 +402,6 @@ const ConsultantDashboard: React.FC<{ metrics: BaseMetrics }>
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Tooltip contentStyle={{ background: "#17202A", border: "1px solid #253244", color: "#fff" }} />
-                <Legend wrapperStyle={{ color: BRAND.axis }} />
                 <Pie data={metrics.revenueByProduct} dataKey="value" nameKey="name" innerRadius={50} outerRadius={80} paddingAngle={3}>
                   {metrics.revenueByProduct?.map((_, i) => (<Cell key={i} fill={SERIES[i % SERIES.length]} />))}
                 </Pie>
