@@ -6,7 +6,7 @@ import {
   FaUsers, FaLightbulb, FaRocket, FaHandshake, FaBullseye, FaEye, FaHeart,
   FaUserPlus, FaArrowRight, FaChartLine, FaGraduationCap, FaStore, FaGem, FaBrain, FaCogs,
   FaBriefcase, FaNetworkWired, FaTools, FaShieldAlt, FaRegLightbulb, FaConnectdevelop, FaChartBar, FaGlobe, FaSearchDollar,
-  FaPlay, FaCreditCard, FaCheck, FaMapMarkerAlt, FaHandHoldingHeart, FaQuestionCircle, FaShareAlt
+  FaPlay, FaCreditCard, FaCheck, FaMapMarkerAlt, FaHandHoldingHeart, FaQuestionCircle, FaShareAlt, FaArrowDown
 } from "react-icons/fa";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
@@ -17,7 +17,13 @@ import type { ISourceOptions } from "tsparticles-engine";
 gsap.registerPlugin(ScrollTrigger);
 
 const Home: React.FC = () => {
-  const sectionRefs = useRef<Array<HTMLElement | null>>([]);
+  // Índices de secciones:
+  // 0: Qué es MentHIA
+  // 1: Ventaja Competitiva PYMES
+  // 2: Ventaja Competitiva ASESOR
+  // 3: Misión/Visión/Valores
+  // 4: CTA final
+  const sectionRefs = useRef<Array<HTMLDivElement | null>>([]);
 
   const particlesInit = useCallback(async (engine: any) => {
     await loadSlim(engine);
@@ -25,9 +31,7 @@ const Home: React.FC = () => {
 
   // Partículas estilo red/conexiones con colores MentHIA
   const heroParticlesOptions: ISourceOptions = {
-    background: {
-      color: { value: "#ffffff" },
-    },
+    background: { color: { value: "#ffffff" } },
     fpsLimit: 120,
     interactivity: {
       events: {
@@ -36,22 +40,13 @@ const Home: React.FC = () => {
         resize: true,
       },
       modes: {
-        grab: {
-          distance: 200,
-          links: { opacity: 0.8 }
-        },
+        grab: { distance: 200, links: { opacity: 0.8 } },
         push: { quantity: 3 },
       },
     },
     particles: {
       color: { value: ["#293A49", "#70B5E2", "#37B6FF"] },
-      links: {
-        color: "#70B5E2",
-        distance: 150,
-        enable: true,
-        opacity: 0.4,
-        width: 1.5,
-      },
+      links: { color: "#70B5E2", distance: 150, enable: true, opacity: 0.4, width: 1.5 },
       move: {
         direction: "none",
         enable: true,
@@ -60,31 +55,25 @@ const Home: React.FC = () => {
         speed: 1.5,
         straight: false,
       },
-      number: {
-        density: { enable: true, area: 800 },
-        value: 80
-      },
+      number: { density: { enable: true, area: 800 }, value: 80 },
       opacity: {
         value: { min: 0.3, max: 0.7 },
-        animation: {
-          enable: true,
-          speed: 1,
-          minimumValue: 0.2,
-          sync: false
-        },
+        animation: { enable: true, speed: 1, minimumValue: 0.2, sync: false },
       },
       shape: { type: "circle" },
       size: {
         value: { min: 2, max: 5 },
-        animation: {
-          enable: true,
-          speed: 2,
-          minimumValue: 1,
-          sync: false
-        },
+        animation: { enable: true, speed: 2, minimumValue: 1, sync: false },
       },
     },
     detectRetina: true,
+  };
+
+  const scrollToSection = (index: number) => {
+    const target = sectionRefs.current[index];
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   };
 
   useEffect(() => {
@@ -149,9 +138,7 @@ const Home: React.FC = () => {
           color: #293A49;
           transition: all 0.3s ease-in-out;
         }
-        .card-simple:hover {
-          transform: translateY(-5px) scale(1.03);
-        }
+        .card-simple:hover { transform: translateY(-5px) scale(1.03); }
         .value-item {
           transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
           background-color: #ffffff;
@@ -171,23 +158,15 @@ const Home: React.FC = () => {
           color: #293A49;
           transition: all 0.3s ease-in-out;
         }
-        .cta-secondary:hover {
-          background-color: #293A49;
-          color: white;
-        }
+        .cta-secondary:hover { background-color: #293A49; color: white; }
         .cta-tertiary {
           background-color: transparent;
           border: 2px solid #70B5E2;
           color: #293A49;
           transition: all 0.3s ease-in-out;
         }
-        .cta-tertiary:hover {
-          background-color: #70B5E2;
-          color: white;
-        }
-        .menthia-gradient {
-          background: linear-gradient(135deg, #293A49 0%, #37B6FF 100%);
-        }
+        .cta-tertiary:hover { background-color: #70B5E2; color: white; }
+        .menthia-gradient { background: linear-gradient(135deg, #293A49 0%, #37B6FF 100%); }
         .menthia-text-gradient {
           background: linear-gradient(135deg, #37B6FF 0%, #70B5E2 100%);
           -webkit-background-clip: text;
@@ -198,17 +177,23 @@ const Home: React.FC = () => {
           background: linear-gradient(135deg, rgba(55, 182, 255, 0.05) 0%, rgba(112, 181, 226, 0.05) 100%);
           border: 2px solid #70B5E2;
         }
+        .arrow-wrap {
+          position: absolute; left: 0; right: 0; bottom: 1rem;
+          display: flex; justify-content: center; pointer-events: none;
+        }
+        .arrow-btn {
+          pointer-events: auto; display: inline-flex; align-items: center; justify-content: center;
+          width: 3.25rem; height: 3.25rem; border-radius: 9999px;
+          border: 2px solid #70B5E2; background: #ffffffcc; backdrop-filter: blur(4px);
+          transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
+        }
+        .arrow-btn:hover { transform: translateY(2px) scale(1.03); box-shadow: 0 8px 18px rgba(55,182,255,0.25); background: #ffffff; }
       `}</style>
 
       <div className="flex flex-col min-h-screen bg-white text-gray-800 font-sans">
         {/* Hero Section */}
         <section className="min-h-[90vh] flex items-center justify-center text-center overflow-hidden relative p-4">
-          <Particles
-            id="tsparticles-hero"
-            init={particlesInit}
-            options={heroParticlesOptions}
-            className="absolute inset-0 z-0"
-          />
+          <Particles id="tsparticles-hero" init={particlesInit} options={heroParticlesOptions} className="absolute inset-0 z-0" />
           <div className="relative z-20 p-4 max-w-6xl mx-auto">
             <h1 className="hero-home-title text-5xl md:text-7xl font-extrabold text-gray-900 leading-tight mb-6 drop-shadow-md">
               Mentores expertos <span className="menthia-text-gradient">+ IA</span> para <span className="menthia-text-gradient">escalar tu negocio en un solo lugar.</span>
@@ -238,55 +223,45 @@ const Home: React.FC = () => {
               >
                 <FaShareAlt className="inline-block mr-2" /> Programa de referidos
               </Link>
+              {/* FAQs AZUL */}
               <Link
                 href="/faqs"
-                className="inline-block cta-tertiary font-semibold py-3 px-8 rounded-full text-base md:text-lg shadow-md transform hover:scale-105 transition-all duration-300 ease-in-out"
+                className="inline-block font-semibold py-3 px-8 rounded-full text-base md:text-lg shadow-md transform hover:scale-105 transition-all duration-300 ease-in-out bg-[#37B6FF] text-white hover:bg-[#2FA3E6]"
               >
                 <FaQuestionCircle className="inline-block mr-2" /> FAQs
               </Link>
             </div>
           </div>
+
+          {/* Flecha hacia sección 0 (primera sección de contenido) */}
+          <div className="arrow-wrap z-20">
+            <button aria-label="Ir a la siguiente sección" className="arrow-btn" onClick={() => scrollToSection(0)}>
+              <FaArrowDown />
+            </button>
+          </div>
         </section>
 
-        {/* Qué es MentHIA Section */}
+        {/* Qué es MentHIA */}
         <section
           ref={(el) => { sectionRefs.current[0] = el; }}
-          className="py-20 md:py-32 px-4 container mx-auto text-center about-menthia-section rounded-2xl shadow-lg my-16"
+          className="relative py-20 md:py-32 px-4 container mx-auto text-center about-menthia-section rounded-2xl shadow-lg my-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-12" style={{ color: "#37B6FF" }}>
             Qué es MentHIA: Tu socio estratégico
           </h2>
 
           <div className="max-w-5xl mx-auto space-y-8">
-            <motion.div
-              className="text-center"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              viewport={{ once: true }}
-            >
+            <motion.div className="text-center" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }} viewport={{ once: true }}>
               <p className="text-xl font-bold text-black leading-relaxed mb-8">
                 MentHIA se fundó en Guadalajara, Jalisco por un equipo interdisciplinario con talento experto mexicano, con el fin de abordar la necesidad de asesoría especializada en el ecosistema emprendedor latinoamericano.
               </p>
             </motion.div>
-            <motion.div
-              className="text-center"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-              viewport={{ once: true }}
-            >
+            <motion.div className="text-center" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }} viewport={{ once: true }}>
               <p className="text-xl font-bold text-black leading-relaxed mb-8">
                 Es una Plataforma digital innovadora que conecta a PYMEs y Emprendedores en México y Latinoamérica, con mentores especializados utilizando inteligencia artificial avanzada, ofreciendo soluciones personalizadas, accesibles y flexibles
               </p>
             </motion.div>
-            <motion.div
-              className="mt-10"
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
-              viewport={{ once: true }}
-            >
+            <motion.div className="mt-10" initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }} viewport={{ once: true }}>
               <Link
                 href="/register"
                 className="inline-block font-bold py-4 px-12 rounded-full text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 ease-in-out"
@@ -296,106 +271,67 @@ const Home: React.FC = () => {
               </Link>
             </motion.div>
           </div>
+
+          {/* Flecha a siguiente sección (1) */}
+          <div className="arrow-wrap">
+            <button aria-label="Ir a la siguiente sección" className="arrow-btn" onClick={() => scrollToSection(1)}>
+              <FaArrowDown />
+            </button>
+          </div>
         </section>
 
         {/* MentHIA: Tu Ventaja Competitiva para Pymes */}
         <section
           ref={(el) => { sectionRefs.current[1] = el; }}
-          className="py-20 md:py-32 px-4 container mx-auto text-center my-16"
+          className="relative py-20 md:py-32 px-4 container mx-auto text-center my-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-12" style={{ color: "#37B6FF" }}>
             MentHIA: Tu Ventaja Competitiva para Pymes y emprendedores
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <motion.div
-              className="card-simple flex flex-col items-start p-8"
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.2, ease: "easeInOut" }}
-            >
+            <motion.div className="card-simple flex flex-col items-start p-8" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
               <FaBrain className="text-5xl mb-4" style={{ color: "#37B6FF" }} />
               <div className="text-left">
-                <h3 className="text-2xl font-bold mb-3 text-black">
-                  Diagnósticos empresariales personalizados
-                </h3>
-                <p className="text-gray-700">
-                  Nuestra plataforma digital analiza la información de tu empresa usando algoritmos de inteligencia artificial, entrenada para brindarte un diagnóstico certero para tu empresa.
-                </p>
+                <h3 className="text-2xl font-bold mb-3 text-black">Diagnósticos empresariales personalizados</h3>
+                <p className="text-gray-700">Nuestra plataforma digital analiza la información de tu empresa usando algoritmos de inteligencia artificial, entrenada para brindarte un diagnóstico certero para tu empresa.</p>
               </div>
             </motion.div>
 
-            <motion.div
-              className="card-simple flex flex-col items-start p-8"
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.2, ease: "easeInOut" }}
-            >
+            <motion.div className="card-simple flex flex-col items-start p-8" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
               <FaUsers className="text-5xl mb-4" style={{ color: "#70B5E2" }} />
               <div className="text-left">
-                <h3 className="text-2xl font-bold mb-3 text-black">
-                  Asesoría especializada flexible a distancia por expertos
-                </h3>
-                <p className="text-gray-700">
-                  Contamos con una base de asesores, que de acuerdo a tu diagnóstico se apoyan en tecnología IA para brindarte recomendaciones específicas y reales.
-                </p>
+                <h3 className="text-2xl font-bold mb-3 text-black">Asesoría especializada flexible a distancia por expertos</h3>
+                <p className="text-gray-700">Contamos con una base de asesores, que de acuerdo a tu diagnóstico se apoyan en tecnología IA para brindarte recomendaciones específicas y reales.</p>
               </div>
             </motion.div>
 
-            <motion.div
-              className="card-simple flex flex-col items-start p-8"
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.2, ease: "easeInOut" }}
-            >
+            <motion.div className="card-simple flex flex-col items-start p-8" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
               <FaCreditCard className="text-5xl mb-4" style={{ color: "#37B6FF" }} />
               <div className="text-left">
-                <h3 className="text-2xl font-bold mb-3 text-black">
-                  Costo asequible
-                </h3>
-                <p className="text-gray-700">
-                  Consolidamos en un solo espacio asesorías, cursos, membresías, inteligencia artificial y más, trabajando para ti y tu negocio, todo de forma virtual
-                </p>
+                <h3 className="text-2xl font-bold mb-3 text-black">Costo asequible</h3>
+                <p className="text-gray-700">Consolidamos en un solo espacio asesorías, cursos, membresías, inteligencia artificial y más, trabajando para ti y tu negocio, todo de forma virtual</p>
               </div>
             </motion.div>
 
-            <motion.div
-              className="card-simple flex flex-col items-start p-8"
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.2, ease: "easeInOut" }}
-            >
+            <motion.div className="card-simple flex flex-col items-start p-8" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
               <FaTools className="text-5xl mb-4" style={{ color: "#70B5E2" }} />
               <div className="text-left">
-                <h3 className="text-2xl font-bold mb-3 text-black">
-                  Recursos Educativos y Herramientas Digitales a la medida
-                </h3>
-                <p className="text-gray-700">
-                  Contamos con una biblioteca de talleres y herramientas en diversos temas empresariales útiles para tu formación, crecimiento y capacitación.
-                </p>
+                <h3 className="text-2xl font-bold mb-3 text-black">Recursos Educativos y Herramientas Digitales a la medida</h3>
+                <p className="text-gray-700">Contamos con una biblioteca de talleres y herramientas en diversos temas empresariales útiles para tu formación, crecimiento y capacitación.</p>
               </div>
             </motion.div>
 
-            <motion.div
-              className="card-simple flex flex-col items-start p-8"
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.2, ease: "easeInOut" }}
-            >
+            <motion.div className="card-simple flex flex-col items-start p-8" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
               <FaHandshake className="text-5xl mb-4" style={{ color: "#37B6FF" }} />
               <div className="text-left">
-                <h3 className="text-2xl font-bold mb-3 text-black">
-                  Comunidad
-                </h3>
-                <p className="text-gray-700">
-                  Nuestra comunidad crea alianzas estratégicas entre empresarios, asesores y proveedores creando un enlace perfecto
-                </p>
+                <h3 className="text-2xl font-bold mb-3 text-black">Comunidad</h3>
+                <p className="text-gray-700">Nuestra comunidad crea alianzas estratégicas entre empresarios, asesores y proveedores creando un enlace perfecto</p>
               </div>
             </motion.div>
           </div>
 
-          <motion.div
-            className="mt-12 text-center"
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            viewport={{ once: true }}
-          >
+          <motion.div className="mt-12 text-center" initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, ease: "easeOut" }} viewport={{ once: true }}>
             <Link
               href="/register"
               className="inline-block font-bold py-4 px-12 rounded-full text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 ease-in-out"
@@ -404,28 +340,29 @@ const Home: React.FC = () => {
               <FaUserPlus className="inline-block mr-3" /> Regístrate y recibe un diagnóstico sin costo para tu negocio
             </Link>
           </motion.div>
+
+          {/* Flecha hacia sección 2 */}
+          <div className="arrow-wrap">
+            <button aria-label="Ir a la siguiente sección" className="arrow-btn" onClick={() => scrollToSection(2)}>
+              <FaArrowDown />
+            </button>
+          </div>
         </section>
 
         {/* Tu Ventaja Competitiva como ASESOR */}
         <section
           ref={(el) => { sectionRefs.current[2] = el; }}
-          className="py-20 md:py-32 px-4 container mx-auto"
+          className="relative py-20 md:py-32 px-4 container mx-auto"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-12 text-center" style={{ color: "#37B6FF" }}>
             Tu Ventaja Competitiva como ASESOR
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <motion.div
-              className="card-simple flex flex-col items-start p-8"
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.2, ease: "easeInOut" }}
-            >
+            <motion.div className="card-simple flex flex-col items-start p-8" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
               <FaChartLine className="text-5xl mb-4" style={{ color: "#37B6FF" }} />
               <div className="text-left">
-                <h3 className="text-2xl font-bold mb-3 text-black">
-                  Acceso a un Mercado Amplio y en Crecimiento
-                </h3>
+                <h3 className="text-2xl font-bold mb-3 text-black">Acceso a un Mercado Amplio y en Crecimiento</h3>
                 <ul className="text-gray-700 space-y-2">
                   <li>• Acceso a un amplio mercado de PYMES y emprendedores</li>
                   <li>• Flujo constante de clientes</li>
@@ -434,16 +371,10 @@ const Home: React.FC = () => {
               </div>
             </motion.div>
 
-            <motion.div
-              className="card-simple flex flex-col items-start p-8"
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.2, ease: "easeInOut" }}
-            >
+            <motion.div className="card-simple flex flex-col items-start p-8" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
               <FaGlobe className="text-5xl mb-4" style={{ color: "#70B5E2" }} />
               <div className="text-left">
-                <h3 className="text-2xl font-bold mb-3 text-black">
-                  Flexibilidad y Control sobre tu Horario de Trabajo
-                </h3>
+                <h3 className="text-2xl font-bold mb-3 text-black">Flexibilidad y Control sobre tu Horario de Trabajo</h3>
                 <ul className="text-gray-700 space-y-2">
                   <li>• Elegir tu carga de trabajo</li>
                   <li>• Optimizar tu tiempo</li>
@@ -452,16 +383,10 @@ const Home: React.FC = () => {
               </div>
             </motion.div>
 
-            <motion.div
-              className="card-simple flex flex-col items-start p-8"
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.2, ease: "easeInOut" }}
-            >
+            <motion.div className="card-simple flex flex-col items-start p-8" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
               <FaSearchDollar className="text-5xl mb-4" style={{ color: "#37B6FF" }} />
               <div className="text-left">
-                <h3 className="text-2xl font-bold mb-3 text-black">
-                  Ingresos Escalables y Modelos de Remuneración Flexibles
-                </h3>
+                <h3 className="text-2xl font-bold mb-3 text-black">Ingresos Escalables y Modelos de Remuneración Flexibles</h3>
                 <ul className="text-gray-700 space-y-2">
                   <li>• Ingresos adicionales escalables</li>
                   <li>• Pago por proyectos o por horas</li>
@@ -470,32 +395,18 @@ const Home: React.FC = () => {
               </div>
             </motion.div>
 
-            <motion.div
-              className="card-simple flex flex-col items-start p-8"
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.2, ease: "easeInOut" }}
-            >
+            <motion.div className="card-simple flex flex-col items-start p-8" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
               <FaTools className="text-5xl mb-4" style={{ color: "#70B5E2" }} />
               <div className="text-left">
-                <h3 className="text-2xl font-bold mb-3 text-black">
-                  Herramientas y Recursos para el Éxito Profesional
-                </h3>
-                <p className="text-gray-700">
-                  Accede a herramientas especializadas y recursos exclusivos que potenciarán tu trabajo como asesor profesional.
-                </p>
+                <h3 className="text-2xl font-bold mb-3 text-black">Herramientas y Recursos para el Éxito Profesional</h3>
+                <p className="text-gray-700">Accede a herramientas especializadas y recursos exclusivos que potenciarán tu trabajo como asesor profesional.</p>
               </div>
             </motion.div>
 
-            <motion.div
-              className="card-simple flex flex-col items-start p-8"
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.2, ease: "easeInOut" }}
-            >
+            <motion.div className="card-simple flex flex-col items-start p-8" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
               <FaGem className="text-5xl mb-4" style={{ color: "#37B6FF" }} />
               <div className="text-left">
-                <h3 className="text-2xl font-bold mb-3 text-black">
-                  Desarrollo de Marca Personal y Reputación
-                </h3>
+                <h3 className="text-2xl font-bold mb-3 text-black">Desarrollo de Marca Personal y Reputación</h3>
                 <ul className="text-gray-700 space-y-2">
                   <li>• Construir tu marca personal</li>
                   <li>• Acceder a oportunidades de visibilidad</li>
@@ -503,16 +414,10 @@ const Home: React.FC = () => {
               </div>
             </motion.div>
 
-            <motion.div
-              className="card-simple flex flex-col items-start p-8"
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.2, ease: "easeInOut" }}
-            >
+            <motion.div className="card-simple flex flex-col items-start p-8" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
               <FaNetworkWired className="text-5xl mb-4" style={{ color: "#70B5E2" }} />
               <div className="text-left">
-                <h3 className="text-2xl font-bold mb-3 text-black">
-                  Comunidad de Expertos y Networking
-                </h3>
+                <h3 className="text-2xl font-bold mb-3 text-black">Comunidad de Expertos y Networking</h3>
                 <ul className="text-gray-700 space-y-2">
                   <li>• Oportunidad de conectar</li>
                   <li>• Accederás a eventos</li>
@@ -521,38 +426,35 @@ const Home: React.FC = () => {
             </motion.div>
           </div>
 
-          <motion.div
-            className="mt-12 text-center"
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            viewport={{ once: true }}
-          >
+          <motion.div className="mt-12 text-center" initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, ease: "easeOut" }} viewport={{ once: true }}>
             <Link
               href="/register"
-              className="inline-block font-bold py-4 px-12 rounded-full text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 ease-in-out"
+              className="inline-block font-bold py-4 px-12 rounded-full text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duración-300 ease-in-out"
               style={{ backgroundColor: "#37B6FF", color: "#ffffff" }}
             >
               <FaUserPlus className="inline-block mr-3" /> Regístrate y empieza a recibir los beneficios como Asesor
             </Link>
           </motion.div>
+
+          {/* Flecha hacia sección 3 */}
+          <div className="arrow-wrap">
+            <button aria-label="Ir a la siguiente sección" className="arrow-btn" onClick={() => scrollToSection(3)}>
+              <FaArrowDown />
+            </button>
+          </div>
         </section>
 
         {/* Misión, Visión, Valores */}
         <section
           ref={(el) => { sectionRefs.current[3] = el; }}
-          className="py-20 md:py-32 px-4 container mx-auto text-center my-16"
+          className="relative py-20 md:py-32 px-4 container mx-auto text-center my-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-12" style={{ color: "#37B6FF" }}>
             Nuestra esencia, tu éxito
           </h2>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Misión */}
-            <motion.div
-              className="value-item p-8 rounded-lg shadow-md flex flex-col items-center"
-              whileHover={{ scale: 1.03 }}
-              transition={{ duration: 0.2, ease: "easeInOut" }}
-            >
+            <motion.div className="value-item p-8 rounded-lg shadow-md flex flex-col items-center" whileHover={{ scale: 1.03 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
               <FaBullseye className="text-6xl mb-4" style={{ color: "#37B6FF" }} />
               <h3 className="text-3xl font-bold mb-3 text-black">Misión</h3>
               <p className="text-gray-700 text-lg leading-relaxed">
@@ -560,11 +462,7 @@ const Home: React.FC = () => {
               </p>
             </motion.div>
             {/* Visión */}
-            <motion.div
-              className="value-item p-8 rounded-lg shadow-md flex flex-col items-center"
-              whileHover={{ scale: 1.03 }}
-              transition={{ duration: 0.2, ease: "easeInOut" }}
-            >
+            <motion.div className="value-item p-8 rounded-lg shadow-md flex flex-col items-center" whileHover={{ scale: 1.03 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
               <FaEye className="text-6xl mb-4" style={{ color: "#70B5E2" }} />
               <h3 className="text-3xl font-bold mb-3 text-black">Visión</h3>
               <p className="text-gray-700 text-lg leading-relaxed">
@@ -572,11 +470,7 @@ const Home: React.FC = () => {
               </p>
             </motion.div>
             {/* Valores */}
-            <motion.div
-              className="value-item p-8 rounded-lg shadow-md flex flex-col items-center"
-              whileHover={{ scale: 1.03 }}
-              transition={{ duration: 0.2, ease: "easeInOut" }}
-            >
+            <motion.div className="value-item p-8 rounded-lg shadow-md flex flex-col items-center" whileHover={{ scale: 1.03 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
               <FaHeart className="text-6xl mb-4" style={{ color: "#37B6FF" }} />
               <h3 className="text-3xl font-bold mb-3 text-black">Valores</h3>
               <ul className="list-none text-gray-700 text-lg space-y-2 text-left">
@@ -591,27 +485,28 @@ const Home: React.FC = () => {
             </motion.div>
           </div>
 
-          <motion.div
-            className="mt-12 text-center"
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            viewport={{ once: true }}
-          >
+          <motion.div className="mt-12 text-center" initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, ease: "easeOut" }} viewport={{ once: true }}>
             <Link
               href="/register"
-              className="inline-block font-bold py-4 px-12 rounded-full text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 ease-in-out"
+              className="inline-block font-bold py-4 px-12 rounded-full text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duración-300 ease-in-out"
               style={{ backgroundColor: "#37B6FF", color: "#ffffff" }}
             >
               <FaUserPlus className="inline-block mr-3" /> Empieza hoy mismo
             </Link>
           </motion.div>
+
+          {/* Flecha hacia sección 4 */}
+          <div className="arrow-wrap">
+            <button aria-label="Ir a la siguiente sección" className="arrow-btn" onClick={() => scrollToSection(4)}>
+              <FaArrowDown />
+            </button>
+          </div>
         </section>
 
         {/* CTA final */}
         <section
           ref={(el) => { sectionRefs.current[4] = el; }}
-          className="py-20 md:py-32 menthia-gradient text-center shadow-2xl rounded-3xl mx-4 md:mx-auto max-w-6xl mb-16 p-8 md:p-12 relative z-10"
+          className="relative py-20 md:py-32 menthia-gradient text-center shadow-2xl rounded-3xl mx-4 md:mx-auto max-w-6xl mb-16 p-8 md:p-12 z-10"
         >
           <div className="container mx-auto px-4">
             <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-6 leading-tight">
@@ -627,6 +522,16 @@ const Home: React.FC = () => {
             >
               <FaUserPlus className="inline-block mr-3" /> REGÍSTRATE AHORA Y RECIBE SIN COSTO UN DIAGNÓSTICO DE TU NEGOCIO
             </Link>
+          </div>
+
+          {/* Flecha que regresa al inicio */}
+          <div className="arrow-wrap">
+            <button aria-label="Volver al inicio" className="arrow-btn" onClick={() => {
+              // hace scroll al principio del documento
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}>
+              <FaArrowDown />
+            </button>
           </div>
         </section>
       </div>
