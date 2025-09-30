@@ -16,7 +16,8 @@ function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
 
   // Páginas SIN layout (oculta navbar y footer)
-  const noLayoutRoutes: string[] = ['/login', '/register', '/reset-password'];
+  // Quitamos '/login' y '/register' para que sí tengan navbar y footer.
+  const noLayoutRoutes: string[] = ['/reset-password'];
 
   // Páginas privadas (con layout privado)
   const privateRoutes = ['/dashboard', '/perfil'];
@@ -27,7 +28,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   // Decide layout
   let Layout: React.FC<{ children: React.ReactNode }> = PublicLayout;
   if (shouldHaveNoLayout) {
-    Layout = ({ children }) => <>{children}</>; // no navbar/footer
+    Layout = ({ children }) => <>{children}</>; // sin navbar/footer
   } else if (isPrivateRoute) {
     Layout = PrivateLayout;
   }
@@ -64,7 +65,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             <Component {...pageProps} />
           </Layout>
 
-          {/* Toasts siempre visibles (si prefieres ocultarlos en auth, muévelos bajo !shouldHaveNoLayout) */}
+          {/* Toasts siempre visibles */}
           <ToastContainer
             position="bottom-right"
             autoClose={5000}
@@ -80,7 +81,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             progressClassName="!bg-gradient-to-r !from-blue-500 !to-cyan-400"
           />
 
-          {/* Oculta el chatbot en login/register/reset-password */}
+          {/* El chatbot se oculta solo en rutas sin layout (ahora solo reset-password) */}
           {!shouldHaveNoLayout && <ChatbotWidget />}
         </CartProvider>
       </AuthProvider>
