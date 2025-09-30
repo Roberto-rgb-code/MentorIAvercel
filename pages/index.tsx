@@ -17,7 +17,6 @@ import type { ISourceOptions } from "tsparticles-engine";
 gsap.registerPlugin(ScrollTrigger);
 
 const Home: React.FC = () => {
-  // <section> -> HTMLElement, no HTMLDivElement
   const sectionRefs = useRef<Array<HTMLElement | null>>([]);
 
   const particlesInit = useCallback(async (engine: any) => {
@@ -104,6 +103,7 @@ const Home: React.FC = () => {
         .cta-tertiary:hover { background-color: #70B5E2; color: white; }
         .menthia-gradient { background: linear-gradient(135deg, #293A49 0%, #37B6FF 100%); }
         .menthia-text-gradient { background: linear-gradient(135deg, #37B6FF 0%, #70B5E2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        /* .about-menthia-section eliminado del uso en la sección solicitada */
         .about-menthia-section { background: linear-gradient(135deg, rgba(55, 182, 255, 0.05) 0%, rgba(112, 181, 226, 0.05) 100%); border: 2px solid #70B5E2; }
         .arrow-wrap { position: absolute; left: 0; right: 0; bottom: 1rem; display: flex; justify-content: center; pointer-events: none; }
         .arrow-btn { pointer-events: auto; display: inline-flex; align-items: center; justify-content: center; width: 3.25rem; height: 3.25rem; border-radius: 9999px; border: 2px solid #70B5E2; background: #ffffffcc; backdrop-filter: blur(4px); transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s; }
@@ -137,7 +137,6 @@ const Home: React.FC = () => {
               <Link href="/referidos" className="inline-block cta-tertiary font-semibold py-3 px-8 rounded-full text-base md:text-lg shadow-md transform hover:scale-105 transition-all duration-300 ease-in-out">
                 <FaShareAlt className="inline-block mr-2" /> Programa de referidos
               </Link>
-              {/* FAQs en azul */}
               <Link
                 href="/faqs"
                 className="inline-block font-semibold py-3 px-8 rounded-full text-base md:text-lg shadow-md transform hover:scale-105 transition-all duration-300 ease-in-out bg-[#37B6FF] text-white hover:bg-[#2FA3E6]"
@@ -147,7 +146,6 @@ const Home: React.FC = () => {
             </div>
           </div>
 
-          {/* Flecha a la primera sección */}
           <div className="arrow-wrap z-20">
             <button aria-label="Ir a la siguiente sección" className="arrow-btn" onClick={() => scrollToSection(0)}>
               <FaArrowDown />
@@ -155,10 +153,10 @@ const Home: React.FC = () => {
           </div>
         </section>
 
-        {/* Qué es MentHIA */}
+        {/* Qué es MentHIA (sin fondo azul ni márgenes/sombra/rounded) */}
         <section
           ref={(el) => { sectionRefs.current[0] = el; }}
-          className="relative py-20 md:py-32 px-4 container mx-auto text-center about-menthia-section rounded-2xl shadow-lg my-16"
+          className="relative py-20 md:py-32 px-4 container mx-auto text-center"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-12" style={{ color: "#37B6FF" }}>
             Qué es MentHIA: Tu socio estratégico
@@ -193,7 +191,7 @@ const Home: React.FC = () => {
           </div>
         </section>
 
-        {/* Ventaja Competitiva PYMES */}
+        {/* Ventaja Competitiva PYMES (descripciones más grandes) */}
         <section
           ref={(el) => { sectionRefs.current[1] = el; }}
           className="relative py-20 md:py-32 px-4 container mx-auto text-center my-16"
@@ -207,7 +205,7 @@ const Home: React.FC = () => {
               <FaBrain className="text-5xl mb-4" style={{ color: "#37B6FF" }} />
               <div className="text-left">
                 <h3 className="text-2xl font-bold mb-3 text-black">Diagnósticos empresariales personalizados</h3>
-                <p className="text-gray-700">Nuestra plataforma digital analiza la información de tu empresa usando algoritmos de inteligencia artificial, entrenada para brindarte un diagnóstico certero para tu empresa.</p>
+                <p className="text-gray-700 text-xl leading-relaxed">Nuestra plataforma digital analiza la información de tu empresa usando algoritmos de inteligencia artificial, entrenada para brindarte un diagnóstico certero para tu empresa.</p>
               </div>
             </motion.div>
 
@@ -215,7 +213,7 @@ const Home: React.FC = () => {
               <FaUsers className="text-5xl mb-4" style={{ color: "#70B5E2" }} />
               <div className="text-left">
                 <h3 className="text-2xl font-bold mb-3 text-black">Asesoría especializada flexible a distancia por expertos</h3>
-                <p className="text-gray-700">Contamos con una base de asesores, que de acuerdo a tu diagnóstico se apoyan en tecnología IA para brindarte recomendaciones específicas y reales.</p>
+                <p className="text-gray-700 text-xl leading-relaxed">Contamos con una base de asesores, que de acuerdo a tu diagnóstico se apoyan en tecnología IA para brindarte recomendaciones específicas y reales.</p>
               </div>
             </motion.div>
 
@@ -223,7 +221,7 @@ const Home: React.FC = () => {
               <FaCreditCard className="text-5xl mb-4" style={{ color: "#37B6FF" }} />
               <div className="text-left">
                 <h3 className="text-2xl font-bold mb-3 text-black">Costo asequible</h3>
-                <p className="text-gray-700">Consolidamos en un solo espacio asesorías, cursos, membresías, inteligencia artificial y más, trabajando para ti y tu negocio, todo de forma virtual</p>
+                <p className="text-gray-700 text-xl leading-relaxed">Consolidamos en un solo espacio asesorías, cursos, membresías, inteligencia artificial y más, trabajando para ti y tu negocio, todo de forma virtual</p>
               </div>
             </motion.div>
 
@@ -231,7 +229,7 @@ const Home: React.FC = () => {
               <FaTools className="text-5xl mb-4" style={{ color: "#70B5E2" }} />
               <div className="text-left">
                 <h3 className="text-2xl font-bold mb-3 text-black">Recursos Educativos y Herramientas Digitales a la medida</h3>
-              <p className="text-gray-700">Contamos con una biblioteca de talleres y herramientas en diversos temas empresariales útiles para tu formación, crecimiento y capacitación.</p>
+                <p className="text-gray-700 text-xl leading-relaxed">Contamos con una biblioteca de talleres y herramientas en diversos temas empresariales útiles para tu formación, crecimiento y capacitación.</p>
               </div>
             </motion.div>
 
@@ -239,7 +237,7 @@ const Home: React.FC = () => {
               <FaHandshake className="text-5xl mb-4" style={{ color: "#37B6FF" }} />
               <div className="text-left">
                 <h3 className="text-2xl font-bold mb-3 text-black">Comunidad</h3>
-                <p className="text-gray-700">Nuestra comunidad crea alianzas estratégicas entre empresarios, asesores y proveedores creando un enlace perfecto</p>
+                <p className="text-gray-700 text-xl leading-relaxed">Nuestra comunidad crea alianzas estratégicas entre empresarios, asesores y proveedores creando un enlace perfecto</p>
               </div>
             </motion.div>
           </div>
@@ -261,7 +259,7 @@ const Home: React.FC = () => {
           </div>
         </section>
 
-        {/* ASESOR */}
+        {/* ASESOR (descripciones más grandes) */}
         <section
           ref={(el) => { sectionRefs.current[2] = el; }}
           className="relative py-20 md:py-32 px-4 container mx-auto"
@@ -275,7 +273,7 @@ const Home: React.FC = () => {
               <FaChartLine className="text-5xl mb-4" style={{ color: "#37B6FF" }} />
               <div className="text-left">
                 <h3 className="text-2xl font-bold mb-3 text-black">Acceso a un Mercado Amplio y en Crecimiento</h3>
-                <ul className="text-gray-700 space-y-2">
+                <ul className="text-gray-700 space-y-2 text-xl leading-relaxed">
                   <li>• Acceso a un amplio mercado de PYMES y emprendedores</li>
                   <li>• Flujo constante de clientes</li>
                   <li>• Expandir tu base de clientes</li>
@@ -287,7 +285,7 @@ const Home: React.FC = () => {
               <FaGlobe className="text-5xl mb-4" style={{ color: "#70B5E2" }} />
               <div className="text-left">
                 <h3 className="text-2xl font-bold mb-3 text-black">Flexibilidad y Control sobre tu Horario de Trabajo</h3>
-                <ul className="text-gray-700 space-y-2">
+                <ul className="text-gray-700 space-y-2 text-xl leading-relaxed">
                   <li>• Elegir tu carga de trabajo</li>
                   <li>• Optimizar tu tiempo</li>
                   <li>• Asesorar desde cualquier lugar del mundo</li>
@@ -299,7 +297,7 @@ const Home: React.FC = () => {
               <FaSearchDollar className="text-5xl mb-4" style={{ color: "#37B6FF" }} />
               <div className="text-left">
                 <h3 className="text-2xl font-bold mb-3 text-black">Ingresos Escalables y Modelos de Remuneración Flexibles</h3>
-                <ul className="text-gray-700 space-y-2">
+                <ul className="text-gray-700 space-y-2 text-xl leading-relaxed">
                   <li>• Ingresos adicionales escalables</li>
                   <li>• Pago por proyectos o por horas</li>
                   <li>• Esquema de recompensas</li>
@@ -311,7 +309,7 @@ const Home: React.FC = () => {
               <FaTools className="text-5xl mb-4" style={{ color: "#70B5E2" }} />
               <div className="text-left">
                 <h3 className="text-2xl font-bold mb-3 text-black">Herramientas y Recursos para el Éxito Profesional</h3>
-                <p className="text-gray-700">Accede a herramientas especializadas y recursos exclusivos que potenciarán tu trabajo como asesor profesional.</p>
+                <p className="text-gray-700 text-xl leading-relaxed">Accede a herramientas especializadas y recursos exclusivos que potenciarán tu trabajo como asesor profesional.</p>
               </div>
             </motion.div>
 
@@ -319,7 +317,7 @@ const Home: React.FC = () => {
               <FaGem className="text-5xl mb-4" style={{ color: "#37B6FF" }} />
               <div className="text-left">
                 <h3 className="text-2xl font-bold mb-3 text-black">Desarrollo de Marca Personal y Reputación</h3>
-                <ul className="text-gray-700 space-y-2">
+                <ul className="text-gray-700 space-y-2 text-xl leading-relaxed">
                   <li>• Construir tu marca personal</li>
                   <li>• Acceder a oportunidades de visibilidad</li>
                 </ul>
@@ -330,7 +328,7 @@ const Home: React.FC = () => {
               <FaNetworkWired className="text-5xl mb-4" style={{ color: "#70B5E2" }} />
               <div className="text-left">
                 <h3 className="text-2xl font-bold mb-3 text-black">Comunidad de Expertos y Networking</h3>
-                <ul className="text-gray-700 space-y-2">
+                <ul className="text-gray-700 space-y-2 text-xl leading-relaxed">
                   <li>• Oportunidad de conectar</li>
                   <li>• Accederás a eventos</li>
                 </ul>
@@ -424,7 +422,7 @@ const Home: React.FC = () => {
             </p>
             <Link
               href="/register"
-              className="inline-block bg-white font-bold py-4 px-12 rounded-full text-lg md:text-xl shadow-lg hover:bg-gray-100 transform hover:scale-105 transition-all duration-300 ease-in-out"
+              className="inline-block bg-white font-bold py-4 px-12 rounded-full text-lg md:text-xl shadow-lg hover:bg-gray-100 transform hover:scale-105 transition-all duración-300 ease-in-out"
               style={{ color: "#293A49" }}
             >
               <FaUserPlus className="inline-block mr-3" /> REGÍSTRATE AHORA Y RECIBE SIN COSTO UN DIAGNÓSTICO DE TU NEGOCIO
