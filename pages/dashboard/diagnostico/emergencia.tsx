@@ -65,7 +65,7 @@ const UiverseLoader = () => (
         }
       }
     `}</style>
-    <div className="dots">Cargando</div>
+    <div className="dots">Analizando</div>
   </>
 );
 
@@ -82,11 +82,12 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
 }) => {
   const alignClass = isUser ? "justify-end" : "justify-start";
   const bubbleClass = isUser
-    ? "bg-red-600 text-white rounded-br-none"
-    : "bg-gray-200 text-gray-800 rounded-bl-none";
+    ? "bg-gradient-to-br from-blue-500 to-cyan-500 text-white rounded-br-none shadow-lg"
+    : "bg-white text-slate-800 rounded-bl-none shadow-md border border-blue-100";
+  
   return (
     <div className={`flex mb-4 animate__animated animate__fadeIn ${alignClass}`}>
-      <div className={`max-w-xs lg:max-w-md p-4 rounded-xl shadow-md ${bubbleClass}`}>
+      <div className={`max-w-xs lg:max-w-md p-4 rounded-2xl ${bubbleClass}`} style={{ fontFamily: 'Avenir, sans-serif' }}>
         {isLoader ? <UiverseLoader /> : message}
       </div>
     </div>
@@ -97,7 +98,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
 const chatQuestions: Array<{
   key: string;
   message: string;
-  component: React.ComponentType<any> | null; // <- fix: sin JSX.Element
+  component: React.ComponentType<any> | null;
   dataKey?: keyof DiagnosticoEmergenciaData;
 }> = [
   {
@@ -409,7 +410,7 @@ const DiagnosticoEmergencia: React.FC = () => {
     };
 
     const ctrl = new AbortController();
-    const timeout = setTimeout(() => ctrl.abort(), 30000); // 30s
+    const timeout = setTimeout(() => ctrl.abort(), 30000);
 
     try {
       const response = await fetch(
@@ -444,10 +445,10 @@ const DiagnosticoEmergencia: React.FC = () => {
           type: "bot",
           message: (
             <>
-              <h3 className="font-bold text-lg text-red-700">Diagnóstico rápido</h3>
+              <h3 className="font-bold text-lg text-blue-700">Diagnóstico rápido</h3>
               <p className="mt-2 whitespace-pre-wrap">{result.diagnostico_rapido}</p>
 
-              <h3 className="font-bold text-lg text-red-700 mt-4">Acciones inmediatas</h3>
+              <h3 className="font-bold text-lg text-blue-700 mt-4">Acciones inmediatas</h3>
               <ul className="list-disc list-inside mt-2">
                 {result.acciones_inmediatas.map((a, i) => (
                   <li key={i}>{a}</li>
@@ -461,7 +462,7 @@ const DiagnosticoEmergencia: React.FC = () => {
                 </span>
               </h3>
 
-              <h3 className="font-bold text-lg text-red-700 mt-4">
+              <h3 className="font-bold text-lg text-blue-700 mt-4">
                 Recomendaciones (2–4 semanas)
               </h3>
               <ul className="list-disc list-inside mt-2">
@@ -470,7 +471,7 @@ const DiagnosticoEmergencia: React.FC = () => {
                 ))}
               </ul>
 
-              <p className="mt-3 text-gray-700">
+              <p className="mt-3 text-slate-700">
                 Un consultor te contactará para explicar resultados y siguientes pasos.
               </p>
             </>
@@ -498,7 +499,7 @@ const DiagnosticoEmergencia: React.FC = () => {
       case "critico":
         return "text-red-600";
       default:
-        return "text-gray-600";
+        return "text-slate-600";
     }
   };
 
@@ -516,18 +517,19 @@ const DiagnosticoEmergencia: React.FC = () => {
             onChange={(
               e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
             ) => setCurrentAnswer(e.target.value)}
-            className="flex-1 px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 px-4 py-3 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            style={{ fontFamily: 'Avenir, sans-serif' }}
             disabled={isLoading}
           />
         )}
         <button
           onClick={handleNextStep}
           disabled={isLoading || (!!currentQuestion.dataKey && !currentAnswer)}
-          className={`p-3 rounded-full ${
+          className={`p-3 rounded-xl ${
             isLoading || (!!currentQuestion.dataKey && !currentAnswer)
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-red-600 hover:bg-red-700"
-          } text-white transition-colors duration-200`}
+              ? "bg-slate-300 cursor-not-allowed"
+              : "bg-gradient-to-br from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 shadow-lg hover:shadow-xl"
+          } text-white transition-all duration-200`}
         >
           <ArrowRightIcon className="h-6 w-6" />
         </button>
@@ -537,14 +539,18 @@ const DiagnosticoEmergencia: React.FC = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-gray-100 flex flex-col items-center py-10 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-5xl w-full bg-white p-8 rounded-xl shadow-lg animate__animated animate__fadeInDown border border-red-200">
-          <h1 className="text-4xl font-extrabold text-center text-red-800 mb-4">
-            Diagnóstico de Emergencia Empresarial
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 flex flex-col items-center py-10 px-4 sm:px-6 lg:px-8" style={{ fontFamily: 'Avenir, sans-serif' }}>
+        <div className="max-w-5xl w-full bg-white p-8 rounded-2xl shadow-xl animate__animated animate__fadeInDown border border-blue-100">
+          <h1 className="text-4xl font-bold text-center text-slate-800 mb-2">
+            Crisis ahora
           </h1>
+          <p className="text-center text-blue-600 font-semibold mb-6">
+            Diagnóstico de Emergencia Empresarial
+          </p>
+          
           <div
             ref={chatWindowRef}
-            className="h-[60vh] overflow-y-auto p-4 mb-4 border border-gray-200 rounded-lg bg-gray-50"
+            className="h-[60vh] overflow-y-auto p-4 mb-4 border-2 border-blue-100 rounded-xl bg-gradient-to-br from-blue-50/30 to-cyan-50/30"
           >
             {chatHistory.map((chat, index) => (
               <ChatBubble
@@ -562,12 +568,12 @@ const DiagnosticoEmergencia: React.FC = () => {
 
           {analisis && (
             <div className="mt-8 text-center animate__animated animate__fadeIn">
-              <p className="text-xl text-gray-700">
+              <p className="text-xl text-slate-700 mb-4">
                 ¡Diagnóstico completo! Un consultor se pondrá en contacto contigo.
               </p>
               <button
                 onClick={() => router.push("/dashboard/inicio")}
-                className="mt-4 px-6 py-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors"
+                className="px-8 py-3 bg-gradient-to-br from-blue-500 to-cyan-500 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-cyan-600 shadow-lg hover:shadow-xl transition-all duration-200"
               >
                 Ir al inicio
               </button>
