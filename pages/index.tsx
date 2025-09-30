@@ -17,63 +17,35 @@ import type { ISourceOptions } from "tsparticles-engine";
 gsap.registerPlugin(ScrollTrigger);
 
 const Home: React.FC = () => {
-  // Índices de secciones:
-  // 0: Qué es MentHIA
-  // 1: Ventaja Competitiva PYMES
-  // 2: Ventaja Competitiva ASESOR
-  // 3: Misión/Visión/Valores
-  // 4: CTA final
-  const sectionRefs = useRef<Array<HTMLDivElement | null>>([]);
+  // <section> -> HTMLElement, no HTMLDivElement
+  const sectionRefs = useRef<Array<HTMLElement | null>>([]);
 
   const particlesInit = useCallback(async (engine: any) => {
     await loadSlim(engine);
   }, []);
 
-  // Partículas estilo red/conexiones con colores MentHIA
   const heroParticlesOptions: ISourceOptions = {
     background: { color: { value: "#ffffff" } },
     fpsLimit: 120,
     interactivity: {
-      events: {
-        onClick: { enable: true, mode: "push" },
-        onHover: { enable: true, mode: "grab" },
-        resize: true,
-      },
-      modes: {
-        grab: { distance: 200, links: { opacity: 0.8 } },
-        push: { quantity: 3 },
-      },
+      events: { onClick: { enable: true, mode: "push" }, onHover: { enable: true, mode: "grab" }, resize: true },
+      modes: { grab: { distance: 200, links: { opacity: 0.8 } }, push: { quantity: 3 } }
     },
     particles: {
       color: { value: ["#293A49", "#70B5E2", "#37B6FF"] },
       links: { color: "#70B5E2", distance: 150, enable: true, opacity: 0.4, width: 1.5 },
-      move: {
-        direction: "none",
-        enable: true,
-        outModes: { default: "bounce" },
-        random: false,
-        speed: 1.5,
-        straight: false,
-      },
+      move: { direction: "none", enable: true, outModes: { default: "bounce" }, random: false, speed: 1.5, straight: false },
       number: { density: { enable: true, area: 800 }, value: 80 },
-      opacity: {
-        value: { min: 0.3, max: 0.7 },
-        animation: { enable: true, speed: 1, minimumValue: 0.2, sync: false },
-      },
+      opacity: { value: { min: 0.3, max: 0.7 }, animation: { enable: true, speed: 1, minimumValue: 0.2, sync: false } },
       shape: { type: "circle" },
-      size: {
-        value: { min: 2, max: 5 },
-        animation: { enable: true, speed: 2, minimumValue: 1, sync: false },
-      },
+      size: { value: { min: 2, max: 5 }, animation: { enable: true, speed: 2, minimumValue: 1, sync: false } }
     },
-    detectRetina: true,
+    detectRetina: true
   };
 
   const scrollToSection = (index: number) => {
     const target = sectionRefs.current[index];
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+    if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   useEffect(() => {
@@ -82,24 +54,23 @@ const Home: React.FC = () => {
     gsap.fromTo(".hero-home-cta", { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 1.2, delay: 0.8, ease: "elastic.out(1, 0.8)" });
 
     sectionRefs.current.forEach((el) => {
-      if (el) {
-        gsap.fromTo(
-          el,
-          { opacity: 0, y: 50 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 1,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: el,
-              start: "top 85%",
-              end: "bottom 20%",
-              toggleActions: "play none none reverse",
-            },
-          }
-        );
-      }
+      if (!el) return;
+      gsap.fromTo(
+        el,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: el,
+            start: "top 85%",
+            end: "bottom 20%",
+            toggleActions: "play none none reverse",
+          },
+        }
+      );
     });
 
     gsap.utils.toArray<HTMLElement>(".value-item").forEach((item, i) => {
@@ -112,11 +83,7 @@ const Home: React.FC = () => {
           duration: 0.8,
           delay: i * 0.1,
           ease: "power2.out",
-          scrollTrigger: {
-            trigger: item,
-            start: "top 90%",
-            toggleActions: "play none none reverse",
-          },
+          scrollTrigger: { trigger: item, start: "top 90%", toggleActions: "play none none reverse" },
         }
       );
     });
@@ -125,68 +92,21 @@ const Home: React.FC = () => {
   return (
     <>
       <style jsx>{`
-        @keyframes float {
-          0% { transform: translateY(0px); }
-          50% { transform: translateY(-8px); }
-          100% { transform: translateY(0px); }
-        }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-8px); } 100% { transform: translateY(0px); } }
         .animate-float { animation: float 2.5s ease-in-out infinite; }
-        .card-simple {
-          background-color: transparent;
-          padding: 1.5rem;
-          border-radius: 1rem;
-          color: #293A49;
-          transition: all 0.3s ease-in-out;
-        }
+        .card-simple { background-color: transparent; padding: 1.5rem; border-radius: 1rem; color: #293A49; transition: all 0.3s ease-in-out; }
         .card-simple:hover { transform: translateY(-5px) scale(1.03); }
-        .value-item {
-          transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-          background-color: #ffffff;
-          border: 2px solid #70B5E2;
-          color: #293A49;
-          box-shadow: 0 4px 12px rgba(112, 181, 226, 0.15);
-        }
-        .value-item:hover {
-          background-color: rgba(55, 182, 255, 0.1);
-          transform: translateY(-5px) scale(1.03);
-          box-shadow: 0 10px 25px rgba(55, 182, 255, 0.35);
-          border-color: #37B6FF;
-        }
-        .cta-secondary {
-          background-color: transparent;
-          border: 2px solid #293A49;
-          color: #293A49;
-          transition: all 0.3s ease-in-out;
-        }
+        .value-item { transition: transform 0.3s, background-color 0.3s, box-shadow 0.3s; background-color: #ffffff; border: 2px solid #70B5E2; color: #293A49; box-shadow: 0 4px 12px rgba(112, 181, 226, 0.15); }
+        .value-item:hover { background-color: rgba(55, 182, 255, 0.1); transform: translateY(-5px) scale(1.03); box-shadow: 0 10px 25px rgba(55, 182, 255, 0.35); border-color: #37B6FF; }
+        .cta-secondary { background-color: transparent; border: 2px solid #293A49; color: #293A49; transition: all 0.3s ease-in-out; }
         .cta-secondary:hover { background-color: #293A49; color: white; }
-        .cta-tertiary {
-          background-color: transparent;
-          border: 2px solid #70B5E2;
-          color: #293A49;
-          transition: all 0.3s ease-in-out;
-        }
+        .cta-tertiary { background-color: transparent; border: 2px solid #70B5E2; color: #293A49; transition: all 0.3s ease-in-out; }
         .cta-tertiary:hover { background-color: #70B5E2; color: white; }
         .menthia-gradient { background: linear-gradient(135deg, #293A49 0%, #37B6FF 100%); }
-        .menthia-text-gradient {
-          background: linear-gradient(135deg, #37B6FF 0%, #70B5E2 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-        .about-menthia-section {
-          background: linear-gradient(135deg, rgba(55, 182, 255, 0.05) 0%, rgba(112, 181, 226, 0.05) 100%);
-          border: 2px solid #70B5E2;
-        }
-        .arrow-wrap {
-          position: absolute; left: 0; right: 0; bottom: 1rem;
-          display: flex; justify-content: center; pointer-events: none;
-        }
-        .arrow-btn {
-          pointer-events: auto; display: inline-flex; align-items: center; justify-content: center;
-          width: 3.25rem; height: 3.25rem; border-radius: 9999px;
-          border: 2px solid #70B5E2; background: #ffffffcc; backdrop-filter: blur(4px);
-          transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
-        }
+        .menthia-text-gradient { background: linear-gradient(135deg, #37B6FF 0%, #70B5E2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .about-menthia-section { background: linear-gradient(135deg, rgba(55, 182, 255, 0.05) 0%, rgba(112, 181, 226, 0.05) 100%); border: 2px solid #70B5E2; }
+        .arrow-wrap { position: absolute; left: 0; right: 0; bottom: 1rem; display: flex; justify-content: center; pointer-events: none; }
+        .arrow-btn { pointer-events: auto; display: inline-flex; align-items: center; justify-content: center; width: 3.25rem; height: 3.25rem; border-radius: 9999px; border: 2px solid #70B5E2; background: #ffffffcc; backdrop-filter: blur(4px); transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s; }
         .arrow-btn:hover { transform: translateY(2px) scale(1.03); box-shadow: 0 8px 18px rgba(55,182,255,0.25); background: #ffffff; }
       `}</style>
 
@@ -209,21 +129,15 @@ const Home: React.FC = () => {
               >
                 <FaUserPlus className="inline-block mr-3" /> Regístrate y obtén sin costo un diagnóstico de tu negocio
               </Link>
-              <Link
-                href="/demo"
-                className="inline-block cta-secondary font-bold py-4 px-8 rounded-full text-lg md:text-xl shadow-lg transform hover:scale-105 transition-all duration-300 ease-in-out"
-              >
+              <Link href="/demo" className="inline-block cta-secondary font-bold py-4 px-8 rounded-full text-lg md:text-xl shadow-lg transform hover:scale-105 transition-all duration-300 ease-in-out">
                 <FaPlay className="inline-block mr-3" /> Ver cómo funciona (2 min)
               </Link>
             </div>
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link
-                href="/referidos"
-                className="inline-block cta-tertiary font-semibold py-3 px-8 rounded-full text-base md:text-lg shadow-md transform hover:scale-105 transition-all duration-300 ease-in-out"
-              >
+              <Link href="/referidos" className="inline-block cta-tertiary font-semibold py-3 px-8 rounded-full text-base md:text-lg shadow-md transform hover:scale-105 transition-all duration-300 ease-in-out">
                 <FaShareAlt className="inline-block mr-2" /> Programa de referidos
               </Link>
-              {/* FAQs AZUL */}
+              {/* FAQs en azul */}
               <Link
                 href="/faqs"
                 className="inline-block font-semibold py-3 px-8 rounded-full text-base md:text-lg shadow-md transform hover:scale-105 transition-all duration-300 ease-in-out bg-[#37B6FF] text-white hover:bg-[#2FA3E6]"
@@ -233,7 +147,7 @@ const Home: React.FC = () => {
             </div>
           </div>
 
-          {/* Flecha hacia sección 0 (primera sección de contenido) */}
+          {/* Flecha a la primera sección */}
           <div className="arrow-wrap z-20">
             <button aria-label="Ir a la siguiente sección" className="arrow-btn" onClick={() => scrollToSection(0)}>
               <FaArrowDown />
@@ -272,7 +186,6 @@ const Home: React.FC = () => {
             </motion.div>
           </div>
 
-          {/* Flecha a siguiente sección (1) */}
           <div className="arrow-wrap">
             <button aria-label="Ir a la siguiente sección" className="arrow-btn" onClick={() => scrollToSection(1)}>
               <FaArrowDown />
@@ -280,7 +193,7 @@ const Home: React.FC = () => {
           </div>
         </section>
 
-        {/* MentHIA: Tu Ventaja Competitiva para Pymes */}
+        {/* Ventaja Competitiva PYMES */}
         <section
           ref={(el) => { sectionRefs.current[1] = el; }}
           className="relative py-20 md:py-32 px-4 container mx-auto text-center my-16"
@@ -318,7 +231,7 @@ const Home: React.FC = () => {
               <FaTools className="text-5xl mb-4" style={{ color: "#70B5E2" }} />
               <div className="text-left">
                 <h3 className="text-2xl font-bold mb-3 text-black">Recursos Educativos y Herramientas Digitales a la medida</h3>
-                <p className="text-gray-700">Contamos con una biblioteca de talleres y herramientas en diversos temas empresariales útiles para tu formación, crecimiento y capacitación.</p>
+              <p className="text-gray-700">Contamos con una biblioteca de talleres y herramientas en diversos temas empresariales útiles para tu formación, crecimiento y capacitación.</p>
               </div>
             </motion.div>
 
@@ -341,7 +254,6 @@ const Home: React.FC = () => {
             </Link>
           </motion.div>
 
-          {/* Flecha hacia sección 2 */}
           <div className="arrow-wrap">
             <button aria-label="Ir a la siguiente sección" className="arrow-btn" onClick={() => scrollToSection(2)}>
               <FaArrowDown />
@@ -349,7 +261,7 @@ const Home: React.FC = () => {
           </div>
         </section>
 
-        {/* Tu Ventaja Competitiva como ASESOR */}
+        {/* ASESOR */}
         <section
           ref={(el) => { sectionRefs.current[2] = el; }}
           className="relative py-20 md:py-32 px-4 container mx-auto"
@@ -429,14 +341,13 @@ const Home: React.FC = () => {
           <motion.div className="mt-12 text-center" initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, ease: "easeOut" }} viewport={{ once: true }}>
             <Link
               href="/register"
-              className="inline-block font-bold py-4 px-12 rounded-full text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duración-300 ease-in-out"
+              className="inline-block font-bold py-4 px-12 rounded-full text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 ease-in-out"
               style={{ backgroundColor: "#37B6FF", color: "#ffffff" }}
             >
               <FaUserPlus className="inline-block mr-3" /> Regístrate y empieza a recibir los beneficios como Asesor
             </Link>
           </motion.div>
 
-          {/* Flecha hacia sección 3 */}
           <div className="arrow-wrap">
             <button aria-label="Ir a la siguiente sección" className="arrow-btn" onClick={() => scrollToSection(3)}>
               <FaArrowDown />
@@ -453,7 +364,6 @@ const Home: React.FC = () => {
             Nuestra esencia, tu éxito
           </h2>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Misión */}
             <motion.div className="value-item p-8 rounded-lg shadow-md flex flex-col items-center" whileHover={{ scale: 1.03 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
               <FaBullseye className="text-6xl mb-4" style={{ color: "#37B6FF" }} />
               <h3 className="text-3xl font-bold mb-3 text-black">Misión</h3>
@@ -461,7 +371,6 @@ const Home: React.FC = () => {
                 Empoderar a emprendedores y pequeñas empresas de América Latina a través de una plataforma híbrida que combina experiencia humana con inteligencia artificial, impulsando la innovación, el crecimiento y la competitividad empresarial.
               </p>
             </motion.div>
-            {/* Visión */}
             <motion.div className="value-item p-8 rounded-lg shadow-md flex flex-col items-center" whileHover={{ scale: 1.03 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
               <FaEye className="text-6xl mb-4" style={{ color: "#70B5E2" }} />
               <h3 className="text-3xl font-bold mb-3 text-black">Visión</h3>
@@ -469,7 +378,6 @@ const Home: React.FC = () => {
                 Ser la plataforma líder en mentoría empresarial inteligente en América Latina, revolucionando el acceso a la consultoría mediante un modelo accesible, escalable y profundamente humano, que transforme a las PYMES en motores de desarrollo económico sostenible.
               </p>
             </motion.div>
-            {/* Valores */}
             <motion.div className="value-item p-8 rounded-lg shadow-md flex flex-col items-center" whileHover={{ scale: 1.03 }} transition={{ duration: 0.2, ease: "easeInOut" }}>
               <FaHeart className="text-6xl mb-4" style={{ color: "#37B6FF" }} />
               <h3 className="text-3xl font-bold mb-3 text-black">Valores</h3>
@@ -488,14 +396,13 @@ const Home: React.FC = () => {
           <motion.div className="mt-12 text-center" initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, ease: "easeOut" }} viewport={{ once: true }}>
             <Link
               href="/register"
-              className="inline-block font-bold py-4 px-12 rounded-full text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duración-300 ease-in-out"
+              className="inline-block font-bold py-4 px-12 rounded-full text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 ease-in-out"
               style={{ backgroundColor: "#37B6FF", color: "#ffffff" }}
             >
               <FaUserPlus className="inline-block mr-3" /> Empieza hoy mismo
             </Link>
           </motion.div>
 
-          {/* Flecha hacia sección 4 */}
           <div className="arrow-wrap">
             <button aria-label="Ir a la siguiente sección" className="arrow-btn" onClick={() => scrollToSection(4)}>
               <FaArrowDown />
@@ -524,12 +431,12 @@ const Home: React.FC = () => {
             </Link>
           </div>
 
-          {/* Flecha que regresa al inicio */}
           <div className="arrow-wrap">
-            <button aria-label="Volver al inicio" className="arrow-btn" onClick={() => {
-              // hace scroll al principio del documento
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }}>
+            <button
+              aria-label="Volver al inicio"
+              className="arrow-btn"
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            >
               <FaArrowDown />
             </button>
           </div>
